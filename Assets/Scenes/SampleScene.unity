@@ -251,14 +251,6 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-<<<<<<< Updated upstream
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
-=======
     m_Quality: 3
     m_FrameInfluence: 0.1
     m_JitterScale: 1
@@ -279,7 +271,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2016730636}
   offset: {x: 0, y: 10, z: -20}
->>>>>>> Stashed changes
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -447,8 +438,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-=======
 --- !u!1001 &1234843631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -868,7 +857,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f8572847702de64485f1092e5ac7464, type: 3}
->>>>>>> Stashed changes
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
