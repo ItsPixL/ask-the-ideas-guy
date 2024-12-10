@@ -630,8 +630,8 @@ GameObject:
   - component: {fileID: 2016730635}
   - component: {fileID: 2016730634}
   - component: {fileID: 2016730632}
-  - component: {fileID: 2016730631}
   - component: {fileID: 2016730637}
+  - component: {fileID: 2016730638}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -639,20 +639,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2016730631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016730630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d430f6f9a67f345499461e55d92ea51e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 2016730632}
-  force: 25
 --- !u!54 &2016730632
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -769,6 +755,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2016730638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016730630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce362ce0eda07a544baaa99a866cec6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 2016730632}
+  force: 25
 --- !u!1001 &2017767103
 PrefabInstance:
   m_ObjectHideFlags: 0
