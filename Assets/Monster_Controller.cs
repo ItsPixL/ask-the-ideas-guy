@@ -5,19 +5,19 @@ public class Monster {
     private float movementSpeed = 5f;
     private float sightRange = 10f;
     private float loseSightRange = 15f;
-    public Rigidbody monsterRb;
-    public Transform monster;
-    public Transform player;
+    public GameObject monster;
+    public GameObject player;
     private bool seenPlayer = false;
+    private int fieldOfView = 160;
 
-    float calculateDistance() {
-        float xDistance = monster.position.x-player.position.x;
-        float zDistance = monster.position.z-player.position.z;
-        return (float)Math.Sqrt((float)Math.Pow(xDistance, 2)+(float)Math.Pow(zDistance, 2));
+    bool reachableDistance(int distance) {
+        float xDistance = monster.transform.position.x-player.transform.position.x;
+        float zDistance = monster.transform.position.z-player.transform.position.z;
+        return Math.Pow(xDistance, 2)+Math.Pow(zDistance, 2) <= Math.Pow(distance, 2);
     }
 
     void checkForPlayer() {
-        // if (!seenPlayer && )
+        // if (!seenPlayer && reachableDistance(sightRange))
     }
       
 }
