@@ -768,7 +768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2016730632}
-  force: 25
+  force: 100
 --- !u!1001 &2017767103
 PrefabInstance:
   m_ObjectHideFlags: 0
