@@ -10,11 +10,34 @@ public class Monster {
     private bool seenPlayer = false;
     private int fieldOfView = 160;
 
-    bool reachableDistance(int distance) {
-        float xDistance = monster.transform.position.x-player.transform.position.x;
-        float zDistance = monster.transform.position.z-player.transform.position.z;
-        return Math.Pow(xDistance, 2)+Math.Pow(zDistance, 2) <= Math.Pow(distance, 2);
+    bool checkFOV() {
+        Vector3 directionToPlayer = (player.transform.position - monster.transform.position).normalized;
+
+        float angle = Vector3.Angle(monster.transform.forward, directionToPlayer);
+
+        return angle <= fieldOfView / 2;
     }
+
+    bool reachableDistance(int targetDistance) {
+        float distance = Vector3.Distance(player.transform.position, monster.transform.position);
+        return distance <= targetDistance;
+    }
+
+    void OnDrawGizmos(int targetDistance)
+{
+        if (monster == null) return;
+
+        // Draw the FOV cone
+        Vector3 leftBoundary = Quaternion.Euler(0, -fieldOfView / 2, 0) * monster.transform.forward;
+        Vector3 rightBoundary = Quaternion.Euler(0, fieldOfView / 2, 0) * monster.transform.forward;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(monster.transform.position, leftBoundary * targetDistance);
+        Gizmos.DrawRay(monster.transform.position, rightBoundary * targetDistance);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(monster.transform.position, targetDistance);
+}
 
     void checkForPlayer() {
         // if (!seenPlayer && reachableDistance(sightRange))
