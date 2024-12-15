@@ -1,67 +1,73 @@
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 public class Monster {
     private float movementSpeed = 5f;
-    private int sightRange = 10;
+    public int sightRange = 10;
     private int loseSightRange = 15;
     public GameObject monster;
-    public GameObject player;
+    private GameObject player;
     private bool seenPlayer = false;
-    private int fieldOfView = 160;
+    public int fieldOfView = 160;
 
-    bool checkFOV() {
-        Vector3 directionToPlayer = (player.transform.position - monster.transform.position).normalized;
+    public void initGameObjects(GameObject monster, GameObject player) {
+        this.monster = monster;
+        this.player = player;
+    }
 
-        float angle = Vector3.Angle(monster.transform.forward, directionToPlayer);
+    bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
+        Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
+        Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
+
+        float angle = Vector2.Angle(monsterForward2D, directionToPlayer);
 
         return angle <= fieldOfView / 2;
     }
 
-    bool reachableDistance(int targetDistance) {
-        float distance = Vector3.Distance(player.transform.position, monster.transform.position);
+    bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
+        float distance = Vector2.Distance(playerPos, monsterPos);
         return distance <= targetDistance;
     }
 
     bool detectedPlayer(int targetDistance) {
-        if (checkFOV() && reachableDistance(targetDistance)) {
+        Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
+        Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
+        if (reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
             return true;
         }
         return false;
     }
 
-    void OnDrawGizmos(int targetDistance)
-{
-        if (monster == null) return;
-
-        // Draw the FOV cone
-        Vector3 leftBoundary = Quaternion.Euler(0, -fieldOfView / 2, 0) * monster.transform.forward;
-        Vector3 rightBoundary = Quaternion.Euler(0, fieldOfView / 2, 0) * monster.transform.forward;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(monster.transform.position, leftBoundary * targetDistance);
-        Gizmos.DrawRay(monster.transform.position, rightBoundary * targetDistance);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(monster.transform.position, targetDistance);
-}
-
     public void checkForPlayer() {
         if (!seenPlayer && detectedPlayer(sightRange)) {
-            Console.WriteLine("true");
             seenPlayer = true;
         }
         else if (!detectedPlayer(sightRange)) {
-            Console.WriteLine("false");
             seenPlayer = false;
         }
+        // Debug.Log(seenPlayer); <-- Uncomment this line when testing.
     }
       
 }
 public class Monster_Controller : MonoBehaviour {
     Monster entity = new Monster();
+
+    // The function below is for testing purposes only. It will be removed when all of the code is finalised.
+    void OnDrawGizmos() {
+        int targetDistance = entity.sightRange;
+        if (entity.monster == null) return;
+
+        Vector2 monsterForward2D = new Vector2(entity.monster.transform.forward.x, entity.monster.transform.forward.z).normalized;
+        Vector2 leftBoundary = Quaternion.Euler(0, 0, -entity.fieldOfView / 2) * monsterForward2D;
+        Vector2 rightBoundary = Quaternion.Euler(0, 0, entity.fieldOfView / 2) * monsterForward2D;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(entity.monster.transform.position, new Vector3(leftBoundary.x, 0, leftBoundary.y) * targetDistance);
+        Gizmos.DrawRay(entity.monster.transform.position, new Vector3(rightBoundary.x, 0, rightBoundary.y) * targetDistance);
+    }
     void Start() {
-        
+        entity.initGameObjects(this.gameObject, GameObject.FindWithTag("Player"));
     }
 
     void Update() {
