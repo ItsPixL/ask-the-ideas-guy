@@ -3,8 +3,8 @@ using System;
 
 public class Monster {
     private float movementSpeed = 5f;
-    private float sightRange = 10f;
-    private float loseSightRange = 15f;
+    private int sightRange = 10;
+    private int loseSightRange = 15;
     public GameObject monster;
     public GameObject player;
     private bool seenPlayer = false;
@@ -23,6 +23,13 @@ public class Monster {
         return distance <= targetDistance;
     }
 
+    bool detectedPlayer(int targetDistance) {
+        if (checkFOV() && reachableDistance(targetDistance)) {
+            return true;
+        }
+        return false;
+    }
+
     void OnDrawGizmos(int targetDistance)
 {
         if (monster == null) return;
@@ -39,17 +46,25 @@ public class Monster {
         Gizmos.DrawWireSphere(monster.transform.position, targetDistance);
 }
 
-    void checkForPlayer() {
-        // if (!seenPlayer && reachableDistance(sightRange))
+    public void checkForPlayer() {
+        if (!seenPlayer && detectedPlayer(sightRange)) {
+            Console.WriteLine("true");
+            seenPlayer = true;
+        }
+        else if (!detectedPlayer(sightRange)) {
+            Console.WriteLine("false");
+            seenPlayer = false;
+        }
     }
       
 }
 public class Monster_Controller : MonoBehaviour {
+    Monster entity = new Monster();
     void Start() {
-
+        
     }
 
     void Update() {
-
+        entity.checkForPlayer();
     }
 }
