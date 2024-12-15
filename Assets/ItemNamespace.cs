@@ -1,10 +1,10 @@
 namespace ItemManager {
     public class Item {
-        public string itemName;
-        public string itemDescription;
+        public string name;
+        public string description;
         public Item(string name, string description) {
-            itemName = name;
-            itemDescription = description;
+            this.name = name;
+            this.description = description;
         }
     }
 }

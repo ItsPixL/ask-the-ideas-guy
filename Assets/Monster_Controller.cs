@@ -1,66 +1,70 @@
 using UnityEngine;
+using MonsterManager;
 
-public class Monster { 
-    private float movementSpeed;
-    public int sightRange = 10; // Change this variable to private once OnDrawGizmos() is no longer needed.
-    private int loseSightRange;
-    public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
-    private GameObject player;
-    private bool seenPlayer = false;
-    public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
+namespace MonsterManager {
+    public class Monster { 
+        private float movementSpeed;
+        public int sightRange = 10; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        private int loseSightRange;
+        public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        private GameObject player;
+        private bool seenPlayer = false;
+        public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
 
-    public Monster(float movementSpeed, int sightRange, int loseSightRange, int fieldOfView) {
-        // Constructor function for initialisation.
-        this.movementSpeed = movementSpeed;
-        this.sightRange = sightRange;
-        this.loseSightRange = loseSightRange;
-        this.fieldOfView = fieldOfView;
-    }
-
-    public void initGameObjects(GameObject monster, GameObject player) {
-        // Passes all GameObjects to this class.
-        this.monster = monster;
-        this.player = player;
-    }
-
-    bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
-        // Checks whether the player is within the monster's field of view.
-        Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
-        Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
-
-        float angle = Vector2.Angle(monsterForward2D, directionToPlayer);
-
-        return angle <= fieldOfView / 2;
-    }
-
-    bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
-        // Checks whether the player is close enough to the monster.
-        float distance = Vector2.Distance(playerPos, monsterPos);
-        return distance <= targetDistance;
-    }
-
-    bool detectedPlayer(int targetDistance) {
-        // Returns whether the player can be seen or not. 
-        Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
-        Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
-        if (reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
-            return true;
+        public Monster(float movementSpeed, int sightRange, int loseSightRange, int fieldOfView) {
+            // Constructor function for initialisation.
+            this.movementSpeed = movementSpeed;
+            this.sightRange = sightRange;
+            this.loseSightRange = loseSightRange;
+            this.fieldOfView = fieldOfView;
         }
-        return false;
-    }
 
-    public void checkForPlayer() {
-        if (!seenPlayer && detectedPlayer(sightRange)) {
-            seenPlayer = true;
+        public void initGameObjects(GameObject monster, GameObject player) {
+            // Passes all GameObjects to this class.
+            this.monster = monster;
+            this.player = player;
         }
-        else if (!detectedPlayer(sightRange)) {
-            seenPlayer = false;
+
+        bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
+            // Checks whether the player is within the monster's field of view.
+            Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
+            Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
+
+            float angle = Vector2.Angle(monsterForward2D, directionToPlayer);
+
+            return angle <= fieldOfView / 2;
         }
-        // Uncomment the line below when testing.
-        // Debug.Log(seenPlayer);
+
+        bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
+            // Checks whether the player is close enough to the monster.
+            float distance = Vector2.Distance(playerPos, monsterPos);
+            return distance <= targetDistance;
+        }
+
+        bool detectedPlayer(int targetDistance) {
+            // Returns whether the player can be seen or not. 
+            Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
+            Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
+            if (reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
+                return true;
+            }
+            return false;
+        }
+
+        public void checkForPlayer() {
+            if (!seenPlayer && detectedPlayer(sightRange)) {
+                seenPlayer = true;
+            }
+            else if (!detectedPlayer(sightRange)) {
+                seenPlayer = false;
+            }
+            // Uncomment the line below when testing.
+            // Debug.Log(seenPlayer);
+        }
+        
     }
-      
 }
+
 public class Monster_Controller : MonoBehaviour {
     Monster entity = new Monster(5f, 10, 15, 160); 
 
