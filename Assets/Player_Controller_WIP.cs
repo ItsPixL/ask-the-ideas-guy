@@ -58,7 +58,6 @@ public class Player_Controller_WIP : MonoBehaviour {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Start() {
-        // Nothing here yet!
         playerInventory.resetInventory();
     }
 
