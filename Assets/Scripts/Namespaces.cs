@@ -15,7 +15,8 @@ namespace InventoryManager {
         public List<Item> items;
         private int maxSlots;
         private int currItems = 0;
-        public int currIdx = 0;
+        public int currIdx;
+        public bool holdingItem = false;
         public Item currItem;
 
         public Inventory(int maxSlots) {
@@ -39,20 +40,31 @@ namespace InventoryManager {
 
         // Manages inventory navigation by key inputs.
         public void navigateInventory() {
-            if (Input.GetKeyDown("e")) {
-                currIdx += 1;
-            }
-            if (Input.GetKeyDown("q")) {
-                currIdx -= 1;
+            int prevIdx = currIdx;
+            bool numberPressed = false;
+            if (holdingItem) {
+                if (Input.GetKeyDown("e")) {
+                    currIdx += 1;
+                    currIdx = keepIdxInRange(currIdx);
+                }
+                if (Input.GetKeyDown("q")) {
+                    currIdx -= 1;
+                    currIdx = keepIdxInRange(currIdx);
+                }
             }
             for (int i = 1; i <= maxSlots; i++) {
                 if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
                     currIdx = i-1;
-                    // Debug.Log(currIdx);
+                    numberPressed = true;
                 }
             }
-            currIdx = keepIdxInRange(currIdx);
-            fetchCurrItem(currIdx);
+            if (numberPressed && prevIdx == currIdx) {
+                holdingItem = !holdingItem;
+
+            }
+            else if (prevIdx != currIdx) {
+                fetchCurrItem(currIdx);
+            }
         }
 
         // Fetches the current item being used.
@@ -64,6 +76,7 @@ namespace InventoryManager {
             else {
                 currItem = items[targetIdx];
             }
+            holdingItem = true;
         }
     }
 }
