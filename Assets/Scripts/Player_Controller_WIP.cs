@@ -1,63 +1,13 @@
 using UnityEngine;
-using ItemManager;
-using System.Collections.Generic;
-
-public class Inventory {
-    public List<Item> items;
-    private int maxSlots;
-    private int currItems = 0;
-    private int currIdx = 0;
-    private Item currItem;
-
-    public Inventory(int maxSlots) {
-        this.maxSlots = maxSlots;
-    }
-
-    public void resetInventory() { 
-        items = new List<Item>(new Item[maxSlots]);
-    }
-
-    private int keepIdxInRange(int currIdx) {
-        if (currIdx < 0) {
-            return maxSlots+currIdx;
-        }
-        if (currIdx >= maxSlots) {
-            return maxSlots-currIdx;
-        }
-        return currIdx;
-    } 
-
-    public void navigateInventory() {
-        if (Input.GetKeyDown("e")) {
-            currIdx += 1;
-        }
-        if (Input.GetKeyDown("q")) {
-            currIdx -= 1;
-        }
-        for (int i = 1; i <= maxSlots; i++) {
-            if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
-                currIdx = i-1;
-                // Debug.Log(currIdx);
-            }
-        }
-        currIdx = keepIdxInRange(currIdx);
-    }
-
-    public Item findCurrentItem() {
-        if (items[currIdx] == null) {
-            return null;
-        }
-        return items[currIdx];
-    }   
-}
+using InventoryManager;
 
 public class Player_Controller_WIP : MonoBehaviour {
     public Rigidbody rb;
     public float force = 5f;
     private bool allowPlayerInput = true;
     private Inventory playerInventory = new Inventory(3);
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-
     void Start() {
         playerInventory.resetInventory();
     }
@@ -83,15 +33,23 @@ public class Player_Controller_WIP : MonoBehaviour {
         }
     }
 
+    // Updates inventory information to respond to UI interaction.
+    void updateInventoryStatus(int targetIdx) {
+        playerInventory.fetchCurrItem(targetIdx);
+    }
+
+    // Update function used for all physics updates.
     void FixedUpdate() {
         if (allowPlayerInput) {
-            // All player input functions should be put here.
+            // All physics related player input functions should be put here.
             InitPlayerMovement();
         }
     }
 
+    // All other updates are in the standard Update() function.
     void Update() {
         if (allowPlayerInput) {
+            // All other player input functions should be put here.
             playerInventory.navigateInventory();
         }
     }
