@@ -4,7 +4,7 @@ using MonsterManager;
 namespace MonsterManager {
     public class Monster { 
         private float movementSpeed;
-        public int sightRange = 10; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int loseSightRange;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
@@ -25,7 +25,7 @@ namespace MonsterManager {
             this.player = player;
         }
 
-        bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
+        private bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
             // Checks whether the player is within the monster's field of view.
             Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
             Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
@@ -35,13 +35,13 @@ namespace MonsterManager {
             return angle <= fieldOfView / 2;
         }
 
-        bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
+        private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
             // Checks whether the player is close enough to the monster.
             float distance = Vector2.Distance(playerPos, monsterPos);
             return distance <= targetDistance;
         }
 
-        bool detectedPlayer(int targetDistance) {
+        private bool detectedPlayer(int targetDistance) {
             // Returns whether the player can be seen or not. 
             Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
             Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);

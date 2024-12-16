@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Inventory {
     public List<Item> items;
     private int maxSlots;
+    private int currItems = 0;
     private int currIdx = 0;
     private Item currItem;
 
