@@ -957,11 +957,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2016730630}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56d36e92f216abe438fdcb4e69189a63, type: 3}
+  m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2016730632}
-  force: 100
+  force: 50
 --- !u!1001 &2017767103
 PrefabInstance:
   m_ObjectHideFlags: 0
