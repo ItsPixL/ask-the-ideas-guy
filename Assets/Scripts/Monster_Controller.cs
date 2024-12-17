@@ -34,7 +34,6 @@ namespace MonsterManager {
 
             return angle <= fieldOfView / 2;
         }
-
         private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
             // Checks whether the player is close enough to the monster.
             float distance = Vector2.Distance(playerPos, monsterPos);
@@ -58,10 +57,8 @@ namespace MonsterManager {
             else if (!detectedPlayer(sightRange)) {
                 seenPlayer = false;
             }
-            // Uncomment the line below when testing.
             // Debug.Log(seenPlayer);
         }
-        
     }
 }
 

@@ -1,13 +1,16 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 
 namespace InventoryManager {
     public class Item {
         public string name;
         public string description;
-        public Item(string name, string description) {
+        public Image image;
+        public Item(string name, string description, Image image) {
             this.name = name;
             this.description = description;
+            this.image = image;
         }
     }
 
@@ -60,7 +63,7 @@ namespace InventoryManager {
             }
             if (numberPressed && prevIdx == currIdx) {
                 holdingItem = !holdingItem;
-
+                // Debug.Log(holdingItem);
             }
             else if (prevIdx != currIdx) {
                 fetchCurrItem(currIdx);
@@ -77,6 +80,19 @@ namespace InventoryManager {
                 currItem = items[targetIdx];
             }
             holdingItem = true;
+            // Debug.Log(currIdx);
+        }
+
+        public void addItem(Item item) {
+            if (currItems < maxSlots) {
+                items.Add(item);
+                currItems += 1;
+            }
+        }
+
+        public void deleteItem(int itemIdx) {
+            items[itemIdx] = null;
+            currItems -= 1;
         }
     }
 }
