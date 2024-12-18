@@ -1,15 +1,18 @@
 using UnityEngine;
 using InventoryManager;
+using UIManager;
 
 public class Player_Controller : MonoBehaviour {
     public Rigidbody rb;
     public float force = 5f;
     private bool allowPlayerInput = true;
     private Inventory playerInventory = new Inventory(5);
+    private UI_Manager UI_Controller;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         playerInventory.resetInventory();
+        UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
     }
 
     void MovePlayer(float forceX, float forceY, float forceZ) {
@@ -36,6 +39,7 @@ public class Player_Controller : MonoBehaviour {
     // Updates inventory information to respond to UI interaction.
     public void updateInventoryStatus(int targetIdx) {
         playerInventory.fetchCurrItem(targetIdx);
+        UI_Controller.updateInventoryStatusUI(targetIdx);
     }
 
     // Update function used for all physics updates.
@@ -50,7 +54,10 @@ public class Player_Controller : MonoBehaviour {
     void Update() {
         if (allowPlayerInput) {
             // All other player input functions should be put here.
-            playerInventory.navigateInventory();
+            bool wasInput = playerInventory.navigateInventory();
+            if (wasInput && playerInventory.holdingItem) {
+                updateInventoryStatus(playerInventory.currIdx);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
+using UnityEngine.UI;
+
 
 namespace InventoryManager {
     public class Item {
@@ -42,23 +43,27 @@ namespace InventoryManager {
         } 
 
         // Manages inventory navigation by key inputs.
-        public void navigateInventory() {
+        public bool navigateInventory() {
             int prevIdx = currIdx;
+            bool keyPressed = false;
             bool numberPressed = false;
             if (holdingItem) {
                 if (Input.GetKeyDown("e")) {
                     currIdx += 1;
                     currIdx = keepIdxInRange(currIdx);
+                    keyPressed = true;
                 }
                 if (Input.GetKeyDown("q")) {
                     currIdx -= 1;
                     currIdx = keepIdxInRange(currIdx);
+                    keyPressed = true;
                 }
             }
             for (int i = 1; i <= maxSlots; i++) {
                 if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
                     currIdx = i-1;
                     numberPressed = true;
+                    keyPressed = true;
                 }
             }
             if (numberPressed && prevIdx == currIdx) {
@@ -68,6 +73,7 @@ namespace InventoryManager {
             else if (prevIdx != currIdx) {
                 fetchCurrItem(currIdx);
             }
+            return keyPressed;
         }
 
         // Fetches the current item being used.
@@ -93,6 +99,42 @@ namespace InventoryManager {
         public void deleteItem(int itemIdx) {
             items[itemIdx] = null;
             currItems -= 1;
+        }
+    }
+
+    public class UI_Inventory {
+        private List<Button> buttons;
+        private Dictionary<Button, int> buttonMap;
+
+        public int currSelected = -1;
+
+        public UI_Inventory(List<Button> buttons) {
+            this.buttons = buttons;
+        }
+
+        void setUpButtonMap() {
+            for (int i=0; i < buttons.Count; i++) {
+                buttonMap.Add(buttons[i], i);
+            }
+        }
+
+        public void selectCurrItem(int newIdx) {
+            if (currSelected != -1) {
+                Button prevButton = buttons[currSelected];
+                Outline prevOutline = prevButton.GetComponent<Outline>();
+                prevOutline.effectColor = Color.black;
+            }
+            if (newIdx == currSelected) {
+                currSelected = -1;
+            }
+            else {
+                currSelected = newIdx;
+            }
+            if (currSelected != -1) {
+                Button currButton = buttons[currSelected];
+                Outline currOutline = currButton.GetComponent<Outline>();
+                currOutline.effectColor = Color.yellow;
+            }
         }
     }
 }
