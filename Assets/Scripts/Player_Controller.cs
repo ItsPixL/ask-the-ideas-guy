@@ -1,11 +1,11 @@
 using UnityEngine;
 using InventoryManager;
 
-public class Player_Controller_WIP : MonoBehaviour {
+public class Player_Controller : MonoBehaviour {
     public Rigidbody rb;
     public float force = 5f;
     private bool allowPlayerInput = true;
-    private Inventory playerInventory = new Inventory(3);
+    private Inventory playerInventory = new Inventory(5);
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -34,7 +34,7 @@ public class Player_Controller_WIP : MonoBehaviour {
     }
 
     // Updates inventory information to respond to UI interaction.
-    void updateInventoryStatus(int targetIdx) {
+    public void updateInventoryStatus(int targetIdx) {
         playerInventory.fetchCurrItem(targetIdx);
     }
 
