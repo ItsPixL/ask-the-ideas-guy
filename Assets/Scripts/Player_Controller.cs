@@ -22,7 +22,7 @@ public class Player_Controller : MonoBehaviour {
 
     void InitPlayerMovement() {
         // Allows character movement by player input.
-        if (Input.GetKey("w")) { // forwardss
+        if (Input.GetKey("w")) { // forwards
             MovePlayer(0f, 0f, force);
         }
         if (Input.GetKey("s")) { // backwards
