@@ -3,7 +3,7 @@ using InventoryManager;
 using UIManager;
 
 public class Player_Controller : MonoBehaviour {
-    public Rigidbody rb;
+    public Rigidbody playerRb;
     public float force = 5f;
     private bool allowPlayerInput = true;
     private Inventory playerInventory = new Inventory(5);
@@ -17,21 +17,21 @@ public class Player_Controller : MonoBehaviour {
 
     void MovePlayer(float forceX, float forceY, float forceZ) {
         // Moves the character.
-        rb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
+        playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
     }
 
     void InitPlayerMovement() {
         // Allows character movement by player input.
-        if (Input.GetKey("w")) { // forwards
+        if (Input.GetKey("w")) { 
             MovePlayer(0f, 0f, force);
         }
-        if (Input.GetKey("s")) { // backwards
+        if (Input.GetKey("s")) { 
             MovePlayer(0f, 0f, -force);
         }
-        if (Input.GetKey("a")) { // left
+        if (Input.GetKey("a")) { 
             MovePlayer(-force, 0f, 0f);
         }
-        if (Input.GetKey("d")) { // right
+        if (Input.GetKey("d")) { 
             MovePlayer(force, 0f, 0f);
         }
     }

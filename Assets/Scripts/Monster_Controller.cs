@@ -2,13 +2,18 @@ using UnityEngine;
 using MonsterManager;
 
 public class Monster_Controller : MonoBehaviour {
+    public float movementSpeed;
+    public int rotationSpeed;
+    public int sightRange;
+    public int fieldOfView;
     private LineRenderer[] visionLines;
-    Monster entity = new Monster(5f, 10, 15, 160); 
+    Monster entity;
 
     // The function below is for testing purposes only. It will be removed when all of the code is finalised.
     void OnDrawGizmos() {
+        if (entity == null) return;
+
         int targetDistance = entity.sightRange;
-        if (entity.monster == null) return;
 
         Vector2 monsterForward2D = new Vector2(entity.monster.transform.forward.x, entity.monster.transform.forward.z).normalized;
         Vector2 leftBoundary = Quaternion.Euler(0, 0, -entity.fieldOfView / 2) * monsterForward2D;
@@ -20,10 +25,10 @@ public class Monster_Controller : MonoBehaviour {
     }
 
     void Start() {
+        entity = new Monster(movementSpeed, rotationSpeed, sightRange, fieldOfView);
         entity.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
         visionLines = GetComponentsInChildren<LineRenderer>();
         entity.setVisionScript(visionLines);
-        
     }
 
     void Update() {
