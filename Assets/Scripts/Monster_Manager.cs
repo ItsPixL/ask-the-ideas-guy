@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MonsterManager {
@@ -120,15 +121,24 @@ namespace MonsterManager {
         }
 
         private void chasePlayer() {
+            // Chases the player down (or the last position that the player was seen in)
             Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
-            Vector2 directionToPlayer = (lastSeenPos-monsterPos2D).normalized;
-            float angleToPlayer = Vector2.Angle(monsterPos2D, lastSeenPos);
-            Debug.Log(angleToPlayer);
-            if (directionToPlayer.x != 0) {
-                monster.transform.position += new Vector3(directionToPlayer.x*movementSpeed*Time.deltaTime, 0, 0);
+            Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
+            Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
+            float angleToPos = Vector2.SignedAngle(monsterForward2D, directionToPos);
+            monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
+            if (angleToPos < rotationSpeed/200) {
+                monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y+rotationSpeed*Time.deltaTime, 0);
             }
-            if (directionToPlayer.y != 0) {
-                monster.transform.position += new Vector3(0, 0, directionToPlayer.y*movementSpeed*Time.deltaTime);
+            else if (angleToPos > rotationSpeed/200) {
+                monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y-rotationSpeed*Time.deltaTime, 0);
+            }
+            // To prevent the function from needlessly running.
+            if (!seenPlayer) {
+                float distanceBetweenPos = Vector2.Distance(monsterPos2D, lastSeenPos);
+                if (distanceBetweenPos <= movementSpeed/200 && Math.Abs(angleToPos) <= rotationSpeed/200) {
+                    lastSeenPos = new Vector2(float.NaN, float.NaN);
+                }   
             }
         }
 
