@@ -26,6 +26,7 @@ namespace MonsterManager {
         }
 
         public bool isClearPath() {
+            // Checks whether there is a clear line of sight from the monster to the player.
             foreach (var visionLine in visionLines) {
                 Vector3 lineStart = visionLine.GetPosition(0);
                 Vector3 lineEnd = visionLine.GetPosition(1);
@@ -133,10 +134,10 @@ namespace MonsterManager {
             else if (angleToPos > rotationSpeed/200) {
                 monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y-rotationSpeed*Time.deltaTime, 0);
             }
-            // To prevent the function from needlessly running.
+            // To prevent this function from needlessly running.
             if (!seenPlayer) {
                 float distanceBetweenPos = Vector2.Distance(monsterPos2D, lastSeenPos);
-                if (distanceBetweenPos <= movementSpeed/200 && Math.Abs(angleToPos) <= rotationSpeed/200) {
+                if (distanceBetweenPos <= movementSpeed/200) {
                     lastSeenPos = new Vector2(float.NaN, float.NaN);
                 }   
             }
