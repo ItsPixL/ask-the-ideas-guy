@@ -2282,6 +2282,7 @@ MonoBehaviour:
   movementSpeed: 5
   rotationSpeed: 120
   sightRange: 15
+  hearingRange: 5
   fieldOfView: 160
 --- !u!54 &1233632010
 Rigidbody:
@@ -2392,7 +2393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1233632008}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 1, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2402,7 +2403,7 @@ Transform:
   - {fileID: 1757353578}
   - {fileID: 1163782852}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &1234843631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2734,6 +2735,7 @@ MonoBehaviour:
   movementSpeed: 5
   rotationSpeed: 120
   sightRange: 15
+  hearingRange: 5
   fieldOfView: 160
 --- !u!1001 &1724204387
 PrefabInstance:

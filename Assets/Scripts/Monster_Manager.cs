@@ -64,6 +64,7 @@ namespace MonsterManager {
         private float movementSpeed;
         private int rotationSpeed;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        private int hearingRange;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         public GameObject player;
         private bool seenPlayer = false;
@@ -71,11 +72,12 @@ namespace MonsterManager {
         private MonsterVision vision;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
 
-        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView) {
+        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int hearingRange, int fieldOfView) {
             // Constructor function for initialisation.
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
             this.sightRange = sightRange;
+            this.hearingRange = hearingRange;
             this.fieldOfView = fieldOfView;
         }
 
@@ -111,11 +113,14 @@ namespace MonsterManager {
             return distance <= targetDistance;
         }
 
-        private bool detectedPlayer(int targetDistance) {
+        private bool detectedPlayer() {
             // Returns whether the player can be seen or not. 
             Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
             Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
-            if (reachableDistance(playerPos2D, monsterPos2D, targetDistance) && checkFOV(playerPos2D, monsterPos2D)) {
+            if (reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
+                return true;
+            }
+            if (reachableDistance(playerPos2D, monsterPos2D, hearingRange)) {
                 return true;
             }
             return false;
@@ -145,7 +150,7 @@ namespace MonsterManager {
 
         public void checkForPlayer() {
             // Detects whether the monster can "see" the player.
-            bool isDetectable = detectedPlayer(sightRange);
+            bool isDetectable = detectedPlayer();
             vision.linesReset = !isDetectable;
             if (!vision.linesReset) {
                 seenPlayer = vision.isClearPath();

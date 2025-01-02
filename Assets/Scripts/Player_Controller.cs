@@ -59,6 +59,5 @@ public class Player_Controller : MonoBehaviour {
                 updateInventoryStatus(playerInventory.currIdx);
             }
         }
-        Debug.Log(new Vector2(gameObject.transform.forward.x, gameObject.transform.forward.z).normalized);
     }
 }
