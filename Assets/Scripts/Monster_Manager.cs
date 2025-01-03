@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace MonsterManager {
@@ -51,7 +50,7 @@ namespace MonsterManager {
                 }
             }
             if (!linesReset) {
-                // If the player is seen, have 4 lines connect to the top, bottom, left and right ends of the player respectively.
+                // If the player is seen or closeby, have 4 lines connect to the top, bottom, left and right ends of the player respectively.
                 playerBounds = player.GetComponent<Collider>()?.bounds ?? player.GetComponent<Renderer>()?.bounds ?? new Bounds();
                 visionLines[0].SetPosition(1, playerBounds.center + new Vector3(0, playerBounds.extents.y, 0));
                 visionLines[1].SetPosition(1, playerBounds.center - new Vector3(0, playerBounds.extents.y, 0));
@@ -64,21 +63,25 @@ namespace MonsterManager {
         private float movementSpeed;
         private int rotationSpeed;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
-        private int hearingRange;
-        public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
-        public GameObject player;
-        private bool seenPlayer = false;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        private int hearingRange;
+        private int dutyRange;
+        private bool seenPlayer = false;
+        public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
+        private GameObject player;
         private MonsterVision vision;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
+        private Vector2 monsterPos2D;
+        private Vector2 monsterForward2D;
 
-        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int hearingRange, int fieldOfView) {
+        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView, int hearingRange, int dutyRange) {
             // Constructor function for initialisation.
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
             this.sightRange = sightRange;
-            this.hearingRange = hearingRange;
             this.fieldOfView = fieldOfView;
+            this.hearingRange = hearingRange;
+            this.dutyRange = dutyRange;
         }
 
         public void initGameObjects(GameObject monster, GameObject player) {
@@ -101,44 +104,46 @@ namespace MonsterManager {
         private bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
             // Checks whether the player is within the monster's field of view.
             Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
-            Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
-
             float angle = Vector2.Angle(monsterForward2D, directionToPlayer);
-
             return angle <= fieldOfView / 2;
         }
+
         private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
             // Checks whether the player is close enough to the monster.
             float distance = Vector2.Distance(playerPos, monsterPos);
             return distance <= targetDistance;
         }
 
-        private bool detectedPlayer() {
+        private bool detectedPlayer(string detectionType) {
             // Returns whether the player can be seen or not. 
             Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
-            Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
-            if (reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
+            if (detectionType == "seen" && reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
                 return true;
             }
-            if (reachableDistance(playerPos2D, monsterPos2D, hearingRange)) {
+            // Returns whether the player can be heard or not. 
+            if (detectionType == "heard" && reachableDistance(playerPos2D, monsterPos2D, hearingRange)) {
                 return true;
             }
             return false;
-        }
+        }   
 
-        private void chasePlayer() {
-            // Chases the player down (or the last position that the player was seen in)
-            Vector2 monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
-            Vector2 monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
-            Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
+        private void rotateToPos(Vector2 targetPos) {
+            // Rotates the monster to see a given position.
+            Vector2 directionToPos = (targetPos-monsterPos2D).normalized;
             float angleToPos = Vector2.SignedAngle(monsterForward2D, directionToPos);
-            monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
             if (angleToPos < rotationSpeed/200) {
                 monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y+rotationSpeed*Time.deltaTime, 0);
             }
             else if (angleToPos > rotationSpeed/200) {
                 monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y-rotationSpeed*Time.deltaTime, 0);
             }
+        }
+
+        private void chasePlayer() {
+            // Chases the player down (or the last position that the player was seen in)
+            Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
+            monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
+            rotateToPos(lastSeenPos);
             // To prevent this function from needlessly running.
             if (!seenPlayer) {
                 float distanceBetweenPos = Vector2.Distance(monsterPos2D, lastSeenPos);
@@ -149,9 +154,11 @@ namespace MonsterManager {
         }
 
         public void checkForPlayer() {
-            // Detects whether the monster can "see" the player.
-            bool isDetectable = detectedPlayer();
-            vision.linesReset = !isDetectable;
+            monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
+            monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
+            // Checks whether the monster can see or hear the player, to trigger a responsive action.
+            bool isSeen = detectedPlayer("seen");
+            vision.linesReset = !isSeen;
             if (!vision.linesReset) {
                 seenPlayer = vision.isClearPath();
                 if (seenPlayer) {
@@ -160,6 +167,9 @@ namespace MonsterManager {
             }
             else {
                 seenPlayer = false;
+                if (detectedPlayer("heard")) {
+                    rotateToPos(new Vector2(player.transform.position.x, player.transform.position.z));
+                }
             }
             if (!float.IsNaN(lastSeenPos.x)) {
                 chasePlayer();

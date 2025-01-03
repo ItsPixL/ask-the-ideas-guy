@@ -5,8 +5,9 @@ public class Monster_Controller : MonoBehaviour {
     public float movementSpeed;
     public int rotationSpeed;
     public int sightRange;
-    public int hearingRange;
     public int fieldOfView;
+    public int hearingRange;
+    public int dutyRange;
     private LineRenderer[] visionLines;
     Monster entity;
 
@@ -26,7 +27,7 @@ public class Monster_Controller : MonoBehaviour {
     }
 
     void Start() {
-        entity = new Monster(movementSpeed, rotationSpeed, sightRange, hearingRange, fieldOfView);
+        entity = new Monster(movementSpeed, rotationSpeed, sightRange, fieldOfView, hearingRange, dutyRange);
         entity.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
         visionLines = GetComponentsInChildren<LineRenderer>();
         entity.setVisionScript(visionLines);
