@@ -1,64 +1,6 @@
 using UnityEngine;
 
 namespace MonsterManager {
-    public class MonsterVision {
-        private Transform monsterPos;
-        private GameObject player;
-        private LineRenderer[] visionLines;
-        private Bounds playerBounds;
-        public bool linesReset = true; // this is set to true when the player isn't seen.
-
-        public MonsterVision(Transform monsterPos, GameObject player, LineRenderer[] visionLines) {
-            // Constructor function for initialisation.
-            this.monsterPos = monsterPos;
-            this.visionLines = visionLines;
-            this.player = player;
-            playerBounds = player.GetComponent<Collider>()?.bounds ?? player.GetComponent<Renderer>()?.bounds ?? new Bounds();
-        }
-
-        public void SetUpLines() {
-            // Sets up the width for each line (done for hitboxes).
-            foreach (var visionLine in visionLines) {
-                visionLine.startWidth = 0.05f;
-                visionLine.endWidth = 0.05f;
-            }
-        }
-
-        public bool isClearPath() {
-            // Checks whether there is a clear line of sight from the monster to the player.
-            foreach (var visionLine in visionLines) {
-                Vector3 lineStart = visionLine.GetPosition(0);
-                Vector3 lineEnd = visionLine.GetPosition(1);
-                Vector3 lineDirection = (lineEnd-lineStart).normalized;
-                float distance = Vector3.Distance(lineStart, lineEnd);
-                if (Physics.Raycast(lineStart, lineDirection, out RaycastHit hitInfo, distance)) {
-                    if (hitInfo.collider.CompareTag("Player")) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public void UpdateLines() {
-            // Updates the lines by changing the position of the two ends of each line.
-            for (int i=0; i < visionLines.Length; i++) {
-                visionLines[i].SetPosition(0, monsterPos.position);
-                if (linesReset) {
-                    // If the player isn't seen, have the line start and end at the same point to reduce rendering.
-                    visionLines[i].SetPosition(1, monsterPos.position);
-                }
-            }
-            if (!linesReset) {
-                // If the player is seen or closeby, have 4 lines connect to the top, bottom, left and right ends of the player respectively.
-                playerBounds = player.GetComponent<Collider>()?.bounds ?? player.GetComponent<Renderer>()?.bounds ?? new Bounds();
-                visionLines[0].SetPosition(1, playerBounds.center + new Vector3(0, playerBounds.extents.y, 0));
-                visionLines[1].SetPosition(1, playerBounds.center - new Vector3(0, playerBounds.extents.y, 0));
-                visionLines[2].SetPosition(1, playerBounds.center - new Vector3(playerBounds.extents.x, 0, 0));
-                visionLines[3].SetPosition(1, playerBounds.center + new Vector3(playerBounds.extents.x, 0, 0));
-            }
-        }
-    }
     public class Monster { 
         private float movementSpeed;
         private int rotationSpeed;
@@ -69,7 +11,6 @@ namespace MonsterManager {
         private bool seenPlayer = false;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
-        private MonsterVision vision;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
         private Vector2 monsterPos2D;
         private Vector2 monsterForward2D;
@@ -88,17 +29,6 @@ namespace MonsterManager {
             // Passes all GameObjects to this class.
             this.monster = monster;
             this.player = player;
-        }
-
-        public void setVisionScript(LineRenderer[] visionLines) {
-            // Sets up the vision script for the monster.
-            vision = new MonsterVision(monster.transform, player, visionLines);
-            vision.SetUpLines();
-        }
-
-        public void updateVisionLines() {
-            // Updates the lines in the vision script.
-            vision.UpdateLines();
         }
 
         private bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
@@ -153,24 +83,70 @@ namespace MonsterManager {
             }
         }
 
+        public bool isClearPath(Vector3 startPos, Vector3 targetPos, Vector3 extents, string objectTag=null, int targetCount=1) {
+            // Checks whether there is a clear line of sight from one position to another position/object.
+            int currCount = 0;
+            for (int i=0; i<6; i++) {
+                Vector3 currEndPos = targetPos;
+                Vector3 directionToPos;
+                Ray currRay;
+                switch (i) {
+                    case 0:
+                        currEndPos.y += extents.y;
+                        break;
+                    case 1:
+                        currEndPos.y -= extents.y;
+                        break;
+                    case 2:
+                        currEndPos.x += extents.x;
+                        break;
+                    case 3:
+                        currEndPos.x -= extents.x;
+                        break;
+                    case 4:
+                        currEndPos.z += extents.z;
+                        break;
+                    case 5:
+                        currEndPos.z -= extents.z;
+                        break;
+                }
+                directionToPos = (currEndPos-startPos).normalized;
+                float currDistance = Vector3.Distance(startPos, currEndPos);
+                currRay = new Ray(startPos, directionToPos);
+                // Object tag should not be null when targetPos is based off a moving object (such as the player).
+                if (objectTag is not null && Physics.Raycast(currRay, out RaycastHit hit, currDistance)) {
+                    if (hit.collider.CompareTag(objectTag)) {
+                        currCount += 1;
+                    }
+                }
+                else if (objectTag is null && !Physics.Raycast(currRay, currDistance)) {
+                    currCount += 1;
+                }
+                if (currCount >= targetCount) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void checkForPlayer() {
             monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
             monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
             // Checks whether the monster can see or hear the player, to trigger a responsive action.
-            bool isSeen = detectedPlayer("seen");
-            vision.linesReset = !isSeen;
-            if (!vision.linesReset) {
-                seenPlayer = vision.isClearPath();
+            bool possiblySeen = detectedPlayer("seen");
+            if (possiblySeen) {
+                seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), "Player");
                 if (seenPlayer) {
                     lastSeenPos = new Vector2(player.transform.position.x, player.transform.position.z);
                 }
             }
             else {
                 seenPlayer = false;
-                if (detectedPlayer("heard")) {
-                    rotateToPos(new Vector2(player.transform.position.x, player.transform.position.z));
-                }
             }
+            if (!seenPlayer && detectedPlayer("heard")) {
+                rotateToPos(new Vector2(player.transform.position.x, player.transform.position.z));
+            }
+
             if (!float.IsNaN(lastSeenPos.x)) {
                 chasePlayer();
             }
