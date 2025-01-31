@@ -7,7 +7,6 @@ public class Monster_Controller : MonoBehaviour {
     public int sightRange;
     public int fieldOfView;
     public int hearingRange;
-    public int dutyRange;
     Monster entity;
 
     // The function below is for testing purposes only. It will be removed when all of the code is finalised.
@@ -26,7 +25,7 @@ public class Monster_Controller : MonoBehaviour {
     }
 
     void Start() {
-        entity = new Monster(movementSpeed, rotationSpeed, sightRange, fieldOfView, hearingRange, dutyRange);
+        entity = new Monster(movementSpeed, rotationSpeed, sightRange, fieldOfView, hearingRange);
         entity.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
     }
 

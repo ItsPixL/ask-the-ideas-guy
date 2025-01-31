@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MonsterManager {
@@ -7,7 +8,6 @@ namespace MonsterManager {
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
-        private int dutyRange;
         private bool seenPlayer = false;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
@@ -15,14 +15,13 @@ namespace MonsterManager {
         private Vector2 monsterPos2D;
         private Vector2 monsterForward2D;
 
-        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView, int hearingRange, int dutyRange) {
+        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView, int hearingRange) {
             // Constructor function for initialisation.
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
             this.sightRange = sightRange;
             this.fieldOfView = fieldOfView;
-            this.hearingRange = hearingRange;
-            this.dutyRange = dutyRange;
+            this.hearingRange = hearingRange; 
         }
 
         public void initGameObjects(GameObject monster, GameObject player) {
@@ -45,12 +44,12 @@ namespace MonsterManager {
         }
 
         private bool detectedPlayer(string detectionType) {
-            // Returns whether the player can be seen or not. 
+            // Checks whether the player can be seen or not. 
             Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
             if (detectionType == "seen" && reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
                 return true;
             }
-            // Returns whether the player can be heard or not. 
+            // Checks whether the player can be heard or not. 
             if (detectionType == "heard" && reachableDistance(playerPos2D, monsterPos2D, hearingRange)) {
                 return true;
             }
@@ -69,23 +68,8 @@ namespace MonsterManager {
             }
         }
 
-        private void chasePlayer() {
-            // Chases the player down (or the last position that the player was seen in)
-            Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
-            monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
-            rotateToPos(lastSeenPos);
-            // To prevent this function from needlessly running.
-            if (!seenPlayer) {
-                float distanceBetweenPos = Vector2.Distance(monsterPos2D, lastSeenPos);
-                if (distanceBetweenPos <= movementSpeed/200) {
-                    lastSeenPos = new Vector2(float.NaN, float.NaN);
-                }   
-            }
-        }
-
-        public bool isClearPath(Vector3 startPos, Vector3 targetPos, Vector3 extents, string objectTag=null, int targetCount=1) {
-            // Checks whether there is a clear line of sight from one position to another position/object.
-            int currCount = 0;
+        private bool isClearPath(Vector3 startPos, Vector3 targetPos, Vector3 extents, GameObject gameObject, bool wantsHit=true) {
+            // Checks whether there is a clear line of sight to an object.
             for (int i=0; i<6; i++) {
                 Vector3 currEndPos = targetPos;
                 Vector3 directionToPos;
@@ -113,20 +97,30 @@ namespace MonsterManager {
                 directionToPos = (currEndPos-startPos).normalized;
                 float currDistance = Vector3.Distance(startPos, currEndPos);
                 currRay = new Ray(startPos, directionToPos);
-                // Object tag should not be null when targetPos is based off a moving object (such as the player).
-                if (objectTag is not null && Physics.Raycast(currRay, out RaycastHit hit, currDistance)) {
-                    if (hit.collider.CompareTag(objectTag)) {
-                        currCount += 1;
+                if (Physics.Raycast(currRay, out RaycastHit hit, currDistance)) {
+                    if (!wantsHit) {
+                        return false;
+                    }
+                    if (wantsHit && hit.collider.GameObject() == gameObject) {
+                        return true;
                     }
                 }
-                else if (objectTag is null && !Physics.Raycast(currRay, currDistance)) {
-                    currCount += 1;
-                }
-                if (currCount >= targetCount) {
-                    return true;
-                }
             }
-            return false;
+            return !wantsHit;
+        }
+
+        private void chasePlayer() {
+            // Chases the player down (or the last position that the player was seen in)
+            Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
+            monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
+            rotateToPos(lastSeenPos);
+            // when the monster reaches the last position that it saw the player, it can stop moving.
+            if (!seenPlayer) {
+                float distanceBetweenPos = Vector2.Distance(monsterPos2D, lastSeenPos);
+                if (distanceBetweenPos <= movementSpeed/200) {
+                    lastSeenPos = new Vector2(float.NaN, float.NaN);
+                }   
+            }
         }
 
         public void checkForPlayer() {
@@ -135,7 +129,7 @@ namespace MonsterManager {
             // Checks whether the monster can see or hear the player, to trigger a responsive action.
             bool possiblySeen = detectedPlayer("seen");
             if (possiblySeen) {
-                seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), "Player");
+                seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), player);
                 if (seenPlayer) {
                     lastSeenPos = new Vector2(player.transform.position.x, player.transform.position.z);
                 }

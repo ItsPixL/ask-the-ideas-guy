@@ -20,7 +20,7 @@ namespace InventoryManager {
         private int maxSlots;
         private int currItems = 0;
         public int currIdx;
-        public bool holdingItem = false;
+        public bool selectedSlot = false;
         public Item currItem;
 
         public Inventory(int maxSlots) {
@@ -47,7 +47,7 @@ namespace InventoryManager {
             int prevIdx = currIdx;
             bool keyPressed = false;
             bool numberPressed = false;
-            if (holdingItem) {
+            if (selectedSlot) {
                 if (Input.GetKeyDown("e")) {
                     currIdx += 1;
                     currIdx = keepIdxInRange(currIdx);
@@ -67,8 +67,8 @@ namespace InventoryManager {
                 }
             }
             if (numberPressed && prevIdx == currIdx) {
-                holdingItem = !holdingItem;
-                // Debug.Log(holdingItem);
+                selectedSlot = !selectedSlot;
+                // Debug.Log(selectedSlot);
             }
             else if (prevIdx != currIdx) {
                 fetchCurrItem(currIdx);
@@ -78,15 +78,21 @@ namespace InventoryManager {
 
         // Fetches the current item being used.
         public void fetchCurrItem(int targetIdx) {
-            currIdx = targetIdx;
-            if (items[targetIdx] == null) {
+            if (targetIdx == -1) {
                 currItem = null;
+                selectedSlot = false;
             }
             else {
-                currItem = items[targetIdx];
+                currIdx = targetIdx;
+                if (items[targetIdx] == null) {
+                    currItem = null;
+                }
+                else {
+                    currItem = items[targetIdx];
+                }
+                selectedSlot = true;
+                // Debug.Log(currIdx);
             }
-            holdingItem = true;
-            // Debug.Log(currIdx);
         }
 
         public void addItem(Item item) {
@@ -104,21 +110,13 @@ namespace InventoryManager {
 
     public class UI_Inventory {
         private List<Button> buttons;
-        private Dictionary<Button, int> buttonMap;
-
         public int currSelected = -1;
-
         public UI_Inventory(List<Button> buttons) {
             this.buttons = buttons;
         }
-
-        void setUpButtonMap() {
-            for (int i=0; i < buttons.Count; i++) {
-                buttonMap.Add(buttons[i], i);
-            }
-        }
-
         public void selectCurrItem(int newIdx) {
+            Debug.Log(currSelected);
+            Debug.Log(newIdx);
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
@@ -135,6 +133,7 @@ namespace InventoryManager {
                 Outline currOutline = currButton.GetComponent<Outline>();
                 currOutline.effectColor = Color.yellow;
             }
+            Debug.Log(currSelected);
         }
     }
 }

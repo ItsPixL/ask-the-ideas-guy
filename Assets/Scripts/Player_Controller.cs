@@ -1,18 +1,20 @@
 using UnityEngine;
 using InventoryManager;
 using UIManager;
+using UnityEngine.UIElements;
 
 public class Player_Controller : MonoBehaviour {
     public Rigidbody playerRb;
     public float force = 5f;
     private bool allowPlayerInput = true;
-    private Inventory playerInventory = new Inventory(5);
+    private Inventory playerInventory;
     private UI_Manager UI_Controller;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
-        playerInventory.resetInventory();
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
+        playerInventory = new Inventory(UI_Controller.inventoryButtons.Count);
+        playerInventory.resetInventory();
     }
 
     void MovePlayer(float forceX, float forceY, float forceZ) {
@@ -55,8 +57,13 @@ public class Player_Controller : MonoBehaviour {
         if (allowPlayerInput) {
             // All other player input functions should be put here.
             bool wasInput = playerInventory.navigateInventory();
-            if (wasInput && playerInventory.holdingItem) {
-                updateInventoryStatus(playerInventory.currIdx);
+            if (wasInput) {
+                if (playerInventory.selectedSlot) {
+                    updateInventoryStatus(playerInventory.currIdx);
+                }
+                else {
+                    updateInventoryStatus(-1);
+                }
             }
         }
     }
