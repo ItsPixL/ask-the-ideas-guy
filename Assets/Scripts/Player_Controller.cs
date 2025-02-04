@@ -1,11 +1,13 @@
 using UnityEngine;
-using InventoryManager;
+using InteractableManager;
 using UIManager;
 using UnityEngine.UIElements;
 
 public class Player_Controller : MonoBehaviour {
     public Rigidbody playerRb;
     public float force = 5f;
+    public int health = 100;
+    public int energy = 100;
     private bool allowPlayerInput = true;
     private Inventory playerInventory;
     private UI_Manager UI_Controller;
@@ -56,8 +58,8 @@ public class Player_Controller : MonoBehaviour {
     void Update() {
         if (allowPlayerInput) {
             // All other player input functions should be put here.
-            bool wasInput = playerInventory.navigateInventory();
-            if (wasInput) {
+            bool wasInventoryInput = playerInventory.checkKeyInput();
+            if (wasInventoryInput) {
                 if (playerInventory.selectedSlot) {
                     updateInventoryStatus(playerInventory.currIdx);
                 }

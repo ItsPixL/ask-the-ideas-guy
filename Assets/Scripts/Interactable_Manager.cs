@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Threading;
 
 
-namespace InventoryManager {
+namespace InteractableManager {
     public class Item {
         public string name;
         public string description;
@@ -11,6 +12,19 @@ namespace InventoryManager {
         public Item(string name, string description, Image image) {
             this.name = name;
             this.description = description;
+            this.image = image;
+        }
+    }
+
+    public class Ability {
+        public string name;
+        public string description;
+        public int energyCost;
+        public Image image;
+        public Ability(string name, string description, int energyCost, Image image) {
+            this.name = name;
+            this.description = description;
+            this.energyCost = energyCost;
             this.image = image;
         }
     }
@@ -43,7 +57,7 @@ namespace InventoryManager {
         } 
 
         // Manages inventory navigation by key inputs.
-        public bool navigateInventory() {
+        public bool checkKeyInput() {
             int prevIdx = currIdx;
             bool keyPressed = false;
             bool numberPressed = false;
@@ -95,16 +109,88 @@ namespace InventoryManager {
             }
         }
 
+        // Adds an item to the player inventory (if the inventory is full, replaces the currently selected item with the new item).
         public void addItem(Item item) {
             if (currItems < maxSlots) {
-                items.Add(item);
+                for (int i = 0; i < maxSlots; i++) {
+                    if (items[i] is null) {
+                        items[i] = item;
+                    }
+                }
                 currItems += 1;
+            }
+            else {
+                items[currIdx] = item;
             }
         }
 
-        public void deleteItem(int itemIdx) {
+        // Removes an item from the player inventory.
+        public void removeItem(int itemIdx) {
             items[itemIdx] = null;
             currItems -= 1;
+        }
+    }
+
+    public class Loadout {
+        public List<Ability> abilities;
+        public List<int> currSlotsUsed = new List<int>();
+        private int maxSlots;
+        private int currItems = 0;
+        public int currIdx;
+        public bool selectedSlot = false;
+        public Item currItem;
+
+        public Loadout(int maxSlots) {
+            this.maxSlots = maxSlots;
+        }
+
+        // Removes all abilities from player.
+        public void resetLoadout() { 
+            abilities = new List<Ability>(new Ability[maxSlots]);
+        }
+
+        // Checks whether a player can use a given ability.
+        public bool canUseAbility(int abilitySlot, int currEnergy) {
+            if (abilities[abilitySlot-1] is not null && currEnergy < abilities[abilitySlot-1].energyCost) {
+                return true;
+            }
+            return false;
+        }
+
+        // Uses an ability if the player has the energy required.
+        public int useAbility(int abilitySlot, int currEnergy) {
+            // The code for using the ability will be placed here when the ability code is ready.
+            return currEnergy-abilities[abilitySlot-1].energyCost;
+        }
+
+        // Allows players to use abilities through number keys 1-4.
+        public int checkKeyInput(int currEnergy) {
+            for (int i = 1; i <= maxSlots; i++) {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
+                    if (canUseAbility(i, currEnergy)) {
+                        currEnergy = useAbility(i, currEnergy);
+                    }
+                }
+            }
+            return currEnergy;
+        }
+
+        // Adds an ability that the player can use and record the slot that it is in.
+        public void addAbility(Ability ability) {
+            for (int i = 0; i < maxSlots; i++) {
+                if (abilities[i] is null) {
+                    abilities[i] = ability;
+                    currSlotsUsed.Add(i);
+                }
+            }
+        }
+
+        // Removes an ability that that player can use and remove that index from the list of used slots.
+        public void removeAbility(int targetIdx) {
+            if (currSlotsUsed.Exists(idx => idx == targetIdx)) {
+                currSlotsUsed.Remove(targetIdx);
+                abilities[targetIdx] = null;
+            }
         }
     }
 
@@ -115,8 +201,6 @@ namespace InventoryManager {
             this.buttons = buttons;
         }
         public void selectCurrItem(int newIdx) {
-            Debug.Log(currSelected);
-            Debug.Log(newIdx);
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
@@ -133,7 +217,6 @@ namespace InventoryManager {
                 Outline currOutline = currButton.GetComponent<Outline>();
                 currOutline.effectColor = Color.yellow;
             }
-            Debug.Log(currSelected);
         }
     }
 }

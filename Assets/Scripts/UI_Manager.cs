@@ -1,5 +1,5 @@
 using UnityEngine;
-using InventoryManager;
+using InteractableManager;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
