@@ -7,6 +7,7 @@ namespace InteractableManager {
         public string name;
         public string description;
         public Image image;
+        
         public Item(string name, string description, Image image) {
             this.name = name;
             this.description = description;
@@ -20,6 +21,7 @@ namespace InteractableManager {
         public int energyCost;
         public int cooldown;
         public Image image;
+
         public Ability(string name, string description, int energyCost, int cooldown, Image image) {
             this.name = name;
             this.description = description;
@@ -173,9 +175,14 @@ namespace InteractableManager {
 
     public class UI_Inventory {
         private List<Button> buttons;
+        private Color normalOutlineColour;
+        private Color selectedOutlineColour;
         public int currSelected = -1;
-        public UI_Inventory(List<Button> buttons) {
+
+        public UI_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
             this.buttons = buttons;
+            this.normalOutlineColour = normalOutlineColour;
+            this.selectedOutlineColour = selectedOutlineColour;
         }
 
         // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
@@ -183,7 +190,7 @@ namespace InteractableManager {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
-                prevOutline.effectColor = Color.black;
+                prevOutline.effectColor = normalOutlineColour;
             }
             if (newIdx == currSelected) {
                 currSelected = -1;
@@ -194,8 +201,36 @@ namespace InteractableManager {
             if (currSelected != -1) {
                 Button currButton = buttons[currSelected];
                 Outline currOutline = currButton.GetComponent<Outline>();
-                currOutline.effectColor = Color.yellow;
+                currOutline.effectColor = selectedOutlineColour;
             }
+        }
+    }
+
+    public class UI_Loadout {
+        private List<Button> buttons;
+        private Color enabledOutlineColour;
+        private Color disabledOutlineColour;
+        
+        public UI_Loadout(List<Button> buttons, Color enabledOutlineColour, Color disabledOutlineColour) {
+            this.buttons = buttons;
+            this.enabledOutlineColour = enabledOutlineColour;
+            this.disabledOutlineColour = disabledOutlineColour;
+        }
+
+        // Disables the button, which dims the background colour and changes the outline colour to red.
+        public void useCurrAbility(int abilityIdx) {
+            Button currButton = buttons[abilityIdx];
+            Outline currOutline = currButton.GetComponent<Outline>();
+            currButton.interactable = false;
+            currOutline.effectColor = disabledOutlineColour;
+        }
+
+        // Re-enables the button, which reverses the UI changes made upon disabling it and allows it to be used again.
+        public void enableAbility(int abilityIdx) {
+            Button currButton = buttons[abilityIdx];
+            Outline currOutline = currButton.GetComponent<Outline>();
+            currButton.interactable = true;
+            currOutline.effectColor = enabledOutlineColour;
         }
     }
 }

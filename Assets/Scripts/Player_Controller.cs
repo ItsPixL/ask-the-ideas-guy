@@ -17,7 +17,9 @@ public class Player_Controller : MonoBehaviour {
     void Start() {
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
         playerInventory = new Inventory(UI_Controller.inventoryButtons.Count, new List<int>{6, 7, 8, 9, 0});
+        playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int>{1, 2, 3, 4});
         playerInventory.resetInventory();
+        playerLoadout.resetLoadout();
     }
 
     // Moves the character.
@@ -41,16 +43,18 @@ public class Player_Controller : MonoBehaviour {
         }
     }
 
-    // Updates inventory information to respond to UI interaction.
+    // Updates inventory information and UI to respond to player interaction.
     public void updateInventoryStatus(int targetIdx) {
         playerInventory.fetchCurrItem(targetIdx);
         UI_Controller.updateInventoryStatusUI(targetIdx);
     }
 
-    public void checkLoadoutInteraction(int targetIdx) {
+    // Updates loadout information and UI to respond to player interaction. 
+    public void updateLoadoutStatus(int targetIdx) {
         if (playerLoadout.canUseAbility(targetIdx, playerEnergy)) {
             playerEnergy = playerLoadout.useAbility(targetIdx, playerEnergy);
-        }
+            UI_Controller.updateLoadoutStatusUI(targetIdx);
+        } 
     }
 
     // Update function used for all physics updates.
@@ -76,7 +80,7 @@ public class Player_Controller : MonoBehaviour {
                 }
             }
             if (checkLoadoutInput > -1) {
-                checkLoadoutInteraction(checkLoadoutInput);
+                updateLoadoutStatus(checkLoadoutInput);
             }
         }
     }
