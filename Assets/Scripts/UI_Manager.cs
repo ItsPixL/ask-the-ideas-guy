@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace UIManager {
     public class UI_Manager : MonoBehaviour {
-        public Canvas targetCanvas;
         public List<Button> inventoryButtons;
         private UI_Inventory playerInventoryUI;
         void Start() {

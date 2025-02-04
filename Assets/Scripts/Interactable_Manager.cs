@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Threading;
-
 
 namespace InteractableManager {
     public class Item {
@@ -20,25 +18,29 @@ namespace InteractableManager {
         public string name;
         public string description;
         public int energyCost;
+        public int cooldown;
         public Image image;
-        public Ability(string name, string description, int energyCost, Image image) {
+        public Ability(string name, string description, int energyCost, int cooldown, Image image) {
             this.name = name;
             this.description = description;
             this.energyCost = energyCost;
+            this.cooldown = cooldown;
             this.image = image;
         }
     }
 
     public class Inventory {
         public List<Item> items;
+        public List<int> numberShortcuts;
         private int maxSlots;
         private int currItems = 0;
         public int currIdx;
         public bool selectedSlot = false;
         public Item currItem;
 
-        public Inventory(int maxSlots) {
+        public Inventory(int maxSlots, List<int> numberShortcuts) {
             this.maxSlots = maxSlots;
+            this.numberShortcuts = numberShortcuts;
         }
 
         // Empties player inventory.
@@ -46,36 +48,14 @@ namespace InteractableManager {
             items = new List<Item>(new Item[maxSlots]);
         }
 
-        private int keepIdxInRange(int currIdx) {
-            if (currIdx < 0) {
-                return maxSlots+currIdx;
-            }
-            if (currIdx >= maxSlots) {
-                return maxSlots-currIdx;
-            }
-            return currIdx;
-        } 
-
         // Manages inventory navigation by key inputs.
         public bool checkKeyInput() {
             int prevIdx = currIdx;
             bool keyPressed = false;
             bool numberPressed = false;
-            if (selectedSlot) {
-                if (Input.GetKeyDown("e")) {
-                    currIdx += 1;
-                    currIdx = keepIdxInRange(currIdx);
-                    keyPressed = true;
-                }
-                if (Input.GetKeyDown("q")) {
-                    currIdx -= 1;
-                    currIdx = keepIdxInRange(currIdx);
-                    keyPressed = true;
-                }
-            }
-            for (int i = 1; i <= maxSlots; i++) {
-                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
-                    currIdx = i-1;
+            for (int i = 0; i < maxSlots; i++) {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+                    currIdx = i;
                     numberPressed = true;
                     keyPressed = true;
                 }
@@ -133,15 +113,13 @@ namespace InteractableManager {
 
     public class Loadout {
         public List<Ability> abilities;
+        public List<int> numberShortcuts;
         public List<int> currSlotsUsed = new List<int>();
         private int maxSlots;
-        private int currItems = 0;
-        public int currIdx;
-        public bool selectedSlot = false;
-        public Item currItem;
 
-        public Loadout(int maxSlots) {
+        public Loadout(int maxSlots, List<int> numberShortcuts) {
             this.maxSlots = maxSlots;
+            this.numberShortcuts = numberShortcuts;
         }
 
         // Removes all abilities from player.
@@ -150,29 +128,28 @@ namespace InteractableManager {
         }
 
         // Checks whether a player can use a given ability.
-        public bool canUseAbility(int abilitySlot, int currEnergy) {
-            if (abilities[abilitySlot-1] is not null && currEnergy < abilities[abilitySlot-1].energyCost) {
+        public bool canUseAbility(int abilityIdx, int currEnergy) {
+            if (abilities[abilityIdx] is not null && currEnergy < abilities[abilityIdx].energyCost) {
                 return true;
             }
             return false;
         }
 
         // Uses an ability if the player has the energy required.
-        public int useAbility(int abilitySlot, int currEnergy) {
+        public int useAbility(int abilityIdx, int currEnergy) {
             // The code for using the ability will be placed here when the ability code is ready.
-            return currEnergy-abilities[abilitySlot-1].energyCost;
+            return currEnergy-abilities[abilityIdx].energyCost;
         }
 
-        // Allows players to use abilities through number keys 1-4.
-        public int checkKeyInput(int currEnergy) {
-            for (int i = 1; i <= maxSlots; i++) {
-                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + i))) {
-                    if (canUseAbility(i, currEnergy)) {
-                        currEnergy = useAbility(i, currEnergy);
-                    }
+        // Checks whether the player has pressed one of the number shortcuts (which can cause an ability to be used).
+        public int checkKeyInput() {
+            int keyPressed = -1;
+            for (int i = 0; i < maxSlots; i++) {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+                    keyPressed = i;
                 }
             }
-            return currEnergy;
+            return keyPressed;
         }
 
         // Adds an ability that the player can use and record the slot that it is in.
@@ -200,6 +177,8 @@ namespace InteractableManager {
         public UI_Inventory(List<Button> buttons) {
             this.buttons = buttons;
         }
+
+        // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
         public void selectCurrItem(int newIdx) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
