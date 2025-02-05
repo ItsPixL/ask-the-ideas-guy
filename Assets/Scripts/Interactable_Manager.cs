@@ -130,7 +130,7 @@ namespace InteractableManager {
         }
 
         // Checks whether a player can use a given ability.
-        public bool canUseAbility(int abilityIdx, int currEnergy) {
+        public bool canUseAbility(int abilityIdx, float currEnergy) {
             if (abilities[abilityIdx] is not null && currEnergy < abilities[abilityIdx].energyCost) {
                 return true;
             }
@@ -138,7 +138,7 @@ namespace InteractableManager {
         }
 
         // Uses an ability if the player has the energy required.
-        public int useAbility(int abilityIdx, int currEnergy) {
+        public float useAbility(int abilityIdx, float currEnergy) {
             // The code for using the ability will be placed here when the ability code is ready.
             return currEnergy-abilities[abilityIdx].energyCost;
         }
@@ -170,67 +170,6 @@ namespace InteractableManager {
                 currSlotsUsed.Remove(targetIdx);
                 abilities[targetIdx] = null;
             }
-        }
-    }
-
-    public class UI_Inventory {
-        private List<Button> buttons;
-        private Color normalOutlineColour;
-        private Color selectedOutlineColour;
-        public int currSelected = -1;
-
-        public UI_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
-            this.buttons = buttons;
-            this.normalOutlineColour = normalOutlineColour;
-            this.selectedOutlineColour = selectedOutlineColour;
-        }
-
-        // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrItem(int newIdx) {
-            if (currSelected != -1) {
-                Button prevButton = buttons[currSelected];
-                Outline prevOutline = prevButton.GetComponent<Outline>();
-                prevOutline.effectColor = normalOutlineColour;
-            }
-            if (newIdx == currSelected) {
-                currSelected = -1;
-            }
-            else {
-                currSelected = newIdx;
-            }
-            if (currSelected != -1) {
-                Button currButton = buttons[currSelected];
-                Outline currOutline = currButton.GetComponent<Outline>();
-                currOutline.effectColor = selectedOutlineColour;
-            }
-        }
-    }
-
-    public class UI_Loadout {
-        private List<Button> buttons;
-        private Color enabledOutlineColour;
-        private Color disabledOutlineColour;
-        
-        public UI_Loadout(List<Button> buttons, Color enabledOutlineColour, Color disabledOutlineColour) {
-            this.buttons = buttons;
-            this.enabledOutlineColour = enabledOutlineColour;
-            this.disabledOutlineColour = disabledOutlineColour;
-        }
-
-        // Disables the button, which dims the background colour and changes the outline colour to red.
-        public void useCurrAbility(int abilityIdx) {
-            Button currButton = buttons[abilityIdx];
-            Outline currOutline = currButton.GetComponent<Outline>();
-            currButton.interactable = false;
-            currOutline.effectColor = disabledOutlineColour;
-        }
-
-        // Re-enables the button, which reverses the UI changes made upon disabling it and allows it to be used again.
-        public void enableAbility(int abilityIdx) {
-            Button currButton = buttons[abilityIdx];
-            Outline currOutline = currButton.GetComponent<Outline>();
-            currButton.interactable = true;
-            currOutline.effectColor = enabledOutlineColour;
         }
     }
 }

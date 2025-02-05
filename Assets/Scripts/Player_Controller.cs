@@ -6,8 +6,10 @@ using System.Collections.Generic;
 public class Player_Controller : MonoBehaviour {
     public Rigidbody playerRb;
     public float force = 5f;
-    public int playerHealth = 100;
-    public int playerEnergy = 100;
+    public float maxHealth = 100f;
+    public float playerHealth;
+    public float maxEnergy = 100f;
+    public float playerEnergy;
     private bool allowPlayerInput = true;
     private Inventory playerInventory;
     private Loadout playerLoadout;
@@ -15,11 +17,14 @@ public class Player_Controller : MonoBehaviour {
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
+        playerHealth = maxHealth;
+        playerEnergy = maxEnergy;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
         playerInventory = new Inventory(UI_Controller.inventoryButtons.Count, new List<int>{6, 7, 8, 9, 0});
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int>{1, 2, 3, 4});
         playerInventory.resetInventory();
         playerLoadout.resetLoadout();
+        UI_Controller.setUpMetricBars(maxHealth, maxEnergy);
     }
 
     // Moves the character.
@@ -83,5 +88,6 @@ public class Player_Controller : MonoBehaviour {
                 updateLoadoutStatus(checkLoadoutInput);
             }
         }
+        UI_Controller.updateMetricBars(playerHealth, playerEnergy);
     }
 }
