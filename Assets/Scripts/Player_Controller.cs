@@ -4,8 +4,8 @@ using UIManager;
 using System.Collections.Generic;
 
 public class Player_Controller : MonoBehaviour {
-    public Rigidbody playerRb;
-    public float force = 5f;
+    private Rigidbody playerRb;
+    public float playerForce = 5f;
     public float maxHealth = 100f;
     public float playerHealth;
     public float maxEnergy = 100f;
@@ -14,9 +14,12 @@ public class Player_Controller : MonoBehaviour {
     private Inventory playerInventory;
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
+
+    private string gradientMovement = "backwards";
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
+        playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
         playerEnergy = maxEnergy;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
@@ -35,16 +38,16 @@ public class Player_Controller : MonoBehaviour {
     // Allows character movement by player input.
     void InitPlayerMovement() {
         if (Input.GetKey("w")) { 
-            MovePlayer(0f, 0f, force);
+            MovePlayer(0f, 0f, playerForce);
         }
         if (Input.GetKey("s")) { 
-            MovePlayer(0f, 0f, -force);
+            MovePlayer(0f, 0f, -playerForce);
         }
         if (Input.GetKey("a")) { 
-            MovePlayer(-force, 0f, 0f);
+            MovePlayer(-playerForce, 0f, 0f);
         }
         if (Input.GetKey("d")) { 
-            MovePlayer(force, 0f, 0f);
+            MovePlayer(playerForce, 0f, 0f);
         }
     }
 

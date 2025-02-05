@@ -293,8 +293,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 20, y: 1, z: 20}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 355457028}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &70392784
@@ -671,10 +670,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 1, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 61274560}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
@@ -864,12 +863,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2016730632}
-  force: 50
+  playerForce: 5
   maxHealth: 100
-  playerHealth: 100
+  playerHealth: 0
   maxEnergy: 100
-  playerEnergy: 100
+  playerEnergy: 0
 --- !u!114 &443240880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2102,12 +2100,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2016730632}
-  force: 50
+  playerForce: 5
   maxHealth: 100
-  playerHealth: 100
+  playerHealth: 0
   maxEnergy: 100
-  playerEnergy: 100
+  playerEnergy: 0
 --- !u!114 &1365496300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2269,12 +2266,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2016730632}
-  force: 50
+  playerForce: 5
   maxHealth: 100
-  playerHealth: 100
+  playerHealth: 0
   maxEnergy: 100
-  playerEnergy: 100
+  playerEnergy: 0
 --- !u!114 &1401311934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2515,12 +2511,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2016730632}
-  force: 50
+  playerForce: 5
   maxHealth: 100
-  playerHealth: 100
+  playerHealth: 0
   maxEnergy: 100
-  playerEnergy: 100
+  playerEnergy: 0
 --- !u!114 &1413235238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3157,8 +3152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRb: {fileID: 2016730632}
-  force: 5
+  playerForce: 5
   maxHealth: 100
   playerHealth: 100
   maxEnergy: 100
@@ -3558,4 +3552,5 @@ SceneRoots:
   - {fileID: 61274560}
   - {fileID: 2089453979}
   - {fileID: 1776398400}
+  - {fileID: 355457028}
   - {fileID: 1342210206}
