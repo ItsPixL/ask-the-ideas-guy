@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace UIManager {
+    // Handles the UI of the inventory.
     public class UI_Inventory {
         private List<Button> buttons;
         private Color normalOutlineColour;
@@ -36,6 +37,7 @@ namespace UIManager {
         }
     }
 
+    // Handles the UI of the loadout (stores usable abilities).
     public class UI_Loadout {
         private List<Button> buttons;
         private Color enabledOutlineColour;
@@ -64,6 +66,7 @@ namespace UIManager {
         }
     }
 
+    // Handles the UI of the metric bars, such as health bars etc. 
     public class MetricBar {
         private Slider barSlider;
         private Image barFill;
@@ -79,6 +82,7 @@ namespace UIManager {
             this.colorGradient = colorGradient;
         }
 
+        // Initialises the bar to the right values.
         public void setUpBar() {
             barSlider.minValue = minValue;
             barSlider.maxValue = maxValue;
@@ -86,6 +90,7 @@ namespace UIManager {
             barFill.color = colorGradient.Evaluate(1f);
         }
 
+        // Updates the bar's values given the current metric value.
         public void updateBar(float currValue) {
             barSlider.value = currValue;
             if (barSlider.value < minValue) {
@@ -108,6 +113,7 @@ namespace UIManager {
         private MetricBar healthBarUI;
         private MetricBar energyBarUI;
 
+        // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
         public void setUpMetricBars(float playerHealth, float playerEnergy) {
             Slider healthSlider = GameObject.Find("Health Bar").GetComponent<Slider>();
             Image healthSliderFill = healthSlider.transform.Find("Fill").gameObject.GetComponent<Image>();
@@ -128,14 +134,17 @@ namespace UIManager {
 
         }
 
+        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
         public void updateInventoryStatusUI(int targetIdx) {
             playerInventoryUI.selectCurrItem(targetIdx);
         }
 
+        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Loadout.
         public void updateLoadoutStatusUI(int targetIdx) {
             playerLoadoutUI.useCurrAbility(targetIdx);
         }
 
+        // A connector function - this function is called from Player_Controller.cs and calls a function within MetricBar.
         public void updateMetricBars(float currHealth, float currEnergy) {
             healthBarUI.updateBar(currHealth);
             energyBarUI.updateBar(currEnergy);

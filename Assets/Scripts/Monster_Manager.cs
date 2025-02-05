@@ -2,6 +2,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MonsterManager {
+
+    // Defines all the basic properties and methods of a monster.
     public class Monster { 
         private float movementSpeed;
         private int rotationSpeed;
@@ -16,7 +18,6 @@ namespace MonsterManager {
         private Vector2 monsterForward2D;
 
         public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView, int hearingRange) {
-            // Constructor function for initialisation.
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
             this.sightRange = sightRange;
@@ -24,25 +25,26 @@ namespace MonsterManager {
             this.hearingRange = hearingRange; 
         }
 
+        // Passes all GameObjects to this class.
         public void initGameObjects(GameObject monster, GameObject player) {
-            // Passes all GameObjects to this class.
             this.monster = monster;
             this.player = player;
         }
 
+        // Checks whether the player is within the monster's field of view.
         private bool checkFOV(Vector2 playerPos, Vector2 monsterPos) {
-            // Checks whether the player is within the monster's field of view.
             Vector2 directionToPlayer = (playerPos-monsterPos).normalized;
             float angle = Vector2.Angle(monsterForward2D, directionToPlayer);
             return angle <= fieldOfView / 2;
         }
 
+        // Checks whether the player is close enough to the monster.
         private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
-            // Checks whether the player is close enough to the monster.
             float distance = Vector2.Distance(playerPos, monsterPos);
             return distance <= targetDistance;
         }
 
+        // Checks whether the monster can detect the player.
         private bool detectedPlayer(string detectionType) {
             // Checks whether the player can be seen or not. 
             Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
@@ -56,8 +58,8 @@ namespace MonsterManager {
             return false;
         }   
 
+        // Rotates the monster to see a given position.
         private void rotateToPos(Vector2 targetPos) {
-            // Rotates the monster to see a given position.
             Vector2 directionToPos = (targetPos-monsterPos2D).normalized;
             float angleToPos = Vector2.SignedAngle(monsterForward2D, directionToPos);
             if (angleToPos < rotationSpeed/200) {
@@ -68,8 +70,8 @@ namespace MonsterManager {
             }
         }
 
+        // Checks whether there is a clear line of sight (or not, when wantsHit=False) to an object.
         private bool isClearPath(Vector3 startPos, Vector3 targetPos, Vector3 extents, GameObject gameObject, bool wantsHit=true) {
-            // Checks whether there is a clear line of sight to an object.
             for (int i=0; i<6; i++) {
                 Vector3 currEndPos = targetPos;
                 Vector3 directionToPos;
@@ -109,8 +111,8 @@ namespace MonsterManager {
             return !wantsHit;
         }
 
+        // Chases the player down (or the last position that the player was seen in)
         private void chasePlayer() {
-            // Chases the player down (or the last position that the player was seen in)
             Vector2 directionToPos = (lastSeenPos-monsterPos2D).normalized;
             monster.transform.position += new Vector3(directionToPos.x*movementSpeed*Time.deltaTime, 0, directionToPos.y*movementSpeed*Time.deltaTime);
             rotateToPos(lastSeenPos);
@@ -123,10 +125,10 @@ namespace MonsterManager {
             }
         }
 
+        // Checks whether the monster can see or hear the player, to trigger a responsive action.
         public void checkForPlayer() {
             monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
             monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
-            // Checks whether the monster can see or hear the player, to trigger a responsive action.
             bool possiblySeen = detectedPlayer("seen");
             if (possiblySeen) {
                 seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), player);
@@ -144,7 +146,6 @@ namespace MonsterManager {
             if (!float.IsNaN(lastSeenPos.x)) {
                 chasePlayer();
             }
-            // Debug.Log(seenPlayer);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace InteractableManager {
+    // Defines the basics of every item in the game.
     public class Item {
         public string name;
         public string description;
@@ -15,6 +16,7 @@ namespace InteractableManager {
         }
     }
 
+    // Defines the basics of every ability in the game.
     public class Ability {
         public string name;
         public string description;
@@ -31,6 +33,7 @@ namespace InteractableManager {
         }
     }
 
+    // Handles the logistics of the inventory (but not the UI). The inventory stores the items.
     public class Inventory {
         public List<Item> items;
         public List<int> numberShortcuts;
@@ -64,7 +67,6 @@ namespace InteractableManager {
             }
             if (numberPressed && prevIdx == currIdx) {
                 selectedSlot = !selectedSlot;
-                // Debug.Log(selectedSlot);
             }
             else if (prevIdx != currIdx) {
                 fetchCurrItem(currIdx);
@@ -87,7 +89,6 @@ namespace InteractableManager {
                     currItem = items[targetIdx];
                 }
                 selectedSlot = true;
-                // Debug.Log(currIdx);
             }
         }
 
@@ -113,6 +114,7 @@ namespace InteractableManager {
         }
     }
 
+    // Handles the logistics of the loadout (but not the UI). The loadout stores the usable abilities.
     public class Loadout {
         public List<Ability> abilities;
         public List<int> numberShortcuts;

@@ -7,7 +7,7 @@ public class Monster_Controller : MonoBehaviour {
     public int sightRange;
     public int fieldOfView;
     public int hearingRange;
-    Monster entity;
+    private Monster entity;
 
     // The function below is for testing purposes only. It will be removed when all of the code is finalised.
     void OnDrawGizmos() {

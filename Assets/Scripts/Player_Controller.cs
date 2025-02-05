@@ -65,15 +65,13 @@ public class Player_Controller : MonoBehaviour {
     // Update function used for all physics updates.
     void FixedUpdate() {
         if (allowPlayerInput) {
-            // All physics related player input functions should be put here.
             InitPlayerMovement();
         }
     }
 
-    // All other updates are in the standard Update() function.
+    // All other updates are in the standard Update() function, such as checking for other player inputs.
     void Update() {
         if (allowPlayerInput) {
-            // All other player input functions should be put here.
             bool wasInventoryInput = playerInventory.checkKeyInput();
             int checkLoadoutInput = playerLoadout.checkKeyInput();
             if (wasInventoryInput) {
