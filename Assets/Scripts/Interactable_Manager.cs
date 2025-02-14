@@ -14,6 +14,9 @@ namespace InteractableManager {
             this.description = description;
             this.image = image;
         }
+        public FindItem(string name) {
+            this.name = name;
+        }
     }
 
     // Defines the basics of every ability in the game.
