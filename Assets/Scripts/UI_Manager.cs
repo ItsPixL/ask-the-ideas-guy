@@ -149,5 +149,13 @@ namespace UIManager {
             healthBarUI.updateBar(currHealth);
             energyBarUI.updateBar(currEnergy);
         }
+        public void LoadMenu() {
+            Debug.Log("Loading menu...");
+        }
+
+        public void QuitGame() {
+            Debug.Log("Quitting game...");
+            Application.Quit();
+        }
     }
 }
