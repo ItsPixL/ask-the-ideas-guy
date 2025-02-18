@@ -14,6 +14,7 @@ public class Player_Controller : MonoBehaviour {
     private Inventory playerInventory;
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
+    int milliseconds = 3000;
 
     private string gradientMovement = "backwards";
     
@@ -27,6 +28,7 @@ public class Player_Controller : MonoBehaviour {
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int>{1, 2, 3, 4});
         playerInventory.resetInventory();
         playerLoadout.resetLoadout();
+        allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth, maxEnergy);
     }
 
@@ -49,6 +51,11 @@ public class Player_Controller : MonoBehaviour {
         if (Input.GetKey("d")) { 
             MovePlayer(playerForce, 0f, 0f);
         }
+    }
+
+    private void PlayerDied() {
+        LevelManagerScript.instance.GameOver();
+        gameObject.SetActive(false); // not sure why this is needed
     }
 
     // Updates inventory information and UI to respond to player interaction.
@@ -90,5 +97,11 @@ public class Player_Controller : MonoBehaviour {
             }
         }
         UI_Controller.updateMetricBars(playerHealth, playerEnergy);
+        if (playerHealth <= 0) {
+            allowPlayerInput = false;
+            Thread.sleep(milliseconds);
+            PlayerDied();
+        }
+        playerHealth -= 1f;
     }
 }

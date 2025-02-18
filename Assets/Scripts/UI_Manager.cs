@@ -112,6 +112,7 @@ namespace UIManager {
         public Gradient energyBarGradient;
         private MetricBar healthBarUI;
         private MetricBar energyBarUI;
+        [SerializeField] GameObject deathPanel; // serialized field to allow the object to be set in the Unity Editor, but not accessible from other scripts. This is just for security
 
         // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
         public void setUpMetricBars(float playerHealth, float playerEnergy) {
@@ -156,6 +157,10 @@ namespace UIManager {
         public void QuitGame() {
             Debug.Log("Quitting game...");
             Application.Quit();
+        }
+
+        public void ToggleDeathPanel() {
+            deathPanel.SetActive(!deathPanel.activeSelf);
         }
     }
 }
