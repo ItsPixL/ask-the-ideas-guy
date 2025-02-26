@@ -2,6 +2,7 @@ using UnityEngine;
 using InteractableManager;
 using UIManager;
 using System.Collections.Generic;
+using System.Threading;
 
 public class Player_Controller : MonoBehaviour {
     private Rigidbody playerRb;
@@ -99,7 +100,7 @@ public class Player_Controller : MonoBehaviour {
         UI_Controller.updateMetricBars(playerHealth, playerEnergy);
         if (playerHealth <= 0) {
             allowPlayerInput = false;
-            Thread.sleep(milliseconds);
+            Thread.Sleep(milliseconds);
             PlayerDied();
         }
         playerHealth -= 1f;
