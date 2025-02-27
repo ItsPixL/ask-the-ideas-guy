@@ -55,7 +55,7 @@ public class Player_Controller : MonoBehaviour {
     }
 
     private void PlayerDied() {
-        LevelManagerScript.instance.GameOver();
+        UI_Manager.GameOver();
         gameObject.SetActive(false); // not sure why this is needed
     }
 
@@ -103,6 +103,6 @@ public class Player_Controller : MonoBehaviour {
             Thread.Sleep(milliseconds);
             PlayerDied();
         }
-        playerHealth -= 1f;
+        playerHealth -= 0.5f;
     }
 }

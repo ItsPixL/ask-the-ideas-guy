@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace UIManager {
     // Handles the UI of the inventory.
@@ -103,6 +104,52 @@ namespace UIManager {
         }
     }
 
+    public class StateManager : MonoBehaviour {
+        public void ReloadCurrentScene() {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public class MainMenu : MonoBehaviour {
+        public void PlayGame() {
+            Debug.Log("Play Game");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        public void QuitGame() {
+            Debug.Log("END Game");
+            Application.Quit();
+        }
+    }
+
+    // public class PauseMenu : MonoBehaviour {
+    //     public static bool GameIsPaused = false;
+    //     [SerializeField] private GameObject pauseMenuUI;
+
+    //     public void Resume() {
+    //         Debug.Log("Resuming game");
+    //         pauseMenuUI.SetActive(false);
+    //         Time.timeScale = 1f;
+    //         GameIsPaused = false;
+    //     }
+
+    //     public void Pause() {
+    //         Debug.Log("Pausing game");
+    //         pauseMenuUI.SetActive(true);
+    //         Time.timeScale = 0f;
+    //         GameIsPaused = true;
+    //     }
+
+    //     void Update() {
+    //         if (Input.GetKeyDown(KeyCode.Escape)) {
+    //             if (GameIsPaused) {
+    //                 Resume();
+    //             } else {
+    //                 Pause();
+    //             }
+    //         }
+    //     }
+    // }
+
     public class UI_Manager : MonoBehaviour {
         public List<Button> inventoryButtons;
         public List<Button> loadoutButtons;
@@ -113,6 +160,8 @@ namespace UIManager {
         private MetricBar healthBarUI;
         private MetricBar energyBarUI;
         [SerializeField] GameObject deathPanel; // serialized field to allow the object to be set in the Unity Editor, but not accessible from other scripts. This is just for security
+        public static bool GameIsPaused = false;
+        [SerializeField] private GameObject pauseMenuUI;
 
         // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
         public void setUpMetricBars(float playerHealth, float playerEnergy) {
@@ -132,7 +181,14 @@ namespace UIManager {
         }
 
         void Update() {
-
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                if (GameIsPaused) {
+                    Resume();
+                }
+                else {
+                    Pause();
+                }
+            }
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
@@ -161,6 +217,29 @@ namespace UIManager {
 
         public void ToggleDeathPanel() {
             deathPanel.SetActive(!deathPanel.activeSelf);
+        }
+
+        // pause menu stuff
+        public void Resume() {
+            Debug.Log("Resuming game");
+            pauseMenuUI.SetActive(false);
+            Time.timeScale = 1f;
+            GameIsPaused = false;
+        }
+
+        public void Pause() {
+            Debug.Log("Pausing game");
+            pauseMenuUI.SetActive(true);
+            Time.timeScale = 0f;
+            GameIsPaused = true;
+        }
+        // death stuff
+        public void GameOver() {
+            UI_Manager _ui = GetComponent<UI_Manager>();
+            if (_ui != null)
+            {
+                _ui.ToggleDeathPanel();
+            }
         }
     }
 }
