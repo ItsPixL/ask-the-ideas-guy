@@ -2,7 +2,7 @@ using UnityEngine;
 using InteractableManager;
 using UIManager;
 using System.Collections.Generic;
-using System.Threading;
+// using System.Threading;
 
 public class Player_Controller : MonoBehaviour {
     private Rigidbody playerRb;
@@ -100,9 +100,26 @@ public class Player_Controller : MonoBehaviour {
         UI_Controller.updateMetricBars(playerHealth, playerEnergy);
         if (playerHealth <= 0) {
             allowPlayerInput = false;
-            Thread.Sleep(milliseconds);
+            Debug.Log("Player has died.");
             PlayerDied();
         }
-        playerHealth -= 0.5f;
+        playerHealth -= 0.25f;
     }
+
+    // saving and loading functions
+
+    public void Save(ref Player_Save_Data data) { // uses a reference as a parameter rather than a normal one because we don't want to copy the data, we want to be able to modify the original data
+        data.Position = transform.position;
+        SaveSystem.SavePlayer(this);
+    }
+
+    public void Load(Player_Save_Data data) {
+        transform.position = data.Position;
+    }
+}
+
+// saving and loading structure
+[System.Serializable]
+public struct Player_Save_Data {
+    public Vector3 Position;
 }
