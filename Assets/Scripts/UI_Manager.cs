@@ -110,46 +110,6 @@ namespace UIManager {
         }
     }
 
-    public class MainMenu : MonoBehaviour {
-        public void PlayGame() {
-            Debug.Log("Play Game");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        }
-        public void QuitGame() {
-            Debug.Log("END Game");
-            Application.Quit();
-        }
-    }
-
-    // public class PauseMenu : MonoBehaviour {
-    //     public static bool GameIsPaused = false;
-    //     [SerializeField] private GameObject pauseMenuUI;
-
-    //     public void Resume() {
-    //         Debug.Log("Resuming game");
-    //         pauseMenuUI.SetActive(false);
-    //         Time.timeScale = 1f;
-    //         GameIsPaused = false;
-    //     }
-
-    //     public void Pause() {
-    //         Debug.Log("Pausing game");
-    //         pauseMenuUI.SetActive(true);
-    //         Time.timeScale = 0f;
-    //         GameIsPaused = true;
-    //     }
-
-    //     void Update() {
-    //         if (Input.GetKeyDown(KeyCode.Escape)) {
-    //             if (GameIsPaused) {
-    //                 Resume();
-    //             } else {
-    //                 Pause();
-    //             }
-    //         }
-    //     }
-    // }
-
     public class UI_Manager : MonoBehaviour {
         public List<Button> inventoryButtons;
         public List<Button> loadoutButtons;
@@ -159,9 +119,20 @@ namespace UIManager {
         public Gradient energyBarGradient;
         private MetricBar healthBarUI;
         private MetricBar energyBarUI;
-        [SerializeField] GameObject deathPanel; // serialized field to allow the object to be set in the Unity Editor, but not accessible from other scripts. This is just for security
+        private GameObject deathPanel;
+        private GameObject pauseMenu;
         public static bool GameIsPaused = false;
-        [SerializeField] private GameObject pauseMenuUI;
+        public static UI_Manager instance { get; private set; } // Singleton instance
+
+        private void Awake() { // singleton pattern
+            if (instance == null) {
+                instance = this; // Set instance if it's null
+                DontDestroyOnLoad(gameObject); // Keep every manager alive across scenes, so that it won't reset everytime the player passes a level
+            } else if (instance != this) {
+                Debug.LogWarning("Duplicate UI_Manager detected and destroyed."); // logged as a warning so it stands out
+                Destroy(gameObject); // Prevent multiple instances
+            }
+        }
 
         // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
         public void setUpMetricBars(float playerHealth, float playerEnergy) {
@@ -215,31 +186,82 @@ namespace UIManager {
             Application.Quit();
         }
 
-        public void ToggleDeathPanel() {
-            deathPanel.SetActive(!deathPanel.activeSelf);
+        // finding pausemenu and deathpanel
+        void CheckingScene() {
+            GameState currentGameState = GameManager.instance.CheckGameState();
+            if (currentGameState == GameState.InGame) {
+                pauseMenu = GameObject.Find("Canvas/PauseMenu");
+                deathPanel = GameObject.Find("Canvas/DeathPanel");
+                if (pauseMenu == null) Debug.LogError("PauseMenu not found! Ensure it's named correctly in the UI scene.");
+                if (deathPanel == null) Debug.LogError("DeathPanel not found! Ensure it's named correctly in the UI scene.");
+            } else {
+                Debug.LogError("PauseMenu and DeathPanel can only be found in the InGame state.");
+            }
         }
 
-        // pause menu stuff
+        GameObject GetUIElement(string elementName) {
+            if (GameManager.instance.CheckGameState() != GameState.InGame) { // using the checkgamestate function from game manager to ensure that the game is actually running and not in menu
+                Debug.LogError($"{elementName} can only be found in the InGame state.");
+                return null;
+            }
+            GameObject canvas = GameObject.Find("Canvas"); // finding the canvas
+            if (canvas == null) {
+                Debug.LogError("Canvas not found! Ensure it's named correctly in the UI scene.");
+                return null;
+            }
+            // // Search all objects in all loaded scenes, including inactive ones
+            // GameObject[] allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+
+            // // Get all GameObjects under the Canvas, including inactive ones
+            // GameObject[] allObjectsInCanvas = canvas.GetComponentsInChildren<GameObject>(true);
+            // foreach (GameObject obj in allObjectsInCanvas) {
+            //     Debug.Log(obj.name);
+            //     if (obj.name == elementName) { // going through the list of gameobjects to find the one with the correct name
+            //         return obj;
+            //     }
+            // }
+            // Get all Transforms under the Canvas, including inactive ones
+            Transform[] allTransformsInCanvas = canvas.GetComponentsInChildren<Transform>(true);
+
+            // Loop through all found Transforms
+            foreach (Transform t in allTransformsInCanvas)
+            {
+                GameObject obj = t.gameObject; // Get the GameObject from the Transform
+                if (obj.name == elementName)
+                {
+                    return obj; // Return the GameObject if the name matches
+                }
+            }
+            Debug.LogError($"{elementName} not found in any scene!");
+            return null; // return null if the object is not found
+        }
+
+        // pause menu stuff. make sure to integrate it to the gamemanager afterwards
         public void Resume() {
             Debug.Log("Resuming game");
-            pauseMenuUI.SetActive(false);
+            GetUIElement("PauseMenu").SetActive(false);
             Time.timeScale = 1f;
             GameIsPaused = false;
         }
-
         public void Pause() {
             Debug.Log("Pausing game");
-            pauseMenuUI.SetActive(true);
+            GetUIElement("PauseMenu").SetActive(true);
             Time.timeScale = 0f;
             GameIsPaused = true;
         }
-        // death stuff
+
+        // death stuff. make sure to integrate it to the gamemanager afterwards
+        public void ToggleDeathPanel() {
+            Debug.Log("Toggling death panel");
+            GetUIElement("DeathPanel").SetActive(true);
+        }
+        public void UntoggleDeathPanel() {
+            Debug.Log("Untoggling death panel");
+            GetUIElement("DeathPanel").SetActive(false);
+        }
         public void GameOver() {
-            UI_Manager _ui = GetComponent<UI_Manager>();
-            if (_ui != null)
-            {
-                _ui.ToggleDeathPanel();
-            }
+            ToggleDeathPanel();
+            // add all of the other stuff that you are going to do when the player dies
         }
     }
 }

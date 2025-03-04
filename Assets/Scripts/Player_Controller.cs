@@ -15,7 +15,6 @@ public class Player_Controller : MonoBehaviour {
     private Inventory playerInventory;
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
-    int milliseconds = 3000;
 
     private string gradientMovement = "backwards";
     
@@ -55,8 +54,8 @@ public class Player_Controller : MonoBehaviour {
     }
 
     private void PlayerDied() {
-        UI_Manager.GameOver();
-        gameObject.SetActive(false); // not sure why this is needed
+        UI_Manager.instance.GameOver();
+        gameObject.SetActive(false);
     }
 
     // Updates inventory information and UI to respond to player interaction.
@@ -110,7 +109,7 @@ public class Player_Controller : MonoBehaviour {
 
     public void Save(ref Player_Save_Data data) { // uses a reference as a parameter rather than a normal one because we don't want to copy the data, we want to be able to modify the original data
         data.Position = transform.position;
-        SaveSystem.SavePlayer(this);
+        // SaveSystem.SavePlayer(this);
     }
 
     public void Load(Player_Save_Data data) {
