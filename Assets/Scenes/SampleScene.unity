@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 38391111}
   - component: {fileID: 38391113}
   - component: {fileID: 38391112}
+  - component: {fileID: 38391114}
   m_Layer: 5
   m_Name: DeathPanel
   m_TagString: Untagged
@@ -267,6 +268,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 38391110}
   m_CullTransparentMesh: 1
+--- !u!114 &38391114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 38391110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed450809a697004d9785cbc52d42b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &39945377
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,9 +496,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1370476709}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: Resume
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1204,9 +1217,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManagerScript, Assembly-CSharp
-        m_MethodName: RestartGame
+      - m_Target: {fileID: 38391114}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: ToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1838,7 +1851,7 @@ GameObject:
   - component: {fileID: 588328277}
   - component: {fileID: 588328276}
   m_Layer: 5
-  m_Name: Resume Button
+  m_Name: Restart Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1908,9 +1921,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManagerScript, Assembly-CSharp
-        m_MethodName: ResumeCurrentScene
+      - m_Target: {fileID: 38391114}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2189,8 +2202,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
+      - m_Target: {fileID: 1370476714}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
@@ -3545,6 +3558,7 @@ GameObject:
   - component: {fileID: 1370476711}
   - component: {fileID: 1370476710}
   - component: {fileID: 1370476713}
+  - component: {fileID: 1370476714}
   m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
@@ -3635,6 +3649,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1370476714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370476709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed450809a697004d9785cbc52d42b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1401311930
 GameObject:
   m_ObjectHideFlags: 0
@@ -4172,7 +4198,7 @@ GameObject:
   - component: {fileID: 1470533123}
   - component: {fileID: 1470533122}
   m_Layer: 5
-  m_Name: Resume Text
+  m_Name: Restart Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4217,7 +4243,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RESUME
+  m_text: RESTART
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 780122631c864ec42b0f3dc4d41aa189, type: 2}
   m_sharedMaterial: {fileID: -6263381592373788993, guid: 780122631c864ec42b0f3dc4d41aa189, type: 2}

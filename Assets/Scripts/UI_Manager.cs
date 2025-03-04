@@ -121,7 +121,7 @@ namespace UIManager {
         private MetricBar energyBarUI;
         private GameObject deathPanel;
         private GameObject pauseMenu;
-        public static bool GameIsPaused = false;
+        public bool GameIsPaused = false;
         public static UI_Manager instance { get; private set; } // Singleton instance
 
         private void Awake() { // singleton pattern
@@ -187,21 +187,9 @@ namespace UIManager {
         }
 
         // finding pausemenu and deathpanel
-        void CheckingScene() {
-            GameState currentGameState = GameManager.instance.CheckGameState();
-            if (currentGameState == GameState.InGame) {
-                pauseMenu = GameObject.Find("Canvas/PauseMenu");
-                deathPanel = GameObject.Find("Canvas/DeathPanel");
-                if (pauseMenu == null) Debug.LogError("PauseMenu not found! Ensure it's named correctly in the UI scene.");
-                if (deathPanel == null) Debug.LogError("DeathPanel not found! Ensure it's named correctly in the UI scene.");
-            } else {
-                Debug.LogError("PauseMenu and DeathPanel can only be found in the InGame state.");
-            }
-        }
-
         GameObject GetUIElement(string elementName) {
-            if (GameManager.instance.CheckGameState() != GameState.InGame) { // using the checkgamestate function from game manager to ensure that the game is actually running and not in menu
-                Debug.LogError($"{elementName} can only be found in the InGame state.");
+            if (GameManager.instance.CheckGameState() == GameState.MainMenu) { // using the checkgamestate function from game manager to ensure that the game is actually running and not in menu
+                Debug.LogError($"{elementName} can not be found in the MainMenu state.");
                 return null;
             }
             GameObject canvas = GameObject.Find("Canvas"); // finding the canvas
@@ -209,26 +197,13 @@ namespace UIManager {
                 Debug.LogError("Canvas not found! Ensure it's named correctly in the UI scene.");
                 return null;
             }
-            // // Search all objects in all loaded scenes, including inactive ones
-            // GameObject[] allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
 
-            // // Get all GameObjects under the Canvas, including inactive ones
-            // GameObject[] allObjectsInCanvas = canvas.GetComponentsInChildren<GameObject>(true);
-            // foreach (GameObject obj in allObjectsInCanvas) {
-            //     Debug.Log(obj.name);
-            //     if (obj.name == elementName) { // going through the list of gameobjects to find the one with the correct name
-            //         return obj;
-            //     }
-            // }
             // Get all Transforms under the Canvas, including inactive ones
             Transform[] allTransformsInCanvas = canvas.GetComponentsInChildren<Transform>(true);
-
             // Loop through all found Transforms
-            foreach (Transform t in allTransformsInCanvas)
-            {
+            foreach (Transform t in allTransformsInCanvas) {
                 GameObject obj = t.gameObject; // Get the GameObject from the Transform
-                if (obj.name == elementName)
-                {
+                if (obj.name == elementName) {
                     return obj; // Return the GameObject if the name matches
                 }
             }
@@ -240,13 +215,13 @@ namespace UIManager {
         public void Resume() {
             Debug.Log("Resuming game");
             GetUIElement("PauseMenu").SetActive(false);
-            Time.timeScale = 1f;
+            GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
             GameIsPaused = false;
         }
         public void Pause() {
             Debug.Log("Pausing game");
             GetUIElement("PauseMenu").SetActive(true);
-            Time.timeScale = 0f;
+            GameManager.instance.UpdateGameState(GameState.Paused); // Change the game state to 'Paused' (triggers the event)
             GameIsPaused = true;
         }
 
@@ -254,10 +229,7 @@ namespace UIManager {
         public void ToggleDeathPanel() {
             Debug.Log("Toggling death panel");
             GetUIElement("DeathPanel").SetActive(true);
-        }
-        public void UntoggleDeathPanel() {
-            Debug.Log("Untoggling death panel");
-            GetUIElement("DeathPanel").SetActive(false);
+            GameManager.instance.UpdateGameState(GameState.GameOver); // Change the game state to 'GameOver' (triggers the event)
         }
         public void GameOver() {
             ToggleDeathPanel();

@@ -15,12 +15,8 @@ public class GameManager : MonoBehaviour {
             Debug.LogWarning("Duplicate Game_Manager detected and destroyed."); // logged as a warning so it stands out
             Destroy(gameObject);
         }
-    }
-
-    void Start() {
-        if (currentGameState == GameState.MainMenu) {
-            UpdateGameState(GameState.MainMenu);
-        }
+        // Initialize with a default state
+        currentGameState = GameState.MainMenu;
     }
 
     public void UpdateGameState(GameState gameState) { // updating the game state
