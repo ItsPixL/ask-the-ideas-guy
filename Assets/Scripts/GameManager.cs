@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance { get; private set; } // creating an instance for ease of use across files. the get; private set; allows only the actual game manager to edit the instance, but the others can simply see it
     public static event System.Action<GameState> OnGameStateChanged; // creating an event to handle the game state. this allows other scripts to react when a game state changes. whenever the game state changes, we trigger this event
     private GameState currentGameState;
+    public Player_Controller Player { get; private set; } // creating a property for the player for save data
 
     void Awake() { // creating a singleton pattern to ensure only one instance of the game manager is running
         if (instance == null) {
@@ -40,6 +41,17 @@ public class GameManager : MonoBehaviour {
 
     public GameState CheckGameState() {
         return currentGameState;
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.O)) { // if the player presses the o key
+            Debug.Log("Save Game"); // log that the game is being saved
+            SaveSystem.Save(); // Save the game
+        }
+        if (Input.GetKeyDown(KeyCode.P)) { // if the player presses the p key
+            Debug.Log("Load Game"); // log that the game is being loaded
+            SaveSystem.Load(); // load the game
+        }
     }
 }
 

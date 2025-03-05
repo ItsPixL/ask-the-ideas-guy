@@ -1,24 +1,48 @@
-// using UnityEngine;
-// using System.IO;
+// this is the save system script. it does not to be in any gameobject, because it just has functions that other classes can use. 
+using UnityEngine;
+using System.IO;
+using System.Collections.Generic;
 
-// public class SaveSystem {
-//     private static Player_Save_Data saveData = new saveData();
-//     [system.Serializable]
+public class SaveSystem {
+    private static Player_Save_Data saveData = new Player_Save_Data();
 
-//     public struct Player_Save_Data {
-//         public Player_Save_Data PlayerData;
-//     }
+    public static string saveFilePath() { // we are creating a file that the save data will be stored in
+        return Application.persistentDataPath + "/save" + ".save"; // this is where the save data saved for me: 'C:\Users\Adi\AppData\LocalLow\DefaultCompany\ask the ideas guy'
+    }
 
-//     public static string saveFileName() { // we are creating a file and then writing the save data to that file in order to save the data even after the game is closed
-//         string saveFile = Application.persistentDataPath + "/save" + ".save";
-//         return saveFile;
-//     }
+    public static void Save() {
+        handleSaveData();
+        string jsonData = JsonUtility.ToJson(saveData, true); // converting the save data to a json string
+        File.WriteAllText(saveFilePath(), jsonData); // writing the save data to the file in a human readable format
+        Debug.Log("Game saved successfully!");
+    }
 
-//     public static void Save() {
-//         handleSaveData();
-//     }
+    private static void handleSaveData() {
+        if (GameManager.instance.Player != null) {
+            GameManager.instance.Player.GetPlayerData(ref saveData); // copying the player data to the save data variable
+        } else {
+            Debug.LogWarning("Player reference not found. Cannot save data.");
+        }
+        // Game_Manager.instance.Player.SavePlayerData(ref saveData.PlayerData);
+        // saveData.PlayerData = Game_Manager.instance.Player.PlayerData;
+    }
 
-//     private static void handleSaveData {
-//         // Game
-//     }
-// }
+    public static void Load() {
+        if (File.Exists(saveFilePath())) { // checking if the save file exists
+            string jsonData = File.ReadAllText(saveFilePath()); // reading the data from the file
+            saveData = JsonUtility.FromJson<Player_Save_Data>(jsonData); // making the data inside the file readable
+            handleLoadData();
+            Debug.Log("Game loaded successfully!");
+        } else {
+            Debug.LogWarning("Save file not found.");
+        }
+    }
+
+    private static void handleLoadData() {
+        if (GameManager.instance.Player != null) {
+            GameManager.instance.Player.LoadPlayerData(saveData); // copying the save data to the player data variable, so that it can update in game
+        } else {
+            Debug.LogWarning("Player reference not found. Cannot load data.");
+        }
+    }
+}
