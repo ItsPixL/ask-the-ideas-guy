@@ -66,18 +66,27 @@ public class Player_Controller : MonoBehaviour
     }
 
     // Updates inventory information and UI to respond to player interaction.
-    public void updateInventoryStatus(int targetIdx)
-    {
-        playerInventory.fetchCurrItem(targetIdx);
-        UI_Controller.updateInventoryStatusUI(targetIdx);
+    public void updateInventoryStatus(int targetIdx) {
+        playerInventory.selectCurrItem(targetIdx);
+        UI_Controller.updateInventoryStatusUI(targetIdx, false);
+    }
+
+    // Same as above function, however with this function, selecting on an already selected icon will deselect it instead.
+    public void updateInventoryStatusSecure(int targetIdx) {
+        if (targetIdx != playerInventory.currIdx || !playerInventory.selectedSlot) {
+            playerInventory.selectCurrItem(targetIdx);
+        }
+        else {
+            playerInventory.selectCurrItem(-1);
+        }
+        UI_Controller.updateInventoryStatusUI(targetIdx, true);
     }
 
     // Updates loadout information and UI to respond to player interaction. 
     public void updateLoadoutStatus(int targetIdx)
     {
-        if (playerLoadout.canUseAbility(targetIdx, playerEnergy))
+        if (playerLoadout.useAbility(targetIdx, gameObject))
         {
-            playerEnergy = playerLoadout.useAbility(targetIdx, playerEnergy);
             UI_Controller.updateLoadoutStatusUI(targetIdx);
         }
     }
