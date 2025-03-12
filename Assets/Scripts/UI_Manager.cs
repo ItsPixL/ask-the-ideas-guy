@@ -18,13 +18,13 @@ namespace UIManager {
         }
 
         // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrItem(int newIdx) {
+        public void selectCurrItem(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
                 prevOutline.effectColor = normalOutlineColour;
             }
-            if (newIdx == currSelected) {
+            if (newIdx == currSelected && toggle) {
                 currSelected = -1;
             }
             else {
@@ -104,46 +104,24 @@ namespace UIManager {
         }
     }
 
-    public class StateManager : MonoBehaviour {
-        public void ReloadCurrentScene() {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-    }
-
     public class UI_Manager : MonoBehaviour {
         public List<Button> inventoryButtons;
         public List<Button> loadoutButtons;
         private UI_Inventory playerInventoryUI;
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
-        public Gradient energyBarGradient;
         private MetricBar healthBarUI;
-        private MetricBar energyBarUI;
         private GameObject deathPanel;
         private GameObject pauseMenu;
         public bool GameIsPaused = false;
         public static UI_Manager instance { get; private set; } // Singleton instance
 
-        private void Awake() { // singleton pattern
-            if (instance == null) {
-                instance = this; // Set instance if it's null
-                DontDestroyOnLoad(gameObject); // Keep every manager alive across scenes, so that it won't reset everytime the player passes a level
-            } else if (instance != this) {
-                Debug.LogWarning("Duplicate UI_Manager detected and destroyed."); // logged as a warning so it stands out
-                Destroy(gameObject); // Prevent multiple instances
-            }
-        }
-
         // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
-        public void setUpMetricBars(float playerHealth, float playerEnergy) {
+        public void setUpMetricBars(float playerHealth) {
             Slider healthSlider = GameObject.Find("Health Bar").GetComponent<Slider>();
             Image healthSliderFill = healthSlider.transform.Find("Fill").gameObject.GetComponent<Image>();
-            Slider energySlider = GameObject.Find("Energy Bar").GetComponent<Slider>();
-            Image energySliderFill = energySlider.transform.Find("Fill").gameObject.GetComponent<Image>();
             healthBarUI = new MetricBar(healthSlider, healthSliderFill, 0, playerHealth, healthBarGradient);
-            energyBarUI = new MetricBar(energySlider, energySliderFill, 0, playerEnergy, energyBarGradient);
             healthBarUI.setUpBar();
-            energyBarUI.setUpBar();
         }
 
         void Start() {
@@ -152,30 +130,47 @@ namespace UIManager {
         }
 
         void Update() {
-            if (Input.GetKeyDown(KeyCode.Escape)) {
-                if (GameIsPaused) {
-                    Resume();
-                }
-                else {
-                    Pause();
-                }
-            }
+
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
-        public void updateInventoryStatusUI(int targetIdx) {
-            playerInventoryUI.selectCurrItem(targetIdx);
+        public void updateInventoryStatusUI(int targetIdx, bool toggle) {
+            playerInventoryUI.selectCurrItem(targetIdx, toggle);
+        }
+
+        // Updates the icon of an inventory slot.
+        public void updateItemIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = inventoryButtons[targetIdx];
+            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color;
+            iconColor.a = colorAlpha;
+            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = iconColor;
+        }
+
+        // Updates the icon of a loadout slot.
+        public void updateAbilityIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = loadoutButtons[targetIdx];
+            currButton.transform.Find("Ability Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Ability Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Ability Icon").gameObject.GetComponent<Image>().color;
+            iconColor.a = colorAlpha;
+            currButton.transform.Find("Ability Icon").gameObject.GetComponent<Image>().color = iconColor;
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Loadout.
-        public void updateLoadoutStatusUI(int targetIdx) {
-            playerLoadoutUI.useCurrAbility(targetIdx);
+        public void updateLoadoutStatusUI(int targetIdx, bool enableAbility) {
+            if (!enableAbility) {
+                playerLoadoutUI.useCurrAbility(targetIdx);
+            }
+            else {
+                playerLoadoutUI.enableAbility(targetIdx);
+            }
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within MetricBar.
-        public void updateMetricBars(float currHealth, float currEnergy) {
+        public void updateMetricBars(float currHealth) {
             healthBarUI.updateBar(currHealth);
-            energyBarUI.updateBar(currEnergy);
         }
         public void LoadMenu() {
             Debug.Log("Loading menu...");

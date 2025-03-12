@@ -10,8 +10,6 @@ public class Player_Controller : MonoBehaviour
     public float playerForce = 5f;
     public float maxHealth = 100f;
     public float playerHealth;
-    public float maxEnergy = 100f;
-    public float playerEnergy;
     private bool allowPlayerInput = true;
     private Inventory playerInventory;
     private Loadout playerLoadout;
@@ -23,14 +21,13 @@ public class Player_Controller : MonoBehaviour
     {
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
-        playerEnergy = maxEnergy;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
         playerInventory = new Inventory(UI_Controller.inventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerInventory.resetInventory();
         playerLoadout.resetLoadout();
         allowPlayerInput = true;
-        UI_Controller.setUpMetricBars(maxHealth, maxEnergy);
+        UI_Controller.setUpMetricBars(maxHealth);
     }
 
     // Moves the character.
@@ -87,7 +84,7 @@ public class Player_Controller : MonoBehaviour
     {
         if (playerLoadout.useAbility(targetIdx, gameObject))
         {
-            UI_Controller.updateLoadoutStatusUI(targetIdx);
+            UI_Controller.updateLoadoutStatusUI(targetIdx, false);
         }
     }
 
@@ -103,27 +100,31 @@ public class Player_Controller : MonoBehaviour
     // All other updates are in the standard Update() function, such as checking for other player inputs.
     void Update()
     {
-        if (allowPlayerInput)
-        {
-            bool wasInventoryInput = playerInventory.checkKeyInput();
-            int checkLoadoutInput = playerLoadout.checkKeyInput();
-            if (wasInventoryInput)
-            {
-                if (playerInventory.selectedSlot)
-                {
-                    updateInventoryStatus(playerInventory.currIdx);
-                }
-                else
-                {
-                    updateInventoryStatus(-1);
-                }
-            }
-            if (checkLoadoutInput > -1)
-            {
-                updateLoadoutStatus(checkLoadoutInput);
-            }
+        // All other updates are in the standard Update() function, such as checking for other player inputs.
+        /*
+        Vector2 playerPos2D = new Vector2(gameObject.transform.position.x, gameObject.transform.position.z);
+        if (playerPos2D != lastPos2D) {
+            lastMovementDirection = (playerPos2D-lastPos2D).normalized;
         }
-        UI_Controller.updateMetricBars(playerHealth, playerEnergy);
+        lastPos2D = playerPos2D;
+        if (tested) {
+            test();
+            tested = false;
+        } */
+        if (allowPlayerInput) {
+            int inventoryInput = playerInventory.checkKeyInput();
+            int loadoutInput = playerLoadout.checkKeyInput();
+            if (inventoryInput != -1) {
+                updateInventoryStatusSecure(inventoryInput);
+                // updateAbilities(playerInventory.currIdx, playerInventory.selectedSlot);
+            }
+            if (loadoutInput > -1) {
+                updateLoadoutStatus(loadoutInput);
+            }
+            UI_Controller.updateMetricBars(playerHealth);
+            // checkForDrop();
+        }
+        UI_Controller.updateMetricBars(playerHealth);
         if (playerHealth <= 0) {
             allowPlayerInput = false;
             Debug.Log("Player has died.");
