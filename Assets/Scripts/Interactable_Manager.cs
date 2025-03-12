@@ -1,38 +1,50 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using AbilityManager;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
     public class Item {
         public string name;
-        public string description;
-        public Image image;
-        
-        public Item(string name, string description, Image image) {
+        public Sprite object2D;
+        public GameObject object3D;
+        public List<Ability> abilityList;
+        public bool withPlayer = false;
+
+        public Item(string name, Sprite object2D, GameObject object3D, List<Ability> abilityList) {
             this.name = name;
-            this.description = description;
-            this.image = image;
+            this.object2D = object2D;
+            this.object3D = object3D;
+            this.abilityList = abilityList;
         }
-        public FindItem(string name) {
-            this.name = name;
+
+        public void pickItem() {
+            withPlayer = true;
+        }
+
+        public void dropItem(Vector3 dropPos, Quaternion rotation) {
+            GameObject newObject = Object.Instantiate(object3D, dropPos, rotation);
+            Pick_Mechanic objectPickup = newObject.AddComponent<Pick_Mechanic>();
+            objectPickup.itemRef = this;
+            withPlayer = false;
         }
     }
 
     // Defines the basics of every ability in the game.
     public class Ability {
         public string name;
-        public string description;
-        public int energyCost;
         public int cooldown;
-        public Image image;
+        public bool onCooldown = false;
+        public Sprite icon;
 
-        public Ability(string name, string description, int energyCost, int cooldown, Image image) {
+        public Ability(string name, int cooldown, Sprite icon) {
             this.name = name;
-            this.description = description;
-            this.energyCost = energyCost;
             this.cooldown = cooldown;
-            this.image = image;
+            this.icon = icon;
+        }
+
+        public virtual bool useAbility(GameObject player) {
+            return false;
         }
     }
 
@@ -41,10 +53,9 @@ namespace InteractableManager {
         public List<Item> items;
         public List<int> numberShortcuts;
         private int maxSlots;
-        private int currItems = 0;
-        public int currIdx;
+        private int currItemCount = 0;
+        public int currIdx = 0;
         public bool selectedSlot = false;
-        public Item currItem;
 
         public Inventory(int maxSlots, List<int> numberShortcuts) {
             this.maxSlots = maxSlots;
@@ -57,63 +68,50 @@ namespace InteractableManager {
         }
 
         // Manages inventory navigation by key inputs.
-        public bool checkKeyInput() {
-            int prevIdx = currIdx;
-            bool keyPressed = false;
-            bool numberPressed = false;
+        public int checkKeyInput() {
+            int numberPressed = -1;
             for (int i = 0; i < maxSlots; i++) {
                 if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
-                    currIdx = i;
-                    numberPressed = true;
-                    keyPressed = true;
+                    numberPressed = i;
                 }
             }
-            if (numberPressed && prevIdx == currIdx) {
-                selectedSlot = !selectedSlot;
-            }
-            else if (prevIdx != currIdx) {
-                fetchCurrItem(currIdx);
-            }
-            return keyPressed;
+            return numberPressed;
         }
 
-        // Fetches the current item being used.
-        public void fetchCurrItem(int targetIdx) {
+        // Selects the current item being used.
+        public void selectCurrItem(int targetIdx) {
             if (targetIdx == -1) {
-                currItem = null;
                 selectedSlot = false;
             }
             else {
                 currIdx = targetIdx;
-                if (items[targetIdx] == null) {
-                    currItem = null;
-                }
-                else {
-                    currItem = items[targetIdx];
-                }
                 selectedSlot = true;
             }
         }
 
-        // Adds an item to the player inventory (if the inventory is full, replaces the currently selected item with the new item).
+        // Returns whether there is space (at least one empty slot) in the player inventory.
+        public bool spaceInInventory() {
+            return currItemCount < maxSlots;
+        }
+
+        // Adds an item to the player inventory.
         public void addItem(Item item) {
-            if (currItems < maxSlots) {
+            if (currItemCount < maxSlots) {
                 for (int i = 0; i < maxSlots; i++) {
                     if (items[i] is null) {
                         items[i] = item;
+                        currIdx = i;
+                        break;
                     }
                 }
-                currItems += 1;
-            }
-            else {
-                items[currIdx] = item;
+                currItemCount += 1;
             }
         }
 
         // Removes an item from the player inventory.
         public void removeItem(int itemIdx) {
             items[itemIdx] = null;
-            currItems -= 1;
+            currItemCount -= 1;
         }
     }
 
@@ -134,18 +132,13 @@ namespace InteractableManager {
             abilities = new List<Ability>(new Ability[maxSlots]);
         }
 
-        // Checks whether a player can use a given ability.
-        public bool canUseAbility(int abilityIdx, float currEnergy) {
-            if (abilities[abilityIdx] is not null && currEnergy < abilities[abilityIdx].energyCost) {
+        // Uses an ability if the player has the energy required.
+        public bool useAbility(int abilityIdx, GameObject player) {
+            if (abilities[abilityIdx] is not null && !abilities[abilityIdx].onCooldown && abilities[abilityIdx].useAbility(player)){
+                abilities[abilityIdx].onCooldown = true;
                 return true;
             }
             return false;
-        }
-
-        // Uses an ability if the player has the energy required.
-        public float useAbility(int abilityIdx, float currEnergy) {
-            // The code for using the ability will be placed here when the ability code is ready.
-            return currEnergy-abilities[abilityIdx].energyCost;
         }
 
         // Checks whether the player has pressed one of the number shortcuts (which can cause an ability to be used).
@@ -160,21 +153,25 @@ namespace InteractableManager {
         }
 
         // Adds an ability that the player can use and record the slot that it is in.
-        public void addAbility(Ability ability) {
+        public int addAbility(Ability ability, bool forItem) {
             for (int i = 0; i < maxSlots; i++) {
                 if (abilities[i] is null) {
                     abilities[i] = ability;
-                    currSlotsUsed.Add(i);
+                    if (forItem) {
+                        currSlotsUsed.Add(i);
+                    }
+                    return i;
                 }
             }
+            return 0;
         }
 
-        // Removes an ability that that player can use and remove that index from the list of used slots.
-        public void removeAbility(int targetIdx) {
-            if (currSlotsUsed.Exists(idx => idx == targetIdx)) {
-                currSlotsUsed.Remove(targetIdx);
-                abilities[targetIdx] = null;
+        // Removes all abilities associated with an item that that player can use and remove those indexes from the list of used slots.
+        public void removeAbilities() {
+            foreach (int idx in currSlotsUsed) {
+                abilities[idx] = null;
             }
+            currSlotsUsed = new List<int>();
         }
     }
 }
