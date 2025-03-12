@@ -19,6 +19,7 @@ public class SaveSystem {
 
     private static void handleSaveData() {
         if (GameManager.instance.Player != null) {
+            Debug.Log("handleSaveData!");
             GameManager.instance.Player.GetPlayerData(ref saveData); // copying the player data to the save data variable
         } else {
             Debug.LogWarning("Player reference not found. Cannot save data.");
@@ -40,6 +41,7 @@ public class SaveSystem {
 
     private static void handleLoadData() {
         if (GameManager.instance.Player != null) {
+            Debug.Log("handleLoadData!");
             GameManager.instance.Player.LoadPlayerData(saveData); // copying the save data to the player data variable, so that it can update in game
         } else {
             Debug.LogWarning("Player reference not found. Cannot load data.");

@@ -107,10 +107,12 @@ public class Player_Controller : MonoBehaviour {
 
     // saving and loading functions
     public void GetPlayerData(ref Player_Save_Data data) { // uses a reference as a parameter rather than a normal one because we don't want to copy the data, we want to be able to modify the original data
+        Debug.Log("GetPlayerData!");
         data.position = transform.position; // storing the player's position by modifying the original data from the struct
     }
 
     public void LoadPlayerData(Player_Save_Data data) { // getting the saved data as a parameter
+        Debug.Log("LoadPlayerData!");
         transform.position = data.position; // moving the player to the saved position
     }
 }

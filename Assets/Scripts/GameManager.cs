@@ -1,6 +1,7 @@
 // used for managing the state and scene of the game
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance { get; private set; } // creating an instance for ease of use across files. the get; private set; allows only the actual game manager to edit the instance, but the others can simply see it
@@ -21,12 +22,13 @@ public class GameManager : MonoBehaviour {
     }
 
     public void UpdateGameState(GameState gameState) { // updating the game state
-    currentGameState = gameState; // updating to the current game state
+        currentGameState = gameState; // updating to the current game state
         switch (gameState) {
             case GameState.MainMenu:
                 Time.timeScale = 1; // setting the time scale to 1 so the game runs at normal speed
                 break;
             case GameState.InGame:
+                StartCoroutine(WaitForPlayer()); // a coroutine is used so that we can wait for the code to find the player, and then the rest of the code is executed. if the code does not find the player, it will stop.
                 Time.timeScale = 1; // setting the time scale to 1 so the game runs at normal speed
                 break;
             case GameState.Paused:
@@ -37,6 +39,17 @@ public class GameManager : MonoBehaviour {
                 break;
         }
         OnGameStateChanged?.Invoke(gameState); // invoking the event, basically preventing a null error from occurring
+    }
+
+    private IEnumerator WaitForPlayer() { // we are using this so that the player can be loaded before we check for it
+        yield return new WaitForSeconds(0.5f); // Give time for player to spawn
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null) {
+            Player = playerObject.GetComponent<Player_Controller>();
+            Debug.Log("Player successfully found and assigned!");
+        } else {
+            Debug.LogError("Player STILL not found after waiting.");
+        }
     }
 
     public GameState CheckGameState() {
