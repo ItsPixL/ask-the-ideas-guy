@@ -2,6 +2,7 @@ using UnityEngine;
 using InteractableManager;
 using UIManager;
 using System.Collections.Generic;
+// using System.Threading;
 
 public class Player_Controller : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class Player_Controller : MonoBehaviour
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerInventory.resetInventory();
         playerLoadout.resetLoadout();
+        allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth, maxEnergy);
     }
 
@@ -56,6 +58,11 @@ public class Player_Controller : MonoBehaviour
         {
             MovePlayer(playerForce, 0f, 0f);
         }
+    }
+
+    private void PlayerDied() {
+        UI_Manager.instance.GameOver();
+        gameObject.SetActive(false);
     }
 
     // Updates inventory information and UI to respond to player interaction.
@@ -108,5 +115,27 @@ public class Player_Controller : MonoBehaviour
             }
         }
         UI_Controller.updateMetricBars(playerHealth, playerEnergy);
+        if (playerHealth <= 0) {
+            allowPlayerInput = false;
+            Debug.Log("Player has died.");
+            PlayerDied();
+        }
+        playerHealth -= 0.25f;
+        // Debug.Log("Player Health: " + playerHealth);
+    }
+
+    // saving and loading functions
+    public void GetPlayerData(ref Player_Save_Data data) { // uses a reference as a parameter rather than a normal one because we don't want to copy the data, we want to be able to modify the original data
+        Debug.Log("GetPlayerData!");
+        data.position = transform.position; // storing the player's position by modifying the original data from the struct
+        data.health = playerHealth; // storing the player's health by modifying the original data from the struct
+    }
+
+    public void LoadPlayerData(Player_Save_Data data) { // getting the saved data as a parameter
+        Debug.Log("LoadPlayerData!");
+        Debug.Log("LoadPlayerData! Saved Health: " + data.health);
+        transform.position = data.position; // moving the player to the saved position
+        playerHealth = data.health; // setting the player's health to the saved health
+        // Debug.Log("Player Health after loading: " + playerHealth);
     }
 }

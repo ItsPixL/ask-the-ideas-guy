@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace UIManager {
     // Handles the UI of the inventory.
@@ -103,6 +104,12 @@ namespace UIManager {
         }
     }
 
+    public class StateManager : MonoBehaviour {
+        public void ReloadCurrentScene() {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
     public class UI_Manager : MonoBehaviour {
         public List<Button> inventoryButtons;
         public List<Button> loadoutButtons;
@@ -112,6 +119,20 @@ namespace UIManager {
         public Gradient energyBarGradient;
         private MetricBar healthBarUI;
         private MetricBar energyBarUI;
+        private GameObject deathPanel;
+        private GameObject pauseMenu;
+        public bool GameIsPaused = false;
+        public static UI_Manager instance { get; private set; } // Singleton instance
+
+        private void Awake() { // singleton pattern
+            if (instance == null) {
+                instance = this; // Set instance if it's null
+                DontDestroyOnLoad(gameObject); // Keep every manager alive across scenes, so that it won't reset everytime the player passes a level
+            } else if (instance != this) {
+                Debug.LogWarning("Duplicate UI_Manager detected and destroyed."); // logged as a warning so it stands out
+                Destroy(gameObject); // Prevent multiple instances
+            }
+        }
 
         // Another Start() function that sets up the metric bars. Function is separate to the Start() since it requires arguments given from the player object.
         public void setUpMetricBars(float playerHealth, float playerEnergy) {
@@ -131,7 +152,14 @@ namespace UIManager {
         }
 
         void Update() {
-
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                if (GameIsPaused) {
+                    Resume();
+                }
+                else {
+                    Pause();
+                }
+            }
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
@@ -148,6 +176,64 @@ namespace UIManager {
         public void updateMetricBars(float currHealth, float currEnergy) {
             healthBarUI.updateBar(currHealth);
             energyBarUI.updateBar(currEnergy);
+        }
+        public void LoadMenu() {
+            Debug.Log("Loading menu...");
+        }
+
+        public void QuitGame() {
+            Debug.Log("Quitting game...");
+            Application.Quit();
+        }
+
+        // finding pausemenu and deathpanel
+        GameObject GetUIElement(string elementName) {
+            if (GameManager.instance.CheckGameState() == GameState.MainMenu) { // using the checkgamestate function from game manager to ensure that the game is actually running and not in menu
+                Debug.LogError($"{elementName} can not be found in the MainMenu state.");
+                return null;
+            }
+            GameObject canvas = GameObject.Find("Canvas"); // finding the canvas
+            if (canvas == null) {
+                Debug.LogError("Canvas not found! Ensure it's named correctly in the UI scene.");
+                return null;
+            }
+
+            // Get all Transforms under the Canvas, including inactive ones
+            Transform[] allTransformsInCanvas = canvas.GetComponentsInChildren<Transform>(true);
+            // Loop through all found Transforms
+            foreach (Transform t in allTransformsInCanvas) {
+                GameObject obj = t.gameObject; // Get the GameObject from the Transform
+                if (obj.name == elementName) {
+                    return obj; // Return the GameObject if the name matches
+                }
+            }
+            Debug.LogError($"{elementName} not found in any scene!");
+            return null; // return null if the object is not found
+        }
+
+        // pause menu stuff. make sure to integrate it to the gamemanager afterwards
+        public void Resume() {
+            Debug.Log("Resuming game");
+            GetUIElement("PauseMenu").SetActive(false);
+            GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
+            GameIsPaused = false;
+        }
+        public void Pause() {
+            Debug.Log("Pausing game");
+            GetUIElement("PauseMenu").SetActive(true);
+            GameManager.instance.UpdateGameState(GameState.Paused); // Change the game state to 'Paused' (triggers the event)
+            GameIsPaused = true;
+        }
+
+        // death stuff. make sure to integrate it to the gamemanager afterwards
+        public void ToggleDeathPanel() {
+            Debug.Log("Toggling death panel");
+            GetUIElement("DeathPanel").SetActive(true);
+            GameManager.instance.UpdateGameState(GameState.GameOver); // Change the game state to 'GameOver' (triggers the event)
+        }
+        public void GameOver() {
+            ToggleDeathPanel();
+            // add all of the other stuff that you are going to do when the player dies
         }
     }
 }
