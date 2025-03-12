@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using AbilityManager;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.

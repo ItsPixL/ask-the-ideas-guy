@@ -6,15 +6,18 @@ using System.Collections.Generic;
 
 public class Player_Controller : MonoBehaviour
 {
-    private Rigidbody playerRb;
     public float playerForce = 5f;
     public float maxHealth = 100f;
     public float playerHealth;
+    public float pickUpRange = 5f;
     private bool allowPlayerInput = true;
+    private Vector2 lastPos2D;
+    private Rigidbody playerRb;
     private Inventory playerInventory;
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
-    private string gradientMovement = "backwards";
+    [HideInInspector] public Vector2 lastMovementDirection;
+    private bool tested = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -62,6 +65,46 @@ public class Player_Controller : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    // Adds an item to the inventory (replaces an item if no inventory space remains) and updates UI to include the new item icon.
+    public void addItemToInventory(Item item) {
+        Item prevItem = playerInventory.items[playerInventory.currIdx];
+        if (prevItem is not null && !playerInventory.spaceInInventory()) {
+            removeItemFromInventory(playerInventory.currIdx);
+            float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+            prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+            Quaternion.Euler(0, playerRotationY, 0));
+        }
+        playerInventory.addItem(item);
+        updateInventoryStatus(playerInventory.currIdx);
+        UI_Controller.updateItemIcon(playerInventory.currIdx, item.object2D, 255);
+        updateAbilities(playerInventory.currIdx, playerInventory.selectedSlot);
+    }
+
+    // Adds all abilities associated with an item to the loadout and updates UI to include the new ability icons.
+    public void addAbilitiesToLoadout(Item item) {
+        foreach (Ability ability in item.abilityList) {
+            int abilityIdx = playerLoadout.addAbility(ability, true);
+            UI_Controller.updateAbilityIcon(abilityIdx, ability.icon, 255);
+        }
+    }
+
+    // Removes the currently selected item from the inventory and removes the icon on that slot.
+    public void removeItemFromInventory(int targetIdx) {
+        playerInventory.removeItem(targetIdx);
+        updateInventoryStatus(-1);
+        UI_Controller.updateItemIcon(targetIdx, null, 0);
+        updateAbilities(targetIdx, playerInventory.selectedSlot);
+    }
+
+    // Removes all abilities associated with an item from the loadout and updates UI to remove those ability icons.
+    public void removeAbilitiesFromLoadout() {
+        List<int> slotsUsed = playerLoadout.currSlotsUsed;
+        playerLoadout.removeAbilities();
+        foreach (int abilityIdx in slotsUsed) {
+            UI_Controller.updateAbilityIcon(abilityIdx, null, 0);
+        }
+    }
+
     // Updates inventory information and UI to respond to player interaction.
     public void updateInventoryStatus(int targetIdx) {
         playerInventory.selectCurrItem(targetIdx);
@@ -85,6 +128,14 @@ public class Player_Controller : MonoBehaviour
         if (playerLoadout.useAbility(targetIdx, gameObject))
         {
             UI_Controller.updateLoadoutStatusUI(targetIdx, false);
+        }
+    }
+
+    // Updates the current abilities and their icons depending on the item being held.
+    public void updateAbilities(int targetIdx, bool selectedSlot) {
+        removeAbilitiesFromLoadout();
+        if (playerInventory.items[targetIdx] is not null && selectedSlot) {
+            addAbilitiesToLoadout(playerInventory.items[targetIdx]);
         }
     }
 
@@ -130,7 +181,7 @@ public class Player_Controller : MonoBehaviour
             Debug.Log("Player has died.");
             PlayerDied();
         }
-        playerHealth -= 0.25f;
+        // playerHealth -= 0.25f;
         // Debug.Log("Player Health: " + playerHealth);
     }
 
