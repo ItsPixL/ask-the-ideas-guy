@@ -24,8 +24,6 @@ public class SaveSystem {
         } else {
             Debug.LogWarning("Player reference not found. Cannot save data.");
         }
-        // Game_Manager.instance.Player.SavePlayerData(ref saveData.PlayerData);
-        // saveData.PlayerData = Game_Manager.instance.Player.PlayerData;
     }
 
     public static void Load() {
