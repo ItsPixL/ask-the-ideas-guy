@@ -4,59 +4,72 @@ using InteractableManager;
 
 public class Pick_Mechanic : MonoBehaviour
 {
-    public static TMP_Text pickupText; // it is static so that it can be used more than once
-    private GameObject item_nearby; // Store the nearby item
-    public Player_Controller playerController; // an instant of the player controller
-    public LayerMask playerLayer = 1 << 8; // Set in Unity Inspector. This is used for the IsPlayerNearby() function, and is a way to filter objects by their layer, rather than their tag.
-    public float detectionRadius; // The radius around the items that detects the player
+    public static TMP_Text pickupText;
+    private bool playerNearby = false; 
+    private static Player_Controller playerController; 
+    private static Update_Closest_Item closestItemScript;
+    public Item itemRef; 
+    private static LayerMask playerLayerMask; 
+    private float detectionRadius;
 
     void Start() {
-        if (pickupText == null) { // making sure it is only found once
-            playerController = FindObjectOfType<Player_Controller>(); // Finds Player_Controller automatically
+        playerController = GameObject.Find("Player").GetComponent<Player_Controller>();
+        closestItemScript = GameObject.Find("Player").GetComponent<Update_Closest_Item>();
+        playerLayerMask = 1 << LayerMask.NameToLayer("Player");
+        detectionRadius = playerController.pickUpRange;
+        if (pickupText == null) { // 
             pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>(); // Finds pickupText automatically
-
-            if (pickupText == null) {
-                Debug.LogError("pickupText not found in the scene!");
-            }
         }
-        pickupText.gameObject.SetActive(false); // Hide the message initially
+        showTextUI(false);
     }
 
-    // Checks if a player is nearby.
-    public GameObject IsPlayerNearby() {
-        // Detect colliders within the detection radius on the playerLayer
-        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
+    // Checks if a player is nearby and if the object can be picked.
+    public bool canPickObject() {
+        Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
 
-        // Debugging: Log the detected objects (if any)
         foreach (Collider hit in hits) {
-            if (hit.CompareTag("Player")) { // Ensure the detected object is the player, just in case
-                return hit.gameObject; // Return the detected player
+            if (hit.CompareTag("Player")) {
+                if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
+                    closestItemScript.objectsOfConcern.Add(gameObject);
+                }
+                return true;
             }
         }
-        return null; // Return null if no player is detected
+        return false; 
+    }
+
+    public void showTextUI(bool state) {
+        if (pickupText is not null) {
+            pickupText.gameObject.SetActive(state);
+        }
     }
 
     // Draws a sphere around the item to show the detection radius. Only works if you have selected the item from the hierarchy.
     void OnDrawGizmosSelected() {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.DrawWireSphere(gameObject.transform.position, detectionRadius);
     }
 
     // Update is called once per frame
     void Update() {
-        item_nearby = IsPlayerNearby();
-
-        if (item_nearby != null) { // If player is in range
-            pickupText.gameObject.SetActive(true); // Show UI
-
-            if (Input.GetKeyDown(KeyCode.E)) { // If player presses 'E'
-                Item item = new Item(gameObject.name, gameObject.tag);
-                Destroy(gameObject); // Remove item
-                pickupText.gameObject.SetActive(false); // Hide UI
+        playerNearby = canPickObject();
+        if (playerNearby) { 
+            showTextUI(true); 
+            if (Input.GetKeyDown("f")) { 
+                showTextUI(false);
+                if (gameObject == closestItemScript.closestObject) {
+                    playerController.addItemToInventory(itemRef);
+                    itemRef.pickItem();
+                    closestItemScript.objectsOfConcern.Remove(gameObject);
+                    Destroy(gameObject);
+                }
             }
         }
         else {
-            pickupText.gameObject.SetActive(false); // Hide UI when player is not nearby
+            if (closestItemScript.objectsOfConcern.Contains(gameObject)) {
+                closestItemScript.objectsOfConcern.Remove(gameObject);
+            }
+            showTextUI(false); 
         }
     }
 }
