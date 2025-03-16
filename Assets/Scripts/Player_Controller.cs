@@ -2,6 +2,7 @@ using UnityEngine;
 using InteractableManager;
 using UIManager;
 using System.Collections.Generic;
+using AbilityManager;
 // using System.Threading;
 
 public class Player_Controller : MonoBehaviour
@@ -31,6 +32,9 @@ public class Player_Controller : MonoBehaviour
         playerLoadout.resetLoadout();
         allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth);
+        Ability permaDashAbility = new Dash(5, 10);
+        playerLoadout.addAbility(permaDashAbility, false);
+        UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);
     }
 
     // Moves the character.
@@ -57,6 +61,19 @@ public class Player_Controller : MonoBehaviour
         if (Input.GetKey("d"))
         {
             MovePlayer(playerForce, 0f, 0f);
+        }
+    }
+
+    // Checks for whether the player drops an item, and then instantiates that object.
+    public void checkForDrop() {
+        if (Input.GetKeyDown("e")) {
+            Item currItem = playerInventory.items[playerInventory.currIdx];
+            if (playerInventory.selectedSlot && currItem is not null) {
+                removeItemFromInventory(playerInventory.currIdx);
+                float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+                currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+                Quaternion.Euler(0, playerRotationY, 0));
+            }
         }
     }
 
@@ -173,7 +190,7 @@ public class Player_Controller : MonoBehaviour
                 updateLoadoutStatus(loadoutInput);
             }
             UI_Controller.updateMetricBars(playerHealth);
-            // checkForDrop();
+            checkForDrop();
         }
         UI_Controller.updateMetricBars(playerHealth);
         if (playerHealth <= 0) {
