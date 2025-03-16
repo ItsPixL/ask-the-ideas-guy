@@ -2,6 +2,7 @@ using UnityEngine;
 using InteractableManager;
 using UIManager;
 using System.Collections.Generic;
+using ItemManager;
 using AbilityManager;
 // using System.Threading;
 
@@ -35,6 +36,13 @@ public class Player_Controller : MonoBehaviour
         Ability permaDashAbility = new Dash(5, 10);
         playerLoadout.addAbility(permaDashAbility, false);
         UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);
+    }
+
+    private void test() {
+        Item testItem = new Sword(new List<Ability>(){new Dash(5, 10)});
+        Item testItem2 = new Sword(new List<Ability>(){new Dash(5, 10)});
+        testItem.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
+        testItem2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
     }
 
     // Moves the character.
@@ -126,6 +134,7 @@ public class Player_Controller : MonoBehaviour
     public void updateInventoryStatus(int targetIdx) {
         playerInventory.selectCurrItem(targetIdx);
         UI_Controller.updateInventoryStatusUI(targetIdx, false);
+        updateAbilities(targetIdx, playerInventory.selectedSlot);
     }
 
     // Same as above function, however with this function, selecting on an already selected icon will deselect it instead.
@@ -137,6 +146,7 @@ public class Player_Controller : MonoBehaviour
             playerInventory.selectCurrItem(-1);
         }
         UI_Controller.updateInventoryStatusUI(targetIdx, true);
+        updateAbilities(targetIdx, playerInventory.selectedSlot);
     }
 
     // Updates loadout information and UI to respond to player interaction. 
@@ -151,7 +161,7 @@ public class Player_Controller : MonoBehaviour
     // Updates the current abilities and their icons depending on the item being held.
     public void updateAbilities(int targetIdx, bool selectedSlot) {
         removeAbilitiesFromLoadout();
-        if (playerInventory.items[targetIdx] is not null && selectedSlot) {
+        if (selectedSlot && playerInventory.items[targetIdx] is not null) {
             addAbilitiesToLoadout(playerInventory.items[targetIdx]);
         }
     }
@@ -169,7 +179,6 @@ public class Player_Controller : MonoBehaviour
     void Update()
     {
         // All other updates are in the standard Update() function, such as checking for other player inputs.
-        /*
         Vector2 playerPos2D = new Vector2(gameObject.transform.position.x, gameObject.transform.position.z);
         if (playerPos2D != lastPos2D) {
             lastMovementDirection = (playerPos2D-lastPos2D).normalized;
@@ -178,7 +187,7 @@ public class Player_Controller : MonoBehaviour
         if (tested) {
             test();
             tested = false;
-        } */
+        } 
         if (allowPlayerInput) {
             int inventoryInput = playerInventory.checkKeyInput();
             int loadoutInput = playerLoadout.checkKeyInput();
