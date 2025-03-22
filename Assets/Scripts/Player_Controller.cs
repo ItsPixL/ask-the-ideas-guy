@@ -19,7 +19,7 @@ public class Player_Controller : MonoBehaviour
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
-    private bool tested = true;
+    private bool tested = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
