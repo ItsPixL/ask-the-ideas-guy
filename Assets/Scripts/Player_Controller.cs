@@ -8,7 +8,7 @@ using AbilityManager;
 
 public class Player_Controller : MonoBehaviour
 {
-    public float playerForce = 5f;
+    public float playerForce = 20f;
     public float maxHealth = 100f;
     public float playerHealth;
     public float pickUpRange = 5f;
@@ -19,7 +19,7 @@ public class Player_Controller : MonoBehaviour
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
-    private bool tested = false;
+    private bool tested = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
