@@ -29,9 +29,9 @@ public class Player_Controller : MonoBehaviour
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
-        playerWeaponInventory = new WeaponInventory(UI_Controller.inventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
+        playerWeaponInventory = new WeaponInventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
         playerWeaponInventory.resetInventory();
-        playerPowerupInventory = new PowerupInventory(UI_Controller.inventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
+        playerPowerupInventory = new PowerupInventory(UI_Controller.powerupInventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
         playerPowerupInventory.resetInventory();
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerLoadout.resetLoadout();
@@ -117,7 +117,7 @@ public class Player_Controller : MonoBehaviour
         }
         playerWeaponInventory.addWeapon(Weapon);
         updateInventoryStatus(playerWeaponInventory.currIdx);
-        UI_Controller.updateItemIcon(playerWeaponInventory.currIdx, Weapon.object2D, 255); // update this
+        UI_Controller.updateWeaponIcon(playerWeaponInventory.currIdx, Weapon.object2D, 255); // update this
         updateAbilities(playerWeaponInventory.currIdx, playerWeaponInventory.selectedSlot);
     }
     // Adds an Powerup to the inventory (replaces an Powerup if no inventory space remains) and updates UI to include the new Powerup icon.
@@ -131,7 +131,7 @@ public class Player_Controller : MonoBehaviour
         }
         playerPowerupInventory.addPowerup(Powerup);
         updateInventoryStatus(playerPowerupInventory.currIdx);
-        UI_Controller.updateItemIcon(playerPowerupInventory.currIdx, Powerup.object2D, 255); // update this
+        UI_Controller.updatePowerupIcon(playerPowerupInventory.currIdx, Powerup.object2D, 255); // update this
         updateAbilities(playerPowerupInventory.currIdx, playerPowerupInventory.selectedSlot);
     }
 
@@ -147,14 +147,14 @@ public class Player_Controller : MonoBehaviour
     public void removeWeaponFromInventory(int targetIdx) {
         playerWeaponInventory.removeWeapon(targetIdx);
         updateInventoryStatus(-1);
-        UI_Controller.updateItemIcon(targetIdx, null, 0); // update this
+        UI_Controller.updateWeaponIcon(targetIdx, null, 0); // update this
         updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
     }
     // Removes the currently selected Powerup from the inventory and removes the icon on that slot.
     public void removePowerupFromInventory(int targetIdx) {
         playerPowerupInventory.removePowerup(targetIdx);
         updateInventoryStatus(-1);
-        UI_Controller.updateItemIcon(targetIdx, null, 0); // update this
+        UI_Controller.updatePowerupIcon(targetIdx, null, 0); // update this
         updateAbilities(targetIdx, playerPowerupInventory.selectedSlot);
     }
 

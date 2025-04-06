@@ -4,14 +4,14 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace UIManager {
-    // Handles the UI of the inventory.
-    public class UI_Inventory {
+    // Handles the UI of the weapon inventory.
+    public class UI_Weapon_Inventory {
         private List<Button> buttons;
         private Color normalOutlineColour;
         private Color selectedOutlineColour;
         public int currSelected = -1;
 
-        public UI_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
+        public UI_Weapon_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
             this.buttons = buttons;
             this.normalOutlineColour = normalOutlineColour;
             this.selectedOutlineColour = selectedOutlineColour;
@@ -19,6 +19,40 @@ namespace UIManager {
 
         // Highlights the outline of the selected Weapon slot (if any) in yellow, and leave the rest of the outlines black.
         public void selectCurrWeapon(int newIdx, bool toggle) {
+            if (currSelected != -1) {
+                Button prevButton = buttons[currSelected];
+                Outline prevOutline = prevButton.GetComponent<Outline>();
+                prevOutline.effectColor = normalOutlineColour;
+            }
+            if (newIdx == currSelected && toggle) {
+                currSelected = -1;
+            }
+            else {
+                currSelected = newIdx;
+            }
+            if (currSelected != -1) {
+                Button currButton = buttons[currSelected];
+                Outline currOutline = currButton.GetComponent<Outline>();
+                currOutline.effectColor = selectedOutlineColour;
+            }
+        }
+    }
+
+    // Handles the UI of the powerup inventory.
+    public class UI_Powerup_Inventory {
+        private List<Button> buttons;
+        private Color normalOutlineColour;
+        private Color selectedOutlineColour;
+        public int currSelected = -1;
+
+        public UI_Powerup_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
+            this.buttons = buttons;
+            this.normalOutlineColour = normalOutlineColour;
+            this.selectedOutlineColour = selectedOutlineColour;
+        }
+
+        // Highlights the outline of the selected Powerup slot (if any) in yellow, and leave the rest of the outlines black.
+        public void selectCurrPowerup(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
@@ -105,9 +139,12 @@ namespace UIManager {
     }
 
     public class UI_Manager : MonoBehaviour {
-        public List<Button> inventoryButtons;
+        public List<Button> weaponInventoryButtons;
+        public List<Button> powerupInventoryButtons;
         public List<Button> loadoutButtons;
-        private UI_Inventory playerInventoryUI;
+        private UI_Weapon_Inventory playerWeaponInventoryUI;
+        private UI_Powerup_Inventory playerPowerupInventoryUI;
+
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
@@ -125,7 +162,8 @@ namespace UIManager {
         }
 
         void Start() {
-            playerInventoryUI = new UI_Inventory(inventoryButtons, Color.black, Color.yellow);
+            playerWeaponInventoryUI = new UI_Weapon_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
+            playerPowerupInventoryUI = new UI_Powerup_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
         }
 
@@ -142,17 +180,26 @@ namespace UIManager {
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
         public void updateInventoryStatusUI(int targetIdx, bool toggle) {
-            playerInventoryUI.selectCurrWeapon(targetIdx, toggle);
+            playerWeaponInventoryUI.selectCurrWeapon(targetIdx, toggle);
         }
 
-        // Updates the icon of an inventory slot.
-        public void updateItemIcon(int targetIdx, Sprite newImage, int colorAlpha) {
-            Button currButton = inventoryButtons[targetIdx]; // this is getting the ability that is currently selected
+        // Updates the icon of an weapon inventory slot.
+        public void updateWeaponIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = weaponInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
             currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().sprite = newImage;
             currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = Color.black;
             Color iconColor = currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color;
             iconColor.a = colorAlpha;
             currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = iconColor;
+        }
+        // Updates the icon of an powerup inventory slot.
+        public void updatePowerupIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = powerupInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color;
+            iconColor.a = colorAlpha;
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = iconColor;
         }
 
         // Updates the icon of a loadout slot.
