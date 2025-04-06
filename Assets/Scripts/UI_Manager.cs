@@ -17,8 +17,8 @@ namespace UIManager {
             this.selectedOutlineColour = selectedOutlineColour;
         }
 
-        // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrItem(int newIdx, bool toggle) {
+        // Highlights the outline of the selected Weapon slot (if any) in yellow, and leave the rest of the outlines black.
+        public void selectCurrWeapon(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
@@ -111,8 +111,8 @@ namespace UIManager {
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
-        private GameObject deathPanel;
-        private GameObject pauseMenu;
+        // private GameObject deathPanel;
+        // private GameObject pauseMenu;
         public bool GameIsPaused = false;
         public static UI_Manager instance { get; private set; } // Singleton instance
 
@@ -130,17 +130,24 @@ namespace UIManager {
         }
 
         void Update() {
-
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                if (GameIsPaused) {
+                    Resume();
+                }
+                else {
+                    Pause();
+                }
+            }
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
         public void updateInventoryStatusUI(int targetIdx, bool toggle) {
-            playerInventoryUI.selectCurrItem(targetIdx, toggle);
+            playerInventoryUI.selectCurrWeapon(targetIdx, toggle);
         }
 
         // Updates the icon of an inventory slot.
         public void updateItemIcon(int targetIdx, Sprite newImage, int colorAlpha) {
-            Button currButton = inventoryButtons[targetIdx];
+            Button currButton = inventoryButtons[targetIdx]; // this is getting the ability that is currently selected
             currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().sprite = newImage;
             currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = Color.black;
             Color iconColor = currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color;

@@ -1,31 +1,43 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor.MemoryProfiler;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
-    public class Item {
+    public abstract class Item { // abstract = the class can't be used to create objects, but can be used to create other classes
         public string name;
         public Sprite object2D;
         public GameObject object3D;
-        public List<Ability> abilityList;
         public bool withPlayer = false;
-
-        public Item(string name, Sprite object2D, GameObject object3D, List<Ability> abilityList) {
-            this.name = name;
-            this.object2D = object2D;
-            this.object3D = object3D;
-            this.abilityList = abilityList;
-        }
 
         public void pickItem() {
             withPlayer = true;
         }
-
         public void dropItem(Vector3 dropPos, Quaternion rotation) {
             GameObject newObject = Object.Instantiate(object3D, dropPos, rotation);
             Pick_Mechanic objectPickup = newObject.AddComponent<Pick_Mechanic>();
             objectPickup.itemRef = this;
             withPlayer = false;
+        }
+    }
+
+    public class Weapon : Item {
+        public List<Ability> abilityList;
+        public Weapon(string name, Sprite object2D, GameObject object3D, List<Ability> abilityList) {
+            this.name = name;
+            this.object2D = object2D;
+            this.object3D = object3D;
+            this.abilityList = abilityList;
+        }
+    }
+
+    public class Powerup : Item {
+        public int link; // what weapon the powerup is linked (found by the value of the weapon's index in the loadout)
+        public Powerup(string name, Sprite object2D, GameObject object3D, int link) {
+            this.name = name;
+            this.object2D = object2D;
+            this.object3D = object3D;
+            this.link = link;
         }
     }
 
@@ -47,23 +59,23 @@ namespace InteractableManager {
         }
     }
 
-    // Handles the logistics of the inventory (but not the UI). The inventory stores the items.
-    public class Inventory {
-        public List<Item> items;
+    // Handles the logistics of the inventory (but not the UI). The weapon inventory stores the weapons.
+    public class WeaponInventory {
+        public List<Weapon> weapons;
         public List<int> numberShortcuts;
         private int maxSlots;
-        private int currItemCount = 0;
+        private int currWeaponCount = 0;
         public int currIdx = 0;
         public bool selectedSlot = false;
 
-        public Inventory(int maxSlots, List<int> numberShortcuts) {
+        public WeaponInventory(int maxSlots, List<int> numberShortcuts) {
             this.maxSlots = maxSlots;
             this.numberShortcuts = numberShortcuts;
         }
 
         // Empties player inventory.
         public void resetInventory() { 
-            items = new List<Item>(new Item[maxSlots]);
+            weapons = new List<Weapon>(new Weapon[maxSlots]);
         }
 
         // Manages inventory navigation by key inputs.
@@ -77,8 +89,8 @@ namespace InteractableManager {
             return numberPressed;
         }
 
-        // Selects the current item being used.
-        public void selectCurrItem(int targetIdx) {
+        // Selects the current Weapon being used.
+        public void selectCurrWeapon(int targetIdx) {
             if (targetIdx == -1) {
                 selectedSlot = false;
             }
@@ -90,27 +102,94 @@ namespace InteractableManager {
 
         // Returns whether there is space (at least one empty slot) in the player inventory.
         public bool spaceInInventory() {
-            return currItemCount < maxSlots;
+            return currWeaponCount < maxSlots;
         }
 
-        // Adds an item to the player inventory.
-        public void addItem(Item item) {
-            if (currItemCount < maxSlots) {
+        // Adds an Weapon to the player inventory.
+        public void addWeapon(Weapon weapon) {
+            if (currWeaponCount < maxSlots) {
                 for (int i = 0; i < maxSlots; i++) {
-                    if (items[i] is null) {
-                        items[i] = item;
+                    if (weapons[i] is null) {
+                        weapons[i] = weapon;
                         currIdx = i;
                         break;
                     }
                 }
-                currItemCount += 1;
+                currWeaponCount += 1;
             }
         }
 
-        // Removes an item from the player inventory.
-        public void removeItem(int itemIdx) {
-            items[itemIdx] = null;
-            currItemCount -= 1;
+        // Removes an Weapon from the player inventory.
+        public void removeWeapon(int WeaponIdx) {
+            weapons[WeaponIdx] = null;
+            currWeaponCount -= 1;
+        }
+    }
+
+    // Handles the logistics of the inventory (but not the UI). The Powerup inventory stores the Powerups.
+    public class PowerupInventory {
+        public List<Powerup> powerups;
+        public List<int> numberShortcuts;
+        private int maxSlots;
+        private int currPowerupCount = 0;
+        public int currIdx = 0;
+        public bool selectedSlot = false;
+
+        public PowerupInventory(int maxSlots, List<int> numberShortcuts) {
+            this.maxSlots = maxSlots;
+            this.numberShortcuts = numberShortcuts;
+        }
+
+        // Empties player inventory.
+        public void resetInventory() { 
+            powerups = new List<Powerup>(new Powerup[maxSlots]);
+        }
+
+        // Manages inventory navigation by key inputs.
+        public int checkKeyInput() {
+            int numberPressed = -1;
+            for (int i = 0; i < maxSlots; i++) {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+                    numberPressed = i;
+                }
+            }
+            return numberPressed;
+        }
+
+        // Selects the current Powerup being used.
+        public void selectCurrPowerup(int targetIdx) {
+            if (targetIdx == -1) {
+                selectedSlot = false;
+            }
+            else {
+                currIdx = targetIdx;
+                selectedSlot = true;
+            }
+        }
+
+        // Returns whether there is space (at least one empty slot) in the player inventory.
+        public bool spaceInInventory() {
+            return currPowerupCount < maxSlots;
+        }
+
+        // Adds an Powerup to the player inventory.
+        public void addPowerup(Powerup powerup) {
+            if (currPowerupCount < maxSlots) {
+                for (int i = 0; i < maxSlots; i++) {
+                    if (powerups[i] is null) {
+                        powerups[i] = powerup;
+                        currIdx = i;
+                        break;
+                    }
+                }
+                currPowerupCount += 1;
+            }
+        }
+
+        // Removes an Powerup from the player inventory.
+        public void removePowerup(int PowerupIdx) {
+            powerups[PowerupIdx] = null;
+            currPowerupCount -= 1;
         }
     }
 
@@ -152,11 +231,11 @@ namespace InteractableManager {
         }
 
         // Adds an ability that the player can use and record the slot that it is in.
-        public int addAbility(Ability ability, bool forItem) {
+        public int addAbility(Ability ability, bool forWeapon) {
             for (int i = 0; i < maxSlots; i++) {
                 if (abilities[i] is null) {
                     abilities[i] = ability;
-                    if (forItem) {
+                    if (forWeapon) {
                         currSlotsUsed.Add(i);
                     }
                     return i;
@@ -165,7 +244,7 @@ namespace InteractableManager {
             return 0;
         }
 
-        // Removes all abilities associated with an item that that player can use and remove those indexes from the list of used slots.
+        // Removes all abilities associated with an Weapon that that player can use and remove those indexes from the list of used slots.
         public void removeAbilities() {
             foreach (int idx in currSlotsUsed) {
                 abilities[idx] = null;
