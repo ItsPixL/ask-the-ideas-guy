@@ -144,7 +144,6 @@ namespace UIManager {
         public List<Button> loadoutButtons;
         private UI_Weapon_Inventory playerWeaponInventoryUI;
         private UI_Powerup_Inventory playerPowerupInventoryUI;
-
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
