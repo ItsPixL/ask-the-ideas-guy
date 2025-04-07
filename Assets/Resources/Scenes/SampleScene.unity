@@ -833,15 +833,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponInventoryButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1144755600}
+  - {fileID: 2000915791}
+  - {fileID: 649095871}
+  - {fileID: 1030989385}
+  - {fileID: 70392787}
   powerupInventoryButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1867528893}
+  - {fileID: 680899577}
+  - {fileID: 199374323}
+  - {fileID: 1368230684}
   loadoutButtons:
   - {fileID: 1413235234}
   - {fileID: 1365496300}

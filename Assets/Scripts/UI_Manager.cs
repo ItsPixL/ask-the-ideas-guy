@@ -21,9 +21,22 @@ namespace UIManager {
         public void selectCurrWeapon(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
-                Outline prevOutline = prevButton.GetComponent<Outline>();
-                prevOutline.effectColor = normalOutlineColour;
+                if (prevButton != null) {
+                    Outline prevOutline = prevButton.GetComponent<Outline>();
+                    if (prevOutline != null) {
+                        prevOutline.effectColor = normalOutlineColour;
+                    } else {
+                        Debug.LogWarning($"Button at index {currSelected} has no Outline component.");
+                    }
+                } else {
+                    Debug.LogWarning($"Button at index {currSelected} is null.");
+                }
             }
+            // if (currSelected != -1) {
+            //     Button prevButton = buttons[currSelected];
+            //     Outline prevOutline = prevButton.GetComponent<Outline>();
+            //     prevOutline.effectColor = normalOutlineColour;
+            // }
             if (newIdx == currSelected && toggle) {
                 currSelected = -1;
             }
@@ -32,9 +45,22 @@ namespace UIManager {
             }
             if (currSelected != -1) {
                 Button currButton = buttons[currSelected];
-                Outline currOutline = currButton.GetComponent<Outline>();
-                currOutline.effectColor = selectedOutlineColour;
+                if (currButton != null) {
+                    Outline currOutline = currButton.GetComponent<Outline>();
+                    if (currOutline != null) {
+                        currOutline.effectColor = selectedOutlineColour;
+                    } else {
+                        Debug.LogWarning($"Button at index {currSelected} has no Outline component.");
+                    }
+                } else {
+                    Debug.LogWarning($"Button at index {currSelected} is null.");
+                }
             }
+            // if (currSelected != -1) {
+            //     Button currButton = buttons[currSelected];
+            //     Outline currOutline = currButton.GetComponent<Outline>();
+            //     currOutline.effectColor = selectedOutlineColour;
+            // }
         }
     }
 
@@ -164,6 +190,7 @@ namespace UIManager {
             playerWeaponInventoryUI = new UI_Weapon_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
             playerPowerupInventoryUI = new UI_Powerup_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
+            updatePowerupIcon(0, null, 0);
         }
 
         void Update() {
@@ -178,18 +205,22 @@ namespace UIManager {
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
-        public void updateInventoryStatusUI(int targetIdx, bool toggle) {
+        public void updateWeaponInventoryStatusUI(int targetIdx, bool toggle) {
             playerWeaponInventoryUI.selectCurrWeapon(targetIdx, toggle);
+        }
+        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
+        public void updatePowerupInventoryStatusUI(int targetIdx, bool toggle) {
+            playerPowerupInventoryUI.selectCurrPowerup(targetIdx, toggle);
         }
 
         // Updates the icon of an weapon inventory slot.
         public void updateWeaponIcon(int targetIdx, Sprite newImage, int colorAlpha) {
             Button currButton = weaponInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().sprite = newImage;
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = Color.black;
-            Color iconColor = currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color;
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color;
             iconColor.a = colorAlpha;
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = iconColor;
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = iconColor;
         }
         // Updates the icon of an powerup inventory slot.
         public void updatePowerupIcon(int targetIdx, Sprite newImage, int colorAlpha) {

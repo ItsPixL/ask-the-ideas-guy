@@ -129,15 +129,15 @@ namespace InteractableManager {
     // Handles the logistics of the inventory (but not the UI). The Powerup inventory stores the Powerups.
     public class PowerupInventory {
         public List<Powerup> powerups;
-        public List<int> numberShortcuts;
+        public List<string> characterShortcuts;
         private int maxSlots;
         private int currPowerupCount = 0;
         public int currIdx = 0;
         public bool selectedSlot = false;
 
-        public PowerupInventory(int maxSlots, List<int> numberShortcuts) {
+        public PowerupInventory(int maxSlots, List<string> characterShortcuts) {
             this.maxSlots = maxSlots;
-            this.numberShortcuts = numberShortcuts;
+            this.characterShortcuts = characterShortcuts;
         }
 
         // Empties player inventory.
@@ -147,13 +147,12 @@ namespace InteractableManager {
 
         // Manages inventory navigation by key inputs.
         public int checkKeyInput() {
-            int numberPressed = -1;
             for (int i = 0; i < maxSlots; i++) {
-                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
-                    numberPressed = i;
+                if (Input.GetKeyDown(characterShortcuts[i])) {
+                    return i;
                 }
             }
-            return numberPressed;
+            return -1;
         }
 
         // Selects the current Powerup being used.
