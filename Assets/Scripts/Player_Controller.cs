@@ -30,9 +30,9 @@ public class Player_Controller : MonoBehaviour
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
-        playerWeaponInventory = new WeaponInventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 6, 7, 8, 9, 0 });
+        playerWeaponInventory = new WeaponInventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 7, 8, 9, 0 });
         playerWeaponInventory.resetInventory();
-        playerPowerupInventory = new PowerupInventory(UI_Controller.powerupInventoryButtons.Count, new List<string> { "v", "b", "n", "m" });
+        playerPowerupInventory = new PowerupInventory(UI_Controller.powerupInventoryButtons.Count, new List<string> { "c", "v", "b", "n", "m" });
         playerPowerupInventory.resetInventory();
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerLoadout.resetLoadout();

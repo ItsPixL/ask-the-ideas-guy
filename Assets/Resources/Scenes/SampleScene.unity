@@ -668,7 +668,7 @@ GameObject:
   - component: {fileID: 70392787}
   - component: {fileID: 70392786}
   m_Layer: 5
-  m_Name: Weapon Slot 5
+  m_Name: Powerup Slot 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -833,16 +833,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponInventoryButtons:
+  - {fileID: 1867528893}
+  - {fileID: 680899577}
+  - {fileID: 199374323}
+  - {fileID: 1368230684}
+  powerupInventoryButtons:
   - {fileID: 1144755600}
   - {fileID: 2000915791}
   - {fileID: 649095871}
   - {fileID: 1030989385}
   - {fileID: 70392787}
-  powerupInventoryButtons:
-  - {fileID: 1867528893}
-  - {fileID: 680899577}
-  - {fileID: 199374323}
-  - {fileID: 1368230684}
   loadoutButtons:
   - {fileID: 1413235234}
   - {fileID: 1365496300}
@@ -1088,7 +1088,7 @@ GameObject:
   - component: {fileID: 199374323}
   - component: {fileID: 199374322}
   m_Layer: 5
-  m_Name: Powerup Slot 3
+  m_Name: Weapon Slot 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1109,9 +1109,9 @@ RectTransform:
   - {fileID: 1676133647}
   m_Father: {fileID: 1342210206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -450, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 25, y: 50}
   m_SizeDelta: {x: 170, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &199374322
@@ -1599,7 +1599,7 @@ GameObject:
   - component: {fileID: 368912150}
   - component: {fileID: 368912149}
   m_Layer: 5
-  m_Name: Powerup Icon
+  m_Name: Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1674,7 +1674,7 @@ GameObject:
   - component: {fileID: 379937184}
   - component: {fileID: 379937183}
   m_Layer: 5
-  m_Name: Weapon Icon
+  m_Name: Powerup Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2088,7 +2088,7 @@ GameObject:
   - component: {fileID: 492216922}
   - component: {fileID: 492216921}
   m_Layer: 5
-  m_Name: Weapon Icon
+  m_Name: Powerup Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2584,7 +2584,7 @@ GameObject:
   - component: {fileID: 649095871}
   - component: {fileID: 649095870}
   m_Layer: 5
-  m_Name: Weapon Slot 3
+  m_Name: Powerup Slot 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2733,7 +2733,7 @@ GameObject:
   - component: {fileID: 680899577}
   - component: {fileID: 680899576}
   m_Layer: 5
-  m_Name: Powerup Slot 2
+  m_Name: Weapon Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2754,9 +2754,9 @@ RectTransform:
   - {fileID: 368912148}
   m_Father: {fileID: 1342210206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -500, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -25, y: 50}
   m_SizeDelta: {x: 170, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &680899576
@@ -3198,7 +3198,7 @@ GameObject:
   - component: {fileID: 903182992}
   - component: {fileID: 903182991}
   m_Layer: 5
-  m_Name: Powerup Icon
+  m_Name: Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3275,7 +3275,7 @@ GameObject:
   - component: {fileID: 1030989385}
   - component: {fileID: 1030989384}
   m_Layer: 5
-  m_Name: Weapon Slot 4
+  m_Name: Powerup Slot 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3724,7 +3724,7 @@ GameObject:
   - component: {fileID: 1144755600}
   - component: {fileID: 1144755599}
   m_Layer: 5
-  m_Name: Weapon Slot 1
+  m_Name: Powerup Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3871,7 +3871,7 @@ GameObject:
   - component: {fileID: 1234485836}
   - component: {fileID: 1234485835}
   m_Layer: 5
-  m_Name: Weapon Icon
+  m_Name: Powerup Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4283,7 +4283,7 @@ GameObject:
   - component: {fileID: 1368230684}
   - component: {fileID: 1368230683}
   m_Layer: 5
-  m_Name: Powerup Slot 4
+  m_Name: Weapon Slot 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4304,9 +4304,9 @@ RectTransform:
   - {fileID: 903182990}
   m_Father: {fileID: 1342210206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -400, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 75, y: 50}
   m_SizeDelta: {x: 170, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1368230683
@@ -5326,7 +5326,7 @@ GameObject:
   - component: {fileID: 1597957477}
   - component: {fileID: 1597957476}
   m_Layer: 5
-  m_Name: Weapon Icon
+  m_Name: Powerup Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5476,7 +5476,7 @@ GameObject:
   - component: {fileID: 1676133649}
   - component: {fileID: 1676133648}
   m_Layer: 5
-  m_Name: Powerup Icon
+  m_Name: Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5762,7 +5762,7 @@ GameObject:
   - component: {fileID: 1867528893}
   - component: {fileID: 1867528892}
   m_Layer: 5
-  m_Name: Powerup Slot 1
+  m_Name: Weapon Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5783,9 +5783,9 @@ RectTransform:
   - {fileID: 1963449440}
   m_Father: {fileID: 1342210206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -550, y: 50}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: -75, y: 51}
   m_SizeDelta: {x: 170, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1867528892
@@ -6045,7 +6045,7 @@ GameObject:
   - component: {fileID: 1925165254}
   - component: {fileID: 1925165253}
   m_Layer: 5
-  m_Name: Weapon Icon
+  m_Name: Powerup Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6120,7 +6120,7 @@ GameObject:
   - component: {fileID: 1963449442}
   - component: {fileID: 1963449441}
   m_Layer: 5
-  m_Name: Powerup Icon
+  m_Name: Weapon Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6197,7 +6197,7 @@ GameObject:
   - component: {fileID: 2000915791}
   - component: {fileID: 2000915790}
   m_Layer: 5
-  m_Name: Weapon Slot 2
+  m_Name: Powerup Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
