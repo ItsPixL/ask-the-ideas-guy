@@ -114,7 +114,12 @@ public class Player_Controller : MonoBehaviour
             Quaternion.Euler(0, playerRotationY, 0));
         }
         inventory.addItem(item);
-        // updateInventoryStatus(inventory.currIdx);
+        if (item is Weapon) {
+            updateInventoryStatus(inventory.currIdx, inventory, 'W');
+        }
+        else if (item is Powerup) {
+            updateInventoryStatus(inventory.currIdx, inventory, 'P');
+        }
         // UI_Controller.updateInventoryIcon();
         if (item is Weapon) {
             updateAbilities(inventory.currIdx, inventory.selectedSlot);
@@ -134,7 +139,12 @@ public class Player_Controller : MonoBehaviour
 
     public void removeItemFromInventory(int targetIdx, Inventory inventory) {
         inventory.removeItem(targetIdx);
-        updateInventoryStatus(-1, inventory);
+        if (inventory.items[targetIdx] is Weapon) {
+            updateInventoryStatus(-1, inventory, 'W');
+        }
+        else if (inventory.items[targetIdx] is Powerup) {
+            updateInventoryStatus(-1, inventory, 'P');
+        }
         // UI_Controller.updateIcon();
         if (inventory.items[targetIdx] is Weapon) {
             updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
@@ -151,9 +161,9 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    public void updateInventoryStatus(int targetIdx, Inventory inventory) {
+    public void updateInventoryStatus(int targetIdx, Inventory inventory, char itemType) {
         inventory.selectCurrItem(targetIdx);
-        // UI_Controller.updateInventoryStatusUI(targetIdx, false)
+        UI_Controller.updateInventoryStatusUI(targetIdx, false, itemType);
     }
 
     public void updateInventoryStatusSecure(int targetIdx, Inventory inventory) {

@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using InteractableManager;
-using PowerupManager;
 
 namespace UIManager {
     // Handles the UI of the weapon inventory.
-    public class UI_Weapon_Inventory {
+    public class UI_Inventory {
         private List<Button> buttons;
         private Color normalOutlineColour;
         private Color selectedOutlineColour;
         public int currSelected = -1;
 
-        public UI_Weapon_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
+        public UI_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
             this.buttons = buttons;
             this.normalOutlineColour = normalOutlineColour;
             this.selectedOutlineColour = selectedOutlineColour;
         }
 
         // Highlights the outline of the selected Weapon slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrWeapon(int newIdx, bool toggle) {
+        public void selectCurrItem(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 if (prevButton != null) {
@@ -63,40 +62,6 @@ namespace UIManager {
             //     Outline currOutline = currButton.GetComponent<Outline>();
             //     currOutline.effectColor = selectedOutlineColour;
             // }
-        }
-    }
-
-    // Handles the UI of the powerup inventory.
-    public class UI_Powerup_Inventory {
-        private List<Button> buttons;
-        private Color normalOutlineColour;
-        private Color selectedOutlineColour;
-        public int currSelected = -1;
-
-        public UI_Powerup_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
-            this.buttons = buttons;
-            this.normalOutlineColour = normalOutlineColour;
-            this.selectedOutlineColour = selectedOutlineColour;
-        }
-
-        // Highlights the outline of the selected Powerup slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrPowerup(int newIdx, bool toggle) {
-            if (currSelected != -1) {
-                Button prevButton = buttons[currSelected];
-                Outline prevOutline = prevButton.GetComponent<Outline>();
-                prevOutline.effectColor = normalOutlineColour;
-            }
-            if (newIdx == currSelected && toggle) {
-                currSelected = -1;
-            }
-            else {
-                currSelected = newIdx;
-            }
-            if (currSelected != -1) {
-                Button currButton = buttons[currSelected];
-                Outline currOutline = currButton.GetComponent<Outline>();
-                currOutline.effectColor = selectedOutlineColour;
-            }
         }
     }
 
@@ -170,8 +135,8 @@ namespace UIManager {
         public List<Button> weaponInventoryButtons;
         public List<Button> powerupInventoryButtons;
         public List<Button> loadoutButtons;
-        private UI_Weapon_Inventory playerWeaponInventoryUI;
-        private UI_Powerup_Inventory playerPowerupInventoryUI;
+        private UI_Inventory playerWeaponInventoryUI;
+        private UI_Inventory playerPowerupInventoryUI;
         private PowerupInventory playerPowerupInventory;
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
@@ -190,8 +155,8 @@ namespace UIManager {
         }
 
         void Start() {
-            playerWeaponInventoryUI = new UI_Weapon_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
-            playerPowerupInventoryUI = new UI_Powerup_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
+            playerWeaponInventoryUI = new UI_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
+            playerPowerupInventoryUI = new UI_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
             updatePowerupIcon(0, null, 0);
         }
@@ -207,13 +172,13 @@ namespace UIManager {
             }
         }
 
-        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
-        public void updateWeaponInventoryStatusUI(int targetIdx, bool toggle) {
-            playerWeaponInventoryUI.selectCurrWeapon(targetIdx, toggle);
-        }
-        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
-        public void updatePowerupInventoryStatusUI(int targetIdx, bool toggle) {
-            playerPowerupInventoryUI.selectCurrPowerup(targetIdx, toggle);
+        public void updateInventoryStatusUI(int targetIdx, bool toggle, char itemType) {
+            if (itemType == 'W') {
+                playerWeaponInventoryUI.selectCurrItem(targetIdx, toggle);
+            }
+            else if (itemType == 'P') {
+                playerPowerupInventoryUI.selectCurrItem(targetIdx, toggle);
+            }
         }
 
         // Updates the icon of an weapon inventory slot.
@@ -284,8 +249,8 @@ namespace UIManager {
         }
 
         public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
-            Powerup firstIndexPowerup = playerPowerupInventory.powerups[firstIndex]; // Get the powerup at the first index
-            Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
+            Powerup firstIndexPowerup = (Powerup)playerPowerupInventory.items[firstIndex]; // Get the powerup at the first index
+            Powerup secondIndexPowerup = (Powerup)playerPowerupInventory.items[secondIndex]; // Get the powerup at the second index
             playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
             playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
         }
@@ -319,8 +284,8 @@ namespace UIManager {
 
             // Perform the swap for the UI
             swapPowerupIcons(firstIndex, secondIndex);
-            playerPowerupInventoryUI.selectCurrPowerup(firstIndex, false);
-            playerPowerupInventoryUI.selectCurrPowerup(secondIndex, true);
+            playerPowerupInventoryUI.selectCurrItem(firstIndex, false);
+            playerPowerupInventoryUI.selectCurrItem(secondIndex, true);
 
             GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
             Debug.Log($"Swapped powerups at indices {firstIndex} and {secondIndex}.");
