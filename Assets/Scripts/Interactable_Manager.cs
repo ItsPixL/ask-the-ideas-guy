@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using NUnit.Framework.Constraints;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
@@ -63,7 +62,7 @@ namespace InteractableManager {
     public class Inventory {
         public List<Item> items;
         public List<int> numberShortcuts;
-        private int maxSlots;
+        protected int maxSlots;
         protected int currItemCount = 0;
         public int currIdx = 0;
         public bool selectedSlot = false;
@@ -79,7 +78,7 @@ namespace InteractableManager {
         }
 
         // Manages inventory navigation by key inputs.
-        public int checkKeyInput() {
+        public virtual int checkKeyInput() {
             int numberPressed = -1;
             for (int i = 0; i < maxSlots; i++) {
                 if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
@@ -127,9 +126,20 @@ namespace InteractableManager {
     }
 
     public class PowerupInventory: Inventory {
-        public List<string> characterShortcuts;
-        public PowerupInventory(int maxSlots, List<string> characterShortcuts): base(maxSlots, new List<int>()) {
+        public List<char> characterShortcuts;
+        public PowerupInventory(int maxSlots, List<char> characterShortcuts): base(maxSlots, new List<int>()) {
             this.characterShortcuts = characterShortcuts;
+        }
+
+        public override int checkKeyInput() {
+            int idxPressed = -1;
+            for (int i=0; i < maxSlots; i++) {
+                KeyCode keyCode = (KeyCode)System.Enum.Parse(typeof(KeyCode), characterShortcuts[i].ToString().ToUpper());
+                if (Input.GetKeyDown(keyCode)) {
+                    idxPressed = i;
+                }
+            }
+            return idxPressed;
         }
 
         // used in the swap powerup logic.

@@ -5,6 +5,7 @@ using InteractableManager;
 public class Pick_Mechanic : MonoBehaviour
 {
     public static TMP_Text pickupText;
+    public GameObject player;
     private bool playerNearby = false; 
     private static Player_Controller playerController; 
     private static Update_Closest_Item closestItemScript;
@@ -13,8 +14,9 @@ public class Pick_Mechanic : MonoBehaviour
     private float detectionRadius;
 
     void Start() {
-        playerController = GameObject.Find("Player").GetComponent<Player_Controller>();
-        closestItemScript = GameObject.Find("Player").GetComponent<Update_Closest_Item>();
+        player = GameObject.Find("Player");
+        playerController = player.GetComponent<Player_Controller>();
+        closestItemScript = player.GetComponent<Update_Closest_Item>();
         playerLayerMask = 1 << LayerMask.NameToLayer("Player");
         detectionRadius = playerController.pickUpRange;
         if (pickupText == null) { // 
@@ -59,10 +61,10 @@ public class Pick_Mechanic : MonoBehaviour
                 showTextUI(false);
                 if (gameObject == closestItemScript.closestObject) {
                     if (itemRef is Weapon weapon) {
-                        playerController.addWeaponToInventory(weapon);
+                        playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
                     }
                     else if (itemRef is Powerup powerup) {
-                        playerController.addPowerupToInventory(powerup);
+                        playerController.addItemToInventory(powerup, playerController.playerPowerupInventory);
                     }
                     itemRef.pickItem();
                     closestItemScript.objectsOfConcern.Remove(gameObject);

@@ -158,7 +158,7 @@ namespace UIManager {
             playerWeaponInventoryUI = new UI_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
             playerPowerupInventoryUI = new UI_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
-            updatePowerupIcon(0, null, 0);
+            updateInventoryIcon(powerupInventoryButtons, 0, null, 0);
         }
 
         void Update() {
@@ -181,24 +181,22 @@ namespace UIManager {
             }
         }
 
-        // Updates the icon of an weapon inventory slot.
-        public void updateWeaponIcon(int targetIdx, Sprite newImage, int colorAlpha) {
-            Button currButton = weaponInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
-            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().sprite = newImage;
-            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = Color.black;
-            Color iconColor = currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color;
+        public void updateInventoryIcon(List<Button> buttons, int targetIdx, Sprite newImage, int colorAlpha) {
+            string iconName = "";
+            if (buttons == weaponInventoryButtons) {
+                iconName = "Weapon Icon";
+            }
+            else if (buttons == powerupInventoryButtons) {
+                iconName = "Powerup Icon";
+            }
+            Button currButton = buttons[targetIdx];
+            currButton.transform.Find(iconName).gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find(iconName).gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find(iconName).gameObject.GetComponent<Image>().color;
             iconColor.a = colorAlpha;
-            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = iconColor;
+            currButton.transform.Find(iconName).gameObject.GetComponent<Image>().color = iconColor;
         }
-        // Updates the icon of an powerup inventory slot.
-        public void updatePowerupIcon(int targetIdx, Sprite newImage, int colorAlpha) {
-            Button currButton = powerupInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
-            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite = newImage;
-            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = Color.black;
-            Color iconColor = currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color;
-            iconColor.a = colorAlpha;
-            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = iconColor;
-        }
+
         public void deletePowerupIcon(int targetIdx) {
             Button currButton = powerupInventoryButtons[targetIdx]; // Get the target button
             Transform powerupIconTransform = currButton.transform.Find("Powerup Icon"); // Find the Powerup Icon child
@@ -244,8 +242,8 @@ namespace UIManager {
             Sprite secondIndexImage = powerupInventoryButtons[secondIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
             deletePowerupIcon(firstIndex);
             deletePowerupIcon(secondIndex);
-            updatePowerupIcon(firstIndex, secondIndexImage, 255);
-            updatePowerupIcon(secondIndex, firstIndexImage, 255);
+            updateInventoryIcon(powerupInventoryButtons, firstIndex, secondIndexImage, 255);
+            updateInventoryIcon(powerupInventoryButtons, secondIndex, firstIndexImage, 255);
         }
 
         public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
