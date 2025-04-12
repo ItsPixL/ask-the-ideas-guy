@@ -282,7 +282,18 @@ namespace UIManager {
             updatePowerupIcon(secondIndex, firstIndexImage, 255);
         }
 
-        public int firstpart() {
+        public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
+            Powerup firstIndexPowerup = playerPowerupInventory.powerups[firstIndex]; // Get the powerup at the first index
+            Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
+            playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
+            playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
+        }
+    
+        public void swapButtonPressed() {
+            StartCoroutine(WaitForPowerupSelection());
+        }
+
+        private IEnumerator WaitForPowerupSelection() {
             int firstIndex = playerPowerupInventoryUI.currSelected;
             if (firstIndex == -1) {
                 Debug.Log("No powerup selected to start swapping!");
@@ -298,6 +309,16 @@ namespace UIManager {
             }
 
             int secondIndex = playerPowerupInventoryUI.currSelected;
+
+            swapPowerupsInInventory(firstIndex, secondIndex); // Swap the powerups in the inventory
+
+            // Perform the swap for the UI
+            swapPowerupIcons(firstIndex, secondIndex);
+            playerPowerupInventoryUI.selectCurrPowerup(firstIndex, false);
+            playerPowerupInventoryUI.selectCurrPowerup(secondIndex, true);
+
+            GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
+            Debug.Log($"Swapped powerups at indices {firstIndex} and {secondIndex}.");
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within MetricBar.

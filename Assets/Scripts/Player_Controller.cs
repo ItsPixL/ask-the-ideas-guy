@@ -237,31 +237,6 @@ public class Player_Controller : MonoBehaviour
     //     }
     // }
 
-    public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
-        Powerup firstIndexPowerup = playerPowerupInventory.powerups[firstIndex]; // Get the powerup at the first index
-        Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
-        playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
-        playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
-    }
-
-    public void swapButtonPressed() {
-        StartCoroutine(WaitForPowerupSelection());
-    }
-
-    private IEnumerator WaitForPowerupSelection() {
-
-
-        swapPowerupsInInventory(firstIndex, secondIndex); // Swap the powerups in the inventory
-
-        // Perform the swap for the UI
-        UI_Controller.swapPowerupIcons(firstIndex, secondIndex);
-        playerPowerupInventoryUI.selectCurrPowerup(firstIndex, false);
-        playerPowerupInventoryUI.selectCurrPowerup(secondIndex, true);
-
-        GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
-        Debug.Log($"Swapped powerups at indices {firstIndex} and {secondIndex}.");
-    }
-
     // Update function used for all physics updates.
     void FixedUpdate()
     {
