@@ -6483,7 +6483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerForce: 25
+  playerForce: 15
   maxHealth: 100
   playerHealth: 100
   pickUpRange: 5
