@@ -51,13 +51,13 @@ public class Player_Controller : MonoBehaviour
 
         Powerup testPowerup = new Fire(0);
         testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup1 = new Fire(1);
+        Powerup testPowerup1 = new Fire(0);
         testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup2 = new Fire(1);
+        Powerup testPowerup2 = new Fire(0);
         testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup3 = new Fire(1);
+        Powerup testPowerup3 = new Fire(0);
         testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup4 = new Fire(1);
+        Powerup testPowerup4 = new Poision(0);
         testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
     }
 
@@ -228,6 +228,14 @@ public class Player_Controller : MonoBehaviour
             addAbilitiesToLoadout(playerWeaponInventory.weapons[targetIdx]);
         }
     }
+
+    // public void updateLinks() {
+    //    for (int i = 0; i < playerPowerupInventory.powerups.Count; i++) {
+    //         if (playerPowerupInventory.powerups[i] is not null && playerWeaponInventory.weapons[i] is not null) {
+    //             playerPowerupInventory.powerups[i].buff(playerWeaponInventory.weapons[i]);
+    //         }
+    //     }
+    // }
 
     // Update function used for all physics updates.
     void FixedUpdate()

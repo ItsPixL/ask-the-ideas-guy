@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System.Collections;
+using InteractableManager;
 
 namespace UIManager {
     // Handles the UI of the weapon inventory.
@@ -170,6 +171,7 @@ namespace UIManager {
         public List<Button> loadoutButtons;
         private UI_Weapon_Inventory playerWeaponInventoryUI;
         private UI_Powerup_Inventory playerPowerupInventoryUI;
+        private PowerupInventory playerPowerupInventory;
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
@@ -231,6 +233,24 @@ namespace UIManager {
             iconColor.a = colorAlpha;
             currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = iconColor;
         }
+        public void deletePowerupIcon(int targetIdx) {
+            Button currButton = powerupInventoryButtons[targetIdx]; // Get the target button
+            Transform powerupIconTransform = currButton.transform.Find("Powerup Icon"); // Find the Powerup Icon child
+
+            if (powerupIconTransform != null) {
+                Image powerupIconImage = powerupIconTransform.gameObject.GetComponent<Image>();
+                if (powerupIconImage != null) {
+                    powerupIconImage.sprite = null; // Remove the sprite
+                    Color iconColor = powerupIconImage.color;
+                    iconColor.a = 0; // Set alpha to 0 to make it invisible
+                    powerupIconImage.color = iconColor;
+                } else {
+                    Debug.LogWarning($"No Image component found on Powerup Icon for button at index {targetIdx}.");
+                }
+            } else {
+                Debug.LogWarning($"Powerup Icon not found for button at index {targetIdx}.");
+            }
+        }
 
         // Updates the icon of a loadout slot.
         public void updateAbilityIcon(int targetIdx, Sprite newImage, int colorAlpha) {
@@ -250,6 +270,55 @@ namespace UIManager {
             else {
                 playerLoadoutUI.enableAbility(targetIdx);
             }
+        }
+
+        // swap button logic
+        public void swapPowerupIcons(int firstIndex, int secondIndex) {
+            Sprite firstIndexImage = powerupInventoryButtons[firstIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
+            Sprite secondIndexImage = powerupInventoryButtons[secondIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
+            deletePowerupIcon(firstIndex);
+            deletePowerupIcon(secondIndex);
+            updatePowerupIcon(firstIndex, secondIndexImage, 255);
+            updatePowerupIcon(secondIndex, firstIndexImage, 255);
+        }
+
+        public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
+            Powerup firstIndexPowerup = playerPowerupInventory.powerups[firstIndex]; // Get the powerup at the first index
+            Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
+            playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
+            playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
+        }
+    
+        public void swapButtonPressed() {
+            StartCoroutine(WaitForPowerupSelection());
+        }
+
+        private IEnumerator WaitForPowerupSelection() {
+            int firstIndex = playerPowerupInventoryUI.currSelected;
+            if (firstIndex == -1) {
+                Debug.Log("No powerup selected to start swapping!");
+                yield break; // Exit if no powerup is selected
+            }
+
+            GameManager.instance.UpdateGameState(GameState.Paused); // Change the game state to 'Paused' (triggers the event)
+            Debug.Log("Waiting for the player to select another powerup...");
+
+            // Wait until the player selects a different powerup
+            while (playerPowerupInventoryUI.currSelected == firstIndex || playerPowerupInventoryUI.currSelected == -1) {
+                yield return null; // Wait for the next frame
+            }
+
+            int secondIndex = playerPowerupInventoryUI.currSelected;
+
+            swapPowerupsInInventory(firstIndex, secondIndex); // Swap the powerups in the inventory
+
+            // Perform the swap for the UI
+            swapPowerupIcons(firstIndex, secondIndex);
+            playerPowerupInventoryUI.selectCurrPowerup(firstIndex, false);
+            playerPowerupInventoryUI.selectCurrPowerup(secondIndex, true);
+
+            GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
+            Debug.Log($"Swapped powerups at indices {firstIndex} and {secondIndex}.");
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within MetricBar.

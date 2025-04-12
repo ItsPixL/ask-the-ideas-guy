@@ -14,6 +14,11 @@ namespace PowerupManager { // create a class for each individual weapon and then
     public class Fire : Powerup { 
         private static Sprite fire2D = Resources.Load<Sprite>("2D/Item Sprites/Sword");
         private static GameObject fire3D = Resources.Load<GameObject>("3D/Items/Sword");
-        public Fire(int link) : base("Fire", fire2D, fire3D, link) {}
+        public Fire(int buff) : base("Fire", fire2D, fire3D, buff) {}
+    }
+    public class Poision : Powerup { 
+        private static Sprite poision2D = Resources.Load<Sprite>("2D/Item Sprites/Poision");
+        private static GameObject poision3D = Resources.Load<GameObject>("3D/Items/Sword");
+        public Poision(int buff) : base("Poision", poision2D, poision3D, buff) {}
     }
 }

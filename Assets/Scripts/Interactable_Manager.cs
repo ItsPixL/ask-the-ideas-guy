@@ -32,12 +32,13 @@ namespace InteractableManager {
     }
 
     public class Powerup : Item {
-        public int link; // what weapon the powerup is linked (found by the value of the weapon's index in the loadout)
-        public Powerup(string name, Sprite object2D, GameObject object3D, int link) {
+        // public int link; // what weapon the powerup is linked (found by the value of the weapon's index in the loadout)
+        public int buff; // what buff the powerup gives (found by the value of the weapon's index in the loadout)
+        public Powerup(string name, Sprite object2D, GameObject object3D, int buff) {
             this.name = name;
             this.object2D = object2D;
             this.object3D = object3D;
-            this.link = link;
+            this.buff = buff;
         }
     }
 
@@ -183,6 +184,11 @@ namespace InteractableManager {
                 }
                 currPowerupCount += 1;
             }
+        }
+
+        // used in the swap powerup logic.
+        public void swapPowerup(int PowerupIdx, Powerup powerup) {
+            powerups[PowerupIdx] = powerup;
         }
 
         // Removes an Powerup from the player inventory.
