@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
+using NUnit.Framework.Constraints;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
@@ -58,6 +58,92 @@ namespace InteractableManager {
         public virtual bool useAbility(GameObject player) {
             return false;
         }
+    }
+
+    public class Inventory {
+        public List<Item> items;
+        public List<int> numberShortcuts;
+        private int maxSlots;
+        private int currItemCount = 0;
+        public int currIdx = 0;
+        public bool selectedSlot = false;
+
+        public Inventory(int maxSlots, List<int> numberShortcuts) {
+            this.maxSlots = maxSlots;
+            this.numberShortcuts = numberShortcuts;
+        }
+
+        // Empties player inventory.
+        public void resetInventory() { 
+            items = new List<Item>(new Item[maxSlots]);
+        }
+
+        // Manages inventory navigation by key inputs.
+        public int checkKeyInput() {
+            int numberPressed = -1;
+            for (int i = 0; i < maxSlots; i++) {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+                    numberPressed = i;
+                }
+            }
+            return numberPressed;
+        }
+
+        // Selects the current Weapon being used.
+        public void selectCurrItem(int targetIdx) {
+            if (targetIdx == -1) {
+                selectedSlot = false;
+            }
+            else {
+                currIdx = targetIdx;
+                selectedSlot = true;
+            }
+        }
+
+        // Returns whether there is space (at least one empty slot) in the player inventory.
+        public bool spaceInInventory() {
+            return currItemCount < maxSlots;
+        }
+
+        // Adds an Weapon to the player inventory.
+        public void addItem(Item item) {
+            if (currItemCount < maxSlots) {
+                for (int i = 0; i < maxSlots; i++) {
+                    if (items[i] is null) {
+                        items[i] = item;
+                        currIdx = i;
+                        break;
+                    }
+                }
+                currItemCount += 1;
+            }
+        }
+
+        // Removes an Weapon from the player inventory.
+        public void removeItem(int WeaponIdx) {
+            items[WeaponIdx] = null;
+            currItemCount -= 1;
+        }
+    }
+
+    public class PowerInventory: Inventory {
+        public List<string> characterShortcuts;
+
+        public PowerInventory(int maxSlots, List<string> characterShortcuts): base(maxSlots, new List<int>()) {
+            this.characterShortcuts = characterShortcuts;
+        }
+
+        // used in the swap powerup logic.
+        public void swapPowerup(int PowerupIdx, Powerup powerup) {
+            powerups[PowerupIdx] = powerup;
+        }
+
+        // Removes an Powerup from the player inventory.
+        public void removePowerup(int PowerupIdx) {
+            powerups[PowerupIdx] = null;
+            currPowerupCount -= 1;
+        }
+
     }
 
     // Handles the logistics of the inventory (but not the UI). The weapon inventory stores the weapons.
