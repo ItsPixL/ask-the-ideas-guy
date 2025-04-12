@@ -1,24 +1,86 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System.Collections;
+using InteractableManager;
+using PowerupManager;
 
 namespace UIManager {
-    // Handles the UI of the inventory.
-    public class UI_Inventory {
+    // Handles the UI of the weapon inventory.
+    public class UI_Weapon_Inventory {
         private List<Button> buttons;
         private Color normalOutlineColour;
         private Color selectedOutlineColour;
         public int currSelected = -1;
 
-        public UI_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
+        public UI_Weapon_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
             this.buttons = buttons;
             this.normalOutlineColour = normalOutlineColour;
             this.selectedOutlineColour = selectedOutlineColour;
         }
 
-        // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
-        public void selectCurrItem(int newIdx, bool toggle) {
+        // Highlights the outline of the selected Weapon slot (if any) in yellow, and leave the rest of the outlines black.
+        public void selectCurrWeapon(int newIdx, bool toggle) {
+            if (currSelected != -1) {
+                Button prevButton = buttons[currSelected];
+                if (prevButton != null) {
+                    Outline prevOutline = prevButton.GetComponent<Outline>();
+                    if (prevOutline != null) {
+                        prevOutline.effectColor = normalOutlineColour;
+                    } else {
+                        Debug.LogWarning($"Button at index {currSelected} has no Outline component.");
+                    }
+                } else {
+                    Debug.LogWarning($"Button at index {currSelected} is null.");
+                }
+            }
+            // if (currSelected != -1) {
+            //     Button prevButton = buttons[currSelected];
+            //     Outline prevOutline = prevButton.GetComponent<Outline>();
+            //     prevOutline.effectColor = normalOutlineColour;
+            // }
+            if (newIdx == currSelected && toggle) {
+                currSelected = -1;
+            }
+            else {
+                currSelected = newIdx;
+            }
+            if (currSelected != -1) {
+                Button currButton = buttons[currSelected];
+                if (currButton != null) {
+                    Outline currOutline = currButton.GetComponent<Outline>();
+                    if (currOutline != null) {
+                        currOutline.effectColor = selectedOutlineColour;
+                    } else {
+                        Debug.LogWarning($"Button at index {currSelected} has no Outline component.");
+                    }
+                } else {
+                    Debug.LogWarning($"Button at index {currSelected} is null.");
+                }
+            }
+            // if (currSelected != -1) {
+            //     Button currButton = buttons[currSelected];
+            //     Outline currOutline = currButton.GetComponent<Outline>();
+            //     currOutline.effectColor = selectedOutlineColour;
+            // }
+        }
+    }
+
+    // Handles the UI of the powerup inventory.
+    public class UI_Powerup_Inventory {
+        private List<Button> buttons;
+        private Color normalOutlineColour;
+        private Color selectedOutlineColour;
+        public int currSelected = -1;
+
+        public UI_Powerup_Inventory(List<Button> buttons, Color normalOutlineColour, Color selectedOutlineColour) {
+            this.buttons = buttons;
+            this.normalOutlineColour = normalOutlineColour;
+            this.selectedOutlineColour = selectedOutlineColour;
+        }
+
+        // Highlights the outline of the selected Powerup slot (if any) in yellow, and leave the rest of the outlines black.
+        public void selectCurrPowerup(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];
                 Outline prevOutline = prevButton.GetComponent<Outline>();
@@ -105,14 +167,17 @@ namespace UIManager {
     }
 
     public class UI_Manager : MonoBehaviour {
-        public List<Button> inventoryButtons;
+        public List<Button> weaponInventoryButtons;
+        public List<Button> powerupInventoryButtons;
         public List<Button> loadoutButtons;
-        private UI_Inventory playerInventoryUI;
+        private UI_Weapon_Inventory playerWeaponInventoryUI;
+        private UI_Powerup_Inventory playerPowerupInventoryUI;
+        private PowerupInventory playerPowerupInventory;
         private UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
-        private GameObject deathPanel;
-        private GameObject pauseMenu;
+        // private GameObject deathPanel;
+        // private GameObject pauseMenu;
         public bool GameIsPaused = false;
         public static UI_Manager instance { get; private set; } // Singleton instance
 
@@ -125,27 +190,67 @@ namespace UIManager {
         }
 
         void Start() {
-            playerInventoryUI = new UI_Inventory(inventoryButtons, Color.black, Color.yellow);
+            playerWeaponInventoryUI = new UI_Weapon_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
+            playerPowerupInventoryUI = new UI_Powerup_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
+            updatePowerupIcon(0, null, 0);
         }
 
         void Update() {
-
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                if (GameIsPaused) {
+                    Resume();
+                }
+                else {
+                    Pause();
+                }
+            }
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
-        public void updateInventoryStatusUI(int targetIdx, bool toggle) {
-            playerInventoryUI.selectCurrItem(targetIdx, toggle);
+        public void updateWeaponInventoryStatusUI(int targetIdx, bool toggle) {
+            playerWeaponInventoryUI.selectCurrWeapon(targetIdx, toggle);
+        }
+        // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Inventory.
+        public void updatePowerupInventoryStatusUI(int targetIdx, bool toggle) {
+            playerPowerupInventoryUI.selectCurrPowerup(targetIdx, toggle);
         }
 
-        // Updates the icon of an inventory slot.
-        public void updateItemIcon(int targetIdx, Sprite newImage, int colorAlpha) {
-            Button currButton = inventoryButtons[targetIdx];
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().sprite = newImage;
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = Color.black;
-            Color iconColor = currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color;
+        // Updates the icon of an weapon inventory slot.
+        public void updateWeaponIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = weaponInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color;
             iconColor.a = colorAlpha;
-            currButton.transform.Find("Item Icon").gameObject.GetComponent<Image>().color = iconColor;
+            currButton.transform.Find("Weapon Icon").gameObject.GetComponent<Image>().color = iconColor;
+        }
+        // Updates the icon of an powerup inventory slot.
+        public void updatePowerupIcon(int targetIdx, Sprite newImage, int colorAlpha) {
+            Button currButton = powerupInventoryButtons[targetIdx]; // this is getting the ability that is currently selected
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite = newImage;
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = Color.black;
+            Color iconColor = currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color;
+            iconColor.a = colorAlpha;
+            currButton.transform.Find("Powerup Icon").gameObject.GetComponent<Image>().color = iconColor;
+        }
+        public void deletePowerupIcon(int targetIdx) {
+            Button currButton = powerupInventoryButtons[targetIdx]; // Get the target button
+            Transform powerupIconTransform = currButton.transform.Find("Powerup Icon"); // Find the Powerup Icon child
+
+            if (powerupIconTransform != null) {
+                Image powerupIconImage = powerupIconTransform.gameObject.GetComponent<Image>();
+                if (powerupIconImage != null) {
+                    powerupIconImage.sprite = null; // Remove the sprite
+                    Color iconColor = powerupIconImage.color;
+                    iconColor.a = 0; // Set alpha to 0 to make it invisible
+                    powerupIconImage.color = iconColor;
+                } else {
+                    Debug.LogWarning($"No Image component found on Powerup Icon for button at index {targetIdx}.");
+                }
+            } else {
+                Debug.LogWarning($"Powerup Icon not found for button at index {targetIdx}.");
+            }
         }
 
         // Updates the icon of a loadout slot.
@@ -166,6 +271,59 @@ namespace UIManager {
             else {
                 playerLoadoutUI.enableAbility(targetIdx);
             }
+        }
+
+        // swap button logic
+        public void swapPowerupIcons(int firstIndex, int secondIndex) {
+            Sprite firstIndexImage = powerupInventoryButtons[firstIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
+            Sprite secondIndexImage = powerupInventoryButtons[secondIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
+            deletePowerupIcon(firstIndex);
+            deletePowerupIcon(secondIndex);
+            updatePowerupIcon(firstIndex, secondIndexImage, 255);
+            updatePowerupIcon(secondIndex, firstIndexImage, 255);
+        }
+
+        public void swapPowerupsInInventory(int firstIndex, int secondIndex) { // Perform the swap in the inventory
+            Powerup firstIndexPowerup = playerPowerupInventory.powerups[firstIndex]; // Get the powerup at the first index
+            Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
+            playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
+            playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
+        }
+
+        public void SetPlayerPowerupInventory(PowerupInventory powerupInventory) {
+            playerPowerupInventory = powerupInventory;
+        }
+    
+        public void swapButtonPressed() {
+            StartCoroutine(WaitForPowerupSelection());
+        }
+
+        private IEnumerator WaitForPowerupSelection() {
+            int firstIndex = playerPowerupInventoryUI.currSelected;
+            if (firstIndex == -1) {
+                Debug.Log("No powerup selected to start swapping!");
+                yield break; // Exit if no powerup is selected
+            }
+
+            GameManager.instance.UpdateGameState(GameState.Paused); // Change the game state to 'Paused' (triggers the event)
+            Debug.Log("Waiting for the player to select another powerup...");
+
+            // Wait until the player selects a different powerup
+            while (playerPowerupInventoryUI.currSelected == firstIndex || playerPowerupInventoryUI.currSelected == -1) {
+                yield return null; // Wait for the next frame
+            }
+
+            int secondIndex = playerPowerupInventoryUI.currSelected;
+
+            swapPowerupsInInventory(firstIndex, secondIndex); // Swap the powerups in the inventory
+
+            // Perform the swap for the UI
+            swapPowerupIcons(firstIndex, secondIndex);
+            playerPowerupInventoryUI.selectCurrPowerup(firstIndex, false);
+            playerPowerupInventoryUI.selectCurrPowerup(secondIndex, true);
+
+            GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
+            Debug.Log($"Swapped powerups at indices {firstIndex} and {secondIndex}.");
         }
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within MetricBar.

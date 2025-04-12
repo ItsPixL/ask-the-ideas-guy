@@ -58,7 +58,12 @@ public class Pick_Mechanic : MonoBehaviour
             if (Input.GetKeyDown("f")) { 
                 showTextUI(false);
                 if (gameObject == closestItemScript.closestObject) {
-                    playerController.addItemToInventory(itemRef);
+                    if (itemRef is Weapon weapon) {
+                        playerController.addWeaponToInventory(weapon);
+                    }
+                    else if (itemRef is Powerup powerup) {
+                        playerController.addPowerupToInventory(powerup);
+                    }
                     itemRef.pickItem();
                     closestItemScript.objectsOfConcern.Remove(gameObject);
                     Destroy(gameObject);
