@@ -38,6 +38,7 @@ public class Player_Controller : MonoBehaviour
         playerLoadout.resetLoadout();
         allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth);
+        UI_Controller.SetPlayerPowerupInventory(playerPowerupInventory);
         Ability permaDashAbility = new Dash(5, 10);
         playerLoadout.addAbility(permaDashAbility, false);
         UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);

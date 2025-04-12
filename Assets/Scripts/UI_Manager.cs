@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using InteractableManager;
+using PowerupManager;
 
 namespace UIManager {
     // Handles the UI of the weapon inventory.
@@ -287,6 +288,10 @@ namespace UIManager {
             Powerup secondIndexPowerup = playerPowerupInventory.powerups[secondIndex]; // Get the powerup at the second index
             playerPowerupInventory.swapPowerup(firstIndex, secondIndexPowerup); // Swap the powerups in the inventory
             playerPowerupInventory.swapPowerup(secondIndex, firstIndexPowerup); // Swap the powerups in the inventory
+        }
+
+        public void SetPlayerPowerupInventory(PowerupInventory powerupInventory) {
+            playerPowerupInventory = powerupInventory;
         }
     
         public void swapButtonPressed() {
