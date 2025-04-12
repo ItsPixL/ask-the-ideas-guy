@@ -17,7 +17,7 @@ public class Player_Controller : MonoBehaviour
     private bool allowPlayerInput = true;
     private Vector2 lastPos2D;
     private Rigidbody playerRb;
-    private WeaponInventory playerWeaponInventory;
+    private Inventory playerWeaponInventory;
     private PowerupInventory playerPowerupInventory;
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
@@ -30,7 +30,7 @@ public class Player_Controller : MonoBehaviour
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
-        playerWeaponInventory = new WeaponInventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 7, 8, 9, 0 });
+        playerWeaponInventory = new Inventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 7, 8, 9, 0 });
         playerWeaponInventory.resetInventory();
         playerPowerupInventory = new PowerupInventory(UI_Controller.powerupInventoryButtons.Count, new List<string> { "c", "v", "b", "n", "m" });
         playerPowerupInventory.resetInventory();
@@ -88,29 +88,13 @@ public class Player_Controller : MonoBehaviour
             MovePlayer(playerForce, 0f, 0f);
         }
     }
-
-    // Checks for whether the player drops an Weapon, and then instantiates that object.
-    public void checkForWeaponDrop() {
-        if (Input.GetKeyDown("e")) {
-            Weapon currWeapon = playerWeaponInventory.weapons[playerWeaponInventory.currIdx];
-            Debug.Log("Weapon dropped!" + " " + currWeapon + " " + playerWeaponInventory.currIdx + " " + playerWeaponInventory.selectedSlot);
-            if (playerWeaponInventory.selectedSlot && currWeapon is not null) {
-                removeWeaponFromInventory(playerWeaponInventory.currIdx);
+    public void checkForDrop(KeyCode keybind, Inventory inventory) {
+        if (Input.GetKeyDown(keybind)) {
+            Item currItem = inventory.items[inventory.currIdx];
+            if (inventory.selectedSlot && currItem is not null) {
+                removeItemFromInventory(inventory.currIdx, inventory);
                 float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-                currWeapon.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-                Quaternion.Euler(0, playerRotationY, 0));
-            }
-        }
-    }
-    // Checks for whether the player drops an Powerup, and then instantiates that object.
-    public void checkForPowerupDrop() {
-        if (Input.GetKeyDown("r")) {
-            Powerup currPowerup = playerPowerupInventory.powerups[playerPowerupInventory.currIdx];
-            Debug.Log("Powerup dropped!" + " " + currPowerup + " " + playerPowerupInventory.currIdx + " " + playerPowerupInventory.selectedSlot);
-            if (playerPowerupInventory.selectedSlot && currPowerup is not null) {
-                removePowerupFromInventory(playerPowerupInventory.currIdx);
-                float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-                currPowerup.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+                currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
                 Quaternion.Euler(0, playerRotationY, 0));
             }
         }
@@ -121,33 +105,23 @@ public class Player_Controller : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Adds an Weapon to the inventory (replaces an Weapon if no inventory space remains) and updates UI to include the new Weapon icon.
-    public void addWeaponToInventory(Weapon Weapon) {
-        Weapon prevWeapon = playerWeaponInventory.weapons[playerWeaponInventory.currIdx];
-        if (prevWeapon is not null && !playerWeaponInventory.spaceInInventory()) {
-            removeWeaponFromInventory(playerWeaponInventory.currIdx);
+    public void addItemToInventory(Item item, Inventory inventory) {
+        Item prevItem = inventory.items[inventory.currIdx];
+        if (prevItem is not null && !inventory.spaceInInventory()) {
+            /* removeItemFromInventory(inventory.curridx); */
             float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-            prevWeapon.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+            prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
             Quaternion.Euler(0, playerRotationY, 0));
         }
-        playerWeaponInventory.addWeapon(Weapon);
-        updateWeaponInventoryStatus(playerWeaponInventory.currIdx);
-        UI_Controller.updateWeaponIcon(playerWeaponInventory.currIdx, Weapon.object2D, 255);
-        updateAbilities(playerWeaponInventory.currIdx, playerWeaponInventory.selectedSlot);
-    }
-    // Adds an Powerup to the inventory (replaces an Powerup if no inventory space remains) and updates UI to include the new Powerup icon.
-    public void addPowerupToInventory(Powerup Powerup) {
-        Powerup prevPowerup = playerPowerupInventory.powerups[playerPowerupInventory.currIdx];
-        if (prevPowerup is not null && !playerPowerupInventory.spaceInInventory()) {
-            removePowerupFromInventory(playerPowerupInventory.currIdx);
-            float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-            prevPowerup.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-            Quaternion.Euler(0, playerRotationY, 0));
+        inventory.addItem(item);
+        // updateInventoryStatus(inventory.currIdx);
+        // UI_Controller.updateInventoryIcon();
+        if (item is Weapon) {
+            updateAbilities(inventory.currIdx, inventory.selectedSlot);
         }
-        playerPowerupInventory.addPowerup(Powerup);
-        updatePowerupInventoryStatus(playerPowerupInventory.currIdx);
-        UI_Controller.updatePowerupIcon(playerPowerupInventory.currIdx, Powerup.object2D, 255);
-        // add the stat buffs to the weapon
+        else if (item is Powerup) {
+            // Add the stat buffs to the weapon
+        }
     }
 
     // Adds all abilities associated with an Weapon to the loadout and updates UI to include the new ability icons.
@@ -158,18 +132,14 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    // Removes the currently selected Weapon from the inventory and removes the icon on that slot.
-    public void removeWeaponFromInventory(int targetIdx) {
-        playerWeaponInventory.removeWeapon(targetIdx);
-        updateWeaponInventoryStatus(-1);
-        UI_Controller.updateWeaponIcon(targetIdx, null, 0); // update this
-        updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
-    }
-    // Removes the currently selected Powerup from the inventory and removes the icon on that slot.
-    public void removePowerupFromInventory(int targetIdx) {
-        playerPowerupInventory.removePowerup(targetIdx);
-        updatePowerupInventoryStatus(-1);
-        UI_Controller.updatePowerupIcon(targetIdx, null, 0); // update this
+    public void removeItemFromInventory(int targetIdx, Inventory inventory) {
+        inventory.removeItem(targetIdx);
+        updateInventoryStatus(-1, inventory);
+        // UI_Controller.updateIcon();
+        if (inventory.items[targetIdx] is Weapon) {
+            updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
+        }
+
     }
 
     // Removes all abilities associated with an Weapon from the loadout and updates UI to remove those ability icons.
@@ -181,36 +151,19 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    // Updates weapon inventory information and UI to respond to player interaction.
-    public void updateWeaponInventoryStatus(int targetIdx) {
-        playerWeaponInventory.selectCurrWeapon(targetIdx);
-        UI_Controller.updateWeaponInventoryStatusUI(targetIdx, false);
-        updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
-    }
-    // Same as above function, however with this function, selecting on an already selected icon will deselect it instead.
-    public void updateWeaponInventoryStatusSecure(int targetIdx) {
-        if (targetIdx != playerWeaponInventory.currIdx || !playerWeaponInventory.selectedSlot) {
-            playerWeaponInventory.selectCurrWeapon(targetIdx);
-        } else {
-            playerWeaponInventory.selectCurrWeapon(-1);
-        }
-        UI_Controller.updateWeaponInventoryStatusUI(targetIdx, true);
-        updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
+    public void updateInventoryStatus(int targetIdx, Inventory inventory) {
+        inventory.selectCurrItem(targetIdx);
+        // UI_Controller.updateInventoryStatusUI(targetIdx, false)
     }
 
-    // Updates powerup inventory information and UI to respond to player interaction.
-    public void updatePowerupInventoryStatus(int targetIdx) {
-        playerPowerupInventory.selectCurrPowerup(targetIdx);
-        UI_Controller.updatePowerupInventoryStatusUI(targetIdx, false);
-    }
-    // Same as above function, however with this function, selecting on an already selected icon will deselect it instead.
-    public void updatePowerupInventoryStatusSecure(int targetIdx) {
-        if (targetIdx != playerPowerupInventory.currIdx || !playerPowerupInventory.selectedSlot) {
-            playerPowerupInventory.selectCurrPowerup(targetIdx);
-        } else {
-            playerPowerupInventory.selectCurrPowerup(-1);
+    public void updateInventoryStatusSecure(int targetIdx, Inventory inventory) {
+        if (targetIdx != inventory.currIdx || !inventory.selectedSlot) {
+            inventory.selectCurrItem(targetIdx);
         }
-        UI_Controller.updatePowerupInventoryStatusUI(targetIdx, true);
+        else {
+            inventory.selectCurrItem(-1);
+        }
+        // UI_Controler.updateInventoryStatusUI(targetIdx, true)
     }
 
     // Updates loadout information and UI to respond to player interaction. 
@@ -225,8 +178,8 @@ public class Player_Controller : MonoBehaviour
     // Updates the current abilities and their icons depending on the Weapon being held.
     public void updateAbilities(int targetIdx, bool selectedSlot) {
         removeAbilitiesFromLoadout();
-        if (selectedSlot && playerWeaponInventory.weapons[targetIdx] is not null) {
-            addAbilitiesToLoadout(playerWeaponInventory.weapons[targetIdx]);
+        if (selectedSlot && playerWeaponInventory.items[targetIdx] is not null) {
+            addAbilitiesToLoadout((Weapon)playerWeaponInventory.items[targetIdx]);
         }
     }
 
@@ -265,18 +218,18 @@ public class Player_Controller : MonoBehaviour
             int powerupInventoryInput = playerPowerupInventory.checkKeyInput();
             int loadoutInput = playerLoadout.checkKeyInput();
             if (weaponInventoryInput != -1) {
-                updateWeaponInventoryStatusSecure(weaponInventoryInput);
+                updateInventoryStatusSecure(weaponInventoryInput, playerWeaponInventory);
                 // updateAbilities(playerWeaponInventory.currIdx, playerWeaponInventory.selectedSlot);
             }
             if (powerupInventoryInput != -1) {
-                updatePowerupInventoryStatusSecure(powerupInventoryInput);
+                updateInventoryStatusSecure(powerupInventoryInput, playerPowerupInventory);
             }
             if (loadoutInput > -1) {
                 updateLoadoutStatus(loadoutInput);
             }
             UI_Controller.updateMetricBars(playerHealth);
-            checkForWeaponDrop();
-            checkForPowerupDrop();
+            checkForDrop(KeyCode.E, playerWeaponInventory);
+            checkForDrop(KeyCode.R, playerPowerupInventory);
         }
         UI_Controller.updateMetricBars(playerHealth);
         if (playerHealth <= 0) {
