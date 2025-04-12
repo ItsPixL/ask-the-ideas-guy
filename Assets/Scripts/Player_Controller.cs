@@ -24,8 +24,7 @@ public class Player_Controller : MonoBehaviour
     private bool tested = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    void Start() {
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerHealth = maxHealth;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
@@ -43,180 +42,8 @@ public class Player_Controller : MonoBehaviour
         UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);
     }
 
-    private void test() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
-        testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
-        testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup = new Fire(0);
-        testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup1 = new Fire(0);
-        testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup2 = new Fire(0);
-        testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup3 = new Fire(0);
-        testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup4 = new Poision(0);
-        testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
-    }
-
-    // Moves the character.
-    void MovePlayer(float forceX, float forceY, float forceZ)
-    {
-        playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
-    }
-
-    // Allows character movement by player input.
-    void InitPlayerMovement()
-    {
-        if (Input.GetKey("w"))
-        {
-            MovePlayer(0f, 0f, playerForce);
-        }
-        if (Input.GetKey("s"))
-        {
-            MovePlayer(0f, 0f, -playerForce);
-        }
-        if (Input.GetKey("a"))
-        {
-            MovePlayer(-playerForce, 0f, 0f);
-        }
-        if (Input.GetKey("d"))
-        {
-            MovePlayer(playerForce, 0f, 0f);
-        }
-    }
-    public void checkForDrop(KeyCode keybind, Inventory inventory) {
-        if (Input.GetKeyDown(keybind)) {
-            Item currItem = inventory.items[inventory.currIdx];
-            if (inventory.selectedSlot && currItem is not null) {
-                removeItemFromInventory(inventory.currIdx, inventory);
-                float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-                currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-                Quaternion.Euler(0, playerRotationY, 0));
-            }
-        }
-    }
-
-    private void PlayerDied() {
-        UI_Manager.instance.GameOver();
-        gameObject.SetActive(false);
-    }
-
-    public void addItemToInventory(Item item, Inventory inventory) {
-        Item prevItem = inventory.items[inventory.currIdx];
-        if (prevItem is not null && !inventory.spaceInInventory()) {
-            if (item is Weapon) {
-                removeItemFromInventory(inventory.currIdx, playerWeaponInventory); 
-            }
-            else if (item is Powerup) {
-                removeItemFromInventory(inventory.currIdx, playerPowerupInventory); 
-            }
-            float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
-            prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-            Quaternion.Euler(0, playerRotationY, 0));
-        }
-        inventory.addItem(item);
-        if (item is Weapon) {
-            updateInventoryStatus(inventory.currIdx, inventory, 'W');
-            UI_Controller.updateInventoryIcon(UI_Controller.weaponInventoryButtons, playerWeaponInventory.currIdx, item.object2D, 255);
-        }
-        else if (item is Powerup) {
-            updateInventoryStatus(inventory.currIdx, inventory, 'P');
-            UI_Controller.updateInventoryIcon(UI_Controller.powerupInventoryButtons, playerPowerupInventory.currIdx, item.object2D, 255);
-        }
-        if (item is Weapon) {
-            updateAbilities(inventory.currIdx, inventory.selectedSlot);
-        }
-        else if (item is Powerup) {
-            // Add the stat buffs to the weapon
-        }
-    }
-
-    // Adds all abilities associated with an Weapon to the loadout and updates UI to include the new ability icons.
-    public void addAbilitiesToLoadout(Weapon weapon) {
-        foreach (Ability ability in weapon.abilityList) {
-            int abilityIdx = playerLoadout.addAbility(ability, true);
-            UI_Controller.updateAbilityIcon(abilityIdx, ability.icon, 255);
-        }
-    }
-
-    public void removeItemFromInventory(int targetIdx, Inventory inventory) {
-        inventory.removeItem(targetIdx);
-        if (inventory == playerWeaponInventory) {
-            updateInventoryStatus(-1, inventory, 'W');
-            removeAbilitiesFromLoadout();
-            UI_Controller.updateInventoryIcon(UI_Controller.weaponInventoryButtons, targetIdx, null, 0);
-        }
-        else if (inventory == playerPowerupInventory) {
-            updateInventoryStatus(-1, inventory, 'P');
-            UI_Controller.updateInventoryIcon(UI_Controller.powerupInventoryButtons, targetIdx, null, 0);
-        }
-    }
-
-    // Removes all abilities associated with an Weapon from the loadout and updates UI to remove those ability icons.
-    public void removeAbilitiesFromLoadout() {
-        List<int> slotsUsed = playerLoadout.currSlotsUsed;
-        playerLoadout.removeAbilities();
-        foreach (int abilityIdx in slotsUsed) {
-            UI_Controller.updateAbilityIcon(abilityIdx, null, 0);
-        }
-    }
-
-    public void updateInventoryStatus(int targetIdx, Inventory inventory, char itemType) {
-        inventory.selectCurrItem(targetIdx);
-        UI_Controller.updateInventoryStatusUI(targetIdx, false, itemType);
-    }
-
-    public void updateWeaponInventoryStatusSecure(int targetIdx) {
-        if (targetIdx != playerWeaponInventory.currIdx || !playerWeaponInventory.selectedSlot) {
-            playerWeaponInventory.selectCurrItem(targetIdx);
-        }
-        else {
-            playerWeaponInventory.selectCurrItem(-1);
-        }
-        updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
-        UI_Controller.updateInventoryStatusUI(targetIdx, true, 'W');
-    }
-
-    public void updatePowerupInventoryStatusSecure(int targetIdx) {
-        if (targetIdx != playerPowerupInventory.currIdx || !playerPowerupInventory.selectedSlot) {
-            playerPowerupInventory.selectCurrItem(targetIdx);
-        }
-        else {
-            playerPowerupInventory.selectCurrItem(-1);
-        }
-        UI_Controller.updateInventoryStatusUI(targetIdx, true, 'P');
-    }
-
-    // Updates loadout information and UI to respond to player interaction. 
-    public void updateLoadoutStatus(int targetIdx)
-    {
-        if (playerLoadout.useAbility(targetIdx, gameObject))
-        {
-            UI_Controller.updateLoadoutStatusUI(targetIdx, false);
-        }
-    }
-
-    // Updates the current abilities and their icons depending on the Weapon being held.
-    public void updateAbilities(int targetIdx, bool selectedSlot) {
-        removeAbilitiesFromLoadout();
-        if (selectedSlot && playerWeaponInventory.items[targetIdx] is not null) {
-            addAbilitiesToLoadout((Weapon)playerWeaponInventory.items[targetIdx]);
-        }
-    }
-
-    // public void updateLinks() {
-    //    for (int i = 0; i < playerPowerupInventory.powerups.Count; i++) {
-    //         if (playerPowerupInventory.powerups[i] is not null && playerWeaponInventory.weapons[i] is not null) {
-    //             playerPowerupInventory.powerups[i].buff(playerWeaponInventory.weapons[i]);
-    //         }
-    //     }
-    // }
-
     // Update function used for all physics updates.
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         if (allowPlayerInput)
         {
             InitPlayerMovement();
@@ -224,9 +51,7 @@ public class Player_Controller : MonoBehaviour
     }
 
     // All other updates are in the standard Update() function, such as checking for other player inputs.
-    void Update()
-    {
-        // All other updates are in the standard Update() function, such as checking for other player inputs.
+    void Update() {
         Vector2 playerPos2D = new Vector2(gameObject.transform.position.x, gameObject.transform.position.z);
         if (playerPos2D != lastPos2D) {
             lastMovementDirection = (playerPos2D-lastPos2D).normalized;
@@ -263,6 +88,183 @@ public class Player_Controller : MonoBehaviour
         // playerHealth -= 0.25f;
         // Debug.Log("Player Health: " + playerHealth);
     }
+
+    // A test function that spawns some items.
+    private void test() {
+        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
+        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
+        testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
+        testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
+        Powerup testPowerup = new Fire(0);
+        testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
+        Powerup testPowerup1 = new Fire(0);
+        testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
+        Powerup testPowerup2 = new Fire(0);
+        testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
+        Powerup testPowerup3 = new Fire(0);
+        testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
+        Powerup testPowerup4 = new Poision(0);
+        testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
+    }
+
+    // Moves the character.
+    void MovePlayer(float forceX, float forceY, float forceZ) {
+        playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
+    }
+
+    // Allows character movement by player input.
+    void InitPlayerMovement() {
+        if (Input.GetKey("w"))
+        {
+            MovePlayer(0f, 0f, playerForce);
+        }
+        if (Input.GetKey("s"))
+        {
+            MovePlayer(0f, 0f, -playerForce);
+        }
+        if (Input.GetKey("a"))
+        {
+            MovePlayer(-playerForce, 0f, 0f);
+        }
+        if (Input.GetKey("d"))
+        {
+            MovePlayer(playerForce, 0f, 0f);
+        }
+    }
+
+    // Checks if the keybind ('E'/'R') has been pressed, and drops the item that is being held.
+    public void checkForDrop(KeyCode keybind, Inventory inventory) {
+        if (Input.GetKeyDown(keybind)) {
+            Item currItem = inventory.items[inventory.currIdx];
+            if (inventory.selectedSlot && currItem is not null) {
+                removeItemFromInventory(inventory.currIdx, inventory);
+                float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+                currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+                Quaternion.Euler(0, playerRotationY, 0));
+            }
+        }
+    }
+
+    private void PlayerDied() {
+        UI_Manager.instance.GameOver();
+        gameObject.SetActive(false);
+    }
+
+    // Adds an item to the correct inventory and updates UI to include the new item icons.
+    public void addItemToInventory(Item item, Inventory inventory) {
+        Item prevItem = inventory.items[inventory.currIdx];
+        if (prevItem is not null && !inventory.spaceInInventory()) {
+            if (item is Weapon) {
+                removeItemFromInventory(inventory.currIdx, playerWeaponInventory); 
+            }
+            else if (item is Powerup) {
+                removeItemFromInventory(inventory.currIdx, playerPowerupInventory); 
+            }
+            float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+            prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
+            Quaternion.Euler(0, playerRotationY, 0));
+        }
+        inventory.addItem(item);
+        if (item is Weapon) {
+            updateInventoryStatus(inventory.currIdx, inventory, 'W');
+            UI_Controller.updateInventoryIcon(UI_Controller.weaponInventoryButtons, playerWeaponInventory.currIdx, item.object2D, 255);
+        }
+        else if (item is Powerup) {
+            updateInventoryStatus(inventory.currIdx, inventory, 'P');
+            UI_Controller.updateInventoryIcon(UI_Controller.powerupInventoryButtons, playerPowerupInventory.currIdx, item.object2D, 255);
+        }
+        if (item is Weapon) {
+            updateAbilities(inventory.currIdx, inventory.selectedSlot);
+        }
+        else if (item is Powerup) {
+            // Add the stat buffs to the weapon
+        }
+    }
+
+    // Adds all abilities associated with a weapon to the loadout and updates UI to include the new ability icons.
+    public void addAbilitiesToLoadout(Weapon weapon) {
+        foreach (Ability ability in weapon.abilityList) {
+            int abilityIdx = playerLoadout.addAbility(ability, true);
+            UI_Controller.updateAbilityIcon(abilityIdx, ability.icon, 255);
+        }
+    }
+
+    // Removes an item from its respective inventory and updates UI to remove those item icons.
+    public void removeItemFromInventory(int targetIdx, Inventory inventory) {
+        inventory.removeItem(targetIdx);
+        if (inventory == playerWeaponInventory) {
+            updateInventoryStatus(-1, inventory, 'W');
+            removeAbilitiesFromLoadout();
+            UI_Controller.updateInventoryIcon(UI_Controller.weaponInventoryButtons, targetIdx, null, 0);
+        }
+        else if (inventory == playerPowerupInventory) {
+            updateInventoryStatus(-1, inventory, 'P');
+            UI_Controller.updateInventoryIcon(UI_Controller.powerupInventoryButtons, targetIdx, null, 0);
+        }
+    }
+
+    // Removes all abilities associated with a weapon from the loadout and updates UI to remove those ability icons.
+    public void removeAbilitiesFromLoadout() {
+        List<int> slotsUsed = playerLoadout.currSlotsUsed;
+        playerLoadout.removeAbilities();
+        foreach (int abilityIdx in slotsUsed) {
+            UI_Controller.updateAbilityIcon(abilityIdx, null, 0);
+        }
+    }
+
+    // Updates a specific slot of an inventory.
+    public void updateInventoryStatus(int targetIdx, Inventory inventory, char itemType) {
+        inventory.selectCurrItem(targetIdx);
+        UI_Controller.updateInventoryStatusUI(targetIdx, false, itemType);
+    }
+
+    // Like updateInventoryStatus(), but if the weapon that is selected was already selected, deselect it. 
+    public void updateWeaponInventoryStatusSecure(int targetIdx) {
+        if (targetIdx != playerWeaponInventory.currIdx || !playerWeaponInventory.selectedSlot) {
+            playerWeaponInventory.selectCurrItem(targetIdx);
+        }
+        else {
+            playerWeaponInventory.selectCurrItem(-1);
+        }
+        updateAbilities(targetIdx, playerWeaponInventory.selectedSlot);
+        UI_Controller.updateInventoryStatusUI(targetIdx, true, 'W');
+    }
+
+    // Like updateInventoryStatus(), but if the powerup that is selected was already selected, deselect it.
+    public void updatePowerupInventoryStatusSecure(int targetIdx) {
+        if (targetIdx != playerPowerupInventory.currIdx || !playerPowerupInventory.selectedSlot) {
+            playerPowerupInventory.selectCurrItem(targetIdx);
+        }
+        else {
+            playerPowerupInventory.selectCurrItem(-1);
+        }
+        UI_Controller.updateInventoryStatusUI(targetIdx, true, 'P');
+    }
+
+    // Updates loadout information and UI to respond to player interaction. 
+    public void updateLoadoutStatus(int targetIdx)
+    {
+        if (playerLoadout.useAbility(targetIdx, gameObject))
+        {
+            UI_Controller.updateLoadoutStatusUI(targetIdx, false);
+        }
+    }
+
+    // Updates the current abilities and their icons depending on the Weapon being held.
+    public void updateAbilities(int targetIdx, bool selectedSlot) {
+        removeAbilitiesFromLoadout();
+        if (selectedSlot && playerWeaponInventory.items[targetIdx] is not null) {
+            addAbilitiesToLoadout((Weapon)playerWeaponInventory.items[targetIdx]);
+        }
+    }
+
+    // Update the link between the powerup and the weapon.
+    /* public void updateLinks() {
+    for (int i = 0; i < playerPowerupInventory.powerups.Count; i++) {
+        if (playerPowerupInventory.powerups[i] is not null && playerWeaponInventory.weapons[i] is not null) {
+            playerPowerupInventory.powerups[i].buff(playerWeaponInventory.weapons[i]);
+        }
+    } */
 
     // saving and loading functions
     public void GetPlayerData(ref Player_Save_Data data) { // uses a reference as a parameter rather than a normal one because we don't want to copy the data, we want to be able to modify the original data

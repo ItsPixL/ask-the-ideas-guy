@@ -5,7 +5,7 @@ using System.Collections;
 using InteractableManager;
 
 namespace UIManager {
-    // Handles the UI of the weapon inventory.
+    // Handles the UI of an inventory.
     public class UI_Inventory {
         private List<Button> buttons;
         private Color normalOutlineColour;
@@ -18,7 +18,7 @@ namespace UIManager {
             this.selectedOutlineColour = selectedOutlineColour;
         }
 
-        // Highlights the outline of the selected Weapon slot (if any) in yellow, and leave the rest of the outlines black.
+        // Highlights the outline of the selected item slot (if any) in yellow, and leave the rest of the outlines black.
         public void selectCurrItem(int newIdx, bool toggle) {
             if (currSelected != -1) {
                 Button prevButton = buttons[currSelected];

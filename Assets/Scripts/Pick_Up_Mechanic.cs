@@ -25,33 +25,6 @@ public class Pick_Mechanic : MonoBehaviour
         showTextUI(false);
     }
 
-    // Checks if a player is nearby and if the object can be picked.
-    public bool canPickObject() {
-        Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
-
-        foreach (Collider hit in hits) {
-            if (hit.CompareTag("Player")) {
-                if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
-                    closestItemScript.objectsOfConcern.Add(gameObject);
-                }
-                return true;
-            }
-        }
-        return false; 
-    }
-
-    public void showTextUI(bool state) {
-        if (pickupText is not null) {
-            pickupText.gameObject.SetActive(state);
-        }
-    }
-
-    // Draws a sphere around the item to show the detection radius. Only works if you have selected the item from the hierarchy.
-    void OnDrawGizmosSelected() {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(gameObject.transform.position, detectionRadius);
-    }
-
     // Update is called once per frame
     void Update() {
         playerNearby = canPickObject();
@@ -78,5 +51,32 @@ public class Pick_Mechanic : MonoBehaviour
             }
             showTextUI(false); 
         }
+    }
+
+    // Checks if a player is nearby and if the object can be picked.
+    public bool canPickObject() {
+        Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
+
+        foreach (Collider hit in hits) {
+            if (hit.CompareTag("Player")) {
+                if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
+                    closestItemScript.objectsOfConcern.Add(gameObject);
+                }
+                return true;
+            }
+        }
+        return false; 
+    }
+
+    public void showTextUI(bool state) {
+        if (pickupText is not null) {
+            pickupText.gameObject.SetActive(state);
+        }
+    }
+
+    // Draws a sphere around the item to show the detection radius. Only works if you have selected the item from the hierarchy.
+    void OnDrawGizmosSelected() {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(gameObject.transform.position, detectionRadius);
     }
 }
