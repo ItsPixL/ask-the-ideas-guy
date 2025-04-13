@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
@@ -60,27 +59,26 @@ namespace InteractableManager {
         }
     }
 
-    // Handles the logistics of the inventory (but not the UI). The weapon inventory stores the weapons.
-    public class WeaponInventory {
-        public List<Weapon> weapons;
+    public class Inventory {
+        public List<Item> items;
         public List<int> numberShortcuts;
-        private int maxSlots;
-        private int currWeaponCount = 0;
+        protected int maxSlots;
+        protected int currItemCount = 0;
         public int currIdx = 0;
         public bool selectedSlot = false;
 
-        public WeaponInventory(int maxSlots, List<int> numberShortcuts) {
+        public Inventory(int maxSlots, List<int> numberShortcuts) {
             this.maxSlots = maxSlots;
             this.numberShortcuts = numberShortcuts;
         }
 
         // Empties player inventory.
         public void resetInventory() { 
-            weapons = new List<Weapon>(new Weapon[maxSlots]);
+            items = new List<Item>(new Item[maxSlots]);
         }
 
         // Manages inventory navigation by key inputs.
-        public int checkKeyInput() {
+        public virtual int checkKeyInput() {
             int numberPressed = -1;
             for (int i = 0; i < maxSlots; i++) {
                 if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
@@ -91,7 +89,7 @@ namespace InteractableManager {
         }
 
         // Selects the current Weapon being used.
-        public void selectCurrWeapon(int targetIdx) {
+        public void selectCurrItem(int targetIdx) {
             if (targetIdx == -1) {
                 selectedSlot = false;
             }
@@ -103,99 +101,58 @@ namespace InteractableManager {
 
         // Returns whether there is space (at least one empty slot) in the player inventory.
         public bool spaceInInventory() {
-            return currWeaponCount < maxSlots;
+            return currItemCount < maxSlots;
         }
 
         // Adds an Weapon to the player inventory.
-        public void addWeapon(Weapon weapon) {
-            if (currWeaponCount < maxSlots) {
+        public void addItem(Item item) {
+            if (currItemCount < maxSlots) {
                 for (int i = 0; i < maxSlots; i++) {
-                    if (weapons[i] is null) {
-                        weapons[i] = weapon;
+                    if (items[i] is null) {
+                        items[i] = item;
                         currIdx = i;
                         break;
                     }
                 }
-                currWeaponCount += 1;
+                currItemCount += 1;
             }
         }
 
         // Removes an Weapon from the player inventory.
-        public void removeWeapon(int WeaponIdx) {
-            weapons[WeaponIdx] = null;
-            currWeaponCount -= 1;
+        public void removeItem(int WeaponIdx) {
+            items[WeaponIdx] = null;
+            currItemCount -= 1;
         }
     }
 
-    // Handles the logistics of the inventory (but not the UI). The Powerup inventory stores the Powerups.
-    public class PowerupInventory {
-        public List<Powerup> powerups;
-        public List<string> characterShortcuts;
-        private int maxSlots;
-        private int currPowerupCount = 0;
-        public int currIdx = 0;
-        public bool selectedSlot = false;
-
-        public PowerupInventory(int maxSlots, List<string> characterShortcuts) {
-            this.maxSlots = maxSlots;
+    public class PowerupInventory: Inventory {
+        public List<char> characterShortcuts;
+        public PowerupInventory(int maxSlots, List<char> characterShortcuts): base(maxSlots, new List<int>()) {
             this.characterShortcuts = characterShortcuts;
         }
 
-        // Empties player inventory.
-        public void resetInventory() { 
-            powerups = new List<Powerup>(new Powerup[maxSlots]);
-        }
-
-        // Manages inventory navigation by key inputs.
-        public int checkKeyInput() {
-            for (int i = 0; i < maxSlots; i++) {
-                if (Input.GetKeyDown(characterShortcuts[i])) {
-                    return i;
+        public override int checkKeyInput() {
+            int idxPressed = -1;
+            for (int i=0; i < maxSlots; i++) {
+                KeyCode keyCode = (KeyCode)System.Enum.Parse(typeof(KeyCode), characterShortcuts[i].ToString().ToUpper());
+                if (Input.GetKeyDown(keyCode)) {
+                    idxPressed = i;
                 }
             }
-            return -1;
-        }
-
-        // Selects the current Powerup being used.
-        public void selectCurrPowerup(int targetIdx) {
-            if (targetIdx == -1) {
-                selectedSlot = false;
-            }
-            else {
-                currIdx = targetIdx;
-                selectedSlot = true;
-            }
-        }
-
-        // Returns whether there is space (at least one empty slot) in the player inventory.
-        public bool spaceInInventory() {
-            return currPowerupCount < maxSlots;
-        }
-
-        // Adds an Powerup to the player inventory.
-        public void addPowerup(Powerup powerup) {
-            if (currPowerupCount < maxSlots) {
-                for (int i = 0; i < maxSlots; i++) {
-                    if (powerups[i] is null) {
-                        powerups[i] = powerup;
-                        currIdx = i;
-                        break;
-                    }
-                }
-                currPowerupCount += 1;
-            }
+            return idxPressed;
         }
 
         // used in the swap powerup logic.
         public void swapPowerup(int PowerupIdx, Powerup powerup) {
-            powerups[PowerupIdx] = powerup;
+            items[PowerupIdx] = powerup;
         }
 
         // Removes an Powerup from the player inventory.
         public void removePowerup(int PowerupIdx) {
-            powerups[PowerupIdx] = null;
-            currPowerupCount -= 1;
+            items[PowerupIdx] = null;
+            currItemCount -= 1;
         }
+
     }
 
     // Handles the logistics of the loadout (but not the UI). The loadout stores the usable abilities.

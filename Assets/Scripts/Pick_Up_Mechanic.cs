@@ -5,6 +5,7 @@ using InteractableManager;
 public class Pick_Mechanic : MonoBehaviour
 {
     public static TMP_Text pickupText;
+    public GameObject player;
     private bool playerNearby = false; 
     private static Player_Controller playerController; 
     private static Update_Closest_Item closestItemScript;
@@ -13,14 +14,43 @@ public class Pick_Mechanic : MonoBehaviour
     private float detectionRadius;
 
     void Start() {
-        playerController = GameObject.Find("Player").GetComponent<Player_Controller>();
-        closestItemScript = GameObject.Find("Player").GetComponent<Update_Closest_Item>();
+        player = GameObject.Find("Player");
+        playerController = player.GetComponent<Player_Controller>();
+        closestItemScript = player.GetComponent<Update_Closest_Item>();
         playerLayerMask = 1 << LayerMask.NameToLayer("Player");
         detectionRadius = playerController.pickUpRange;
         if (pickupText == null) { // 
             pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>(); // Finds pickupText automatically
         }
         showTextUI(false);
+    }
+
+    // Update is called once per frame
+    void Update() {
+        playerNearby = canPickObject();
+        if (playerNearby) { 
+            showTextUI(true); 
+            if (Input.GetKeyDown("f")) { 
+                showTextUI(false);
+                if (gameObject == closestItemScript.closestObject) {
+                    if (itemRef is Weapon weapon) {
+                        playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
+                    }
+                    else if (itemRef is Powerup powerup) {
+                        playerController.addItemToInventory(powerup, playerController.playerPowerupInventory);
+                    }
+                    itemRef.pickItem();
+                    closestItemScript.objectsOfConcern.Remove(gameObject);
+                    Destroy(gameObject);
+                }
+            }
+        }
+        else {
+            if (closestItemScript.objectsOfConcern.Contains(gameObject)) {
+                closestItemScript.objectsOfConcern.Remove(gameObject);
+            }
+            showTextUI(false); 
+        }
     }
 
     // Checks if a player is nearby and if the object can be picked.
@@ -48,33 +78,5 @@ public class Pick_Mechanic : MonoBehaviour
     void OnDrawGizmosSelected() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(gameObject.transform.position, detectionRadius);
-    }
-
-    // Update is called once per frame
-    void Update() {
-        playerNearby = canPickObject();
-        if (playerNearby) { 
-            showTextUI(true); 
-            if (Input.GetKeyDown("f")) { 
-                showTextUI(false);
-                if (gameObject == closestItemScript.closestObject) {
-                    if (itemRef is Weapon weapon) {
-                        playerController.addWeaponToInventory(weapon);
-                    }
-                    else if (itemRef is Powerup powerup) {
-                        playerController.addPowerupToInventory(powerup);
-                    }
-                    itemRef.pickItem();
-                    closestItemScript.objectsOfConcern.Remove(gameObject);
-                    Destroy(gameObject);
-                }
-            }
-        }
-        else {
-            if (closestItemScript.objectsOfConcern.Contains(gameObject)) {
-                closestItemScript.objectsOfConcern.Remove(gameObject);
-            }
-            showTextUI(false); 
-        }
     }
 }
