@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -5,30 +6,40 @@ namespace MonsterManager {
 
     // Defines all the basic properties and methods of a monster.
     public class Monster { 
+        public float health;
+        public float damage;
         private float movementSpeed;
         private int rotationSpeed;
+        private float attackRange;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
-        public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
+        public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private bool seenPlayer = false;
+        public bool isAttacking = false;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
         private Vector2 monsterPos2D;
         private Vector2 monsterForward2D;
+        private Vector2 playerPos2D;
+        private Animator monsterAnimator;
 
-        public Monster(float movementSpeed, int rotationSpeed, int sightRange, int fieldOfView, int hearingRange) {
+        public Monster(float health, float damage, float movementSpeed, int rotationSpeed, float attackRange, int sightRange, int hearingRange, int fieldOfView) {
+            this.health = health;
+            this.damage = damage;
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
+            this.attackRange = attackRange;
             this.sightRange = sightRange;
-            this.fieldOfView = fieldOfView;
             this.hearingRange = hearingRange; 
+            this.fieldOfView = fieldOfView;
         }
 
         // Passes all GameObjects to this class.
         public void initGameObjects(GameObject monster, GameObject player) {
             this.monster = monster;
             this.player = player;
+            monsterAnimator = monster.GetComponent<Animator>();
         }
 
         // Checks whether the player is within the monster's field of view.
@@ -39,7 +50,7 @@ namespace MonsterManager {
         }
 
         // Checks whether the player is close enough to the monster.
-        private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, int targetDistance) {
+        private bool reachableDistance(Vector2 playerPos, Vector2 monsterPos, float targetDistance) {
             float distance = Vector2.Distance(playerPos, monsterPos);
             return distance <= targetDistance;
         }
@@ -47,7 +58,6 @@ namespace MonsterManager {
         // Checks whether the monster can detect the player.
         private bool detectedPlayer(string detectionType) {
             // Checks whether the player can be seen or not. 
-            Vector2 playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
             if (detectionType == "seen" && reachableDistance(playerPos2D, monsterPos2D, sightRange) && checkFOV(playerPos2D, monsterPos2D)) {
                 return true;
             }
@@ -129,6 +139,7 @@ namespace MonsterManager {
         public void checkForPlayer() {
             monsterPos2D = new Vector2(monster.transform.position.x, monster.transform.position.z);
             monsterForward2D = new Vector2(monster.transform.forward.x, monster.transform.forward.z).normalized;
+            playerPos2D = new Vector2(player.transform.position.x, player.transform.position.z);
             bool possiblySeen = detectedPlayer("seen");
             if (possiblySeen) {
                 seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), player);
@@ -146,6 +157,19 @@ namespace MonsterManager {
             if (!float.IsNaN(lastSeenPos.x)) {
                 chasePlayer();
             }
+        }
+
+        // Checks if the monster can attack the player.
+        public virtual void checkForAttack() {
+            if (seenPlayer && reachableDistance(playerPos2D, monsterPos2D, attackRange)) {
+                isAttacking = true;
+                dealDamage(damage);
+            }
+        }
+
+        // When the damage is actually dealt - This function can be activated through animation or other code.
+        public void dealDamage(float damage) {
+            player.GetComponent<Player_Controller>().playerHealth -= damage;
         }
     }
 }
