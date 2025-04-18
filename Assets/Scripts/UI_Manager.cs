@@ -258,6 +258,7 @@ namespace UIManager {
         }
     
         public void swapButtonPressed() {
+            Debug.Log("What's up?");
             StartCoroutine(WaitForPowerupSelection());
         }
 
