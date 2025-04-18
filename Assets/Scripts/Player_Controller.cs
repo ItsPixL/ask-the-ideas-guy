@@ -36,7 +36,6 @@ public class Player_Controller : MonoBehaviour
         playerPowerupInventory.resetInventory();
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerLoadout.resetLoadout();
-        allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth);
         UI_Controller.SetPlayerPowerupInventory(playerPowerupInventory);
         Ability permaDashAbility = new Dash(5, 10);
