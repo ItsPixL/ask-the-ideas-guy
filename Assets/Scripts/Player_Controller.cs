@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using WeaponManager;
 using PowerupManager;
 using AbilityManager;
+using System.Linq.Expressions;
 // using System.Threading;
 
 public class Player_Controller : MonoBehaviour
@@ -14,6 +15,7 @@ public class Player_Controller : MonoBehaviour
     public float playerHealth;
     public float pickUpRange = 5f;
     private bool allowPlayerInput = true;
+    private bool isPlayerDead = false;
     private Vector2 lastPos2D;
     private Rigidbody playerRb;
     public Inventory playerWeaponInventory;
@@ -34,7 +36,6 @@ public class Player_Controller : MonoBehaviour
         playerPowerupInventory.resetInventory();
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerLoadout.resetLoadout();
-        allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth);
         UI_Controller.SetPlayerPowerupInventory(playerPowerupInventory);
         Ability permaDashAbility = new Dash(5, 10);
@@ -80,8 +81,9 @@ public class Player_Controller : MonoBehaviour
             checkForDrop(KeyCode.R, playerPowerupInventory);
         }
         UI_Controller.updateMetricBars(playerHealth);
-        if (playerHealth <= 0) {
+        if (playerHealth <= 0 && !isPlayerDead) {
             allowPlayerInput = false;
+            isPlayerDead = true;
             Debug.Log("Player has died.");
             PlayerDied();
         }
@@ -108,12 +110,12 @@ public class Player_Controller : MonoBehaviour
     }
 
     // Moves the character.
-    void MovePlayer(float forceX, float forceY, float forceZ) {
+    public void MovePlayer(float forceX, float forceY, float forceZ) {
         playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
     }
 
     // Allows character movement by player input.
-    void InitPlayerMovement() {
+    public void InitPlayerMovement() {
         if (Input.GetKey("w"))
         {
             MovePlayer(0f, 0f, playerForce);
@@ -146,7 +148,7 @@ public class Player_Controller : MonoBehaviour
     }
 
     private void PlayerDied() {
-        UI_Manager.instance.GameOver();
+        UI_Controller.GameOver();
         gameObject.SetActive(false);
     }
 
