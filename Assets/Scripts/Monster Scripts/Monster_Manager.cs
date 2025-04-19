@@ -48,7 +48,7 @@ namespace MonsterManager {
             this.fieldOfView = fieldOfView;
         }
 
-        // Passes all GameObjects to this class.
+        // Passes all related GameObjects to this class.
         public void initGameObjects(GameObject monster, GameObject player) {
             this.monster = monster;
             this.player = player;

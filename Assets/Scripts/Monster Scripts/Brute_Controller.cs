@@ -13,6 +13,7 @@ public class Brute_Controller: MonoBehaviour {
 
     public void initMonster(float health, float damage) {
         brute = new Brute(health, damage);
+        brute.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
     }
 
     public void initMonsterMovement(float movementSpeed, int rotationSpeed) {
