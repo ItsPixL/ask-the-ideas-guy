@@ -3,11 +3,13 @@ using MonsterManager;
 using UnityEngine.Rendering;
 
 public class Monster_Controller : MonoBehaviour {
+    // Plan is to get rid of ALL of these variables from the inspector, only there currently for testing purposes.
     public float health;
     public float damage;
     public float movementSpeed;
     public int rotationSpeed;
     public float attackRange;
+    public float attackCooldown;
     public int sightRange;
     public int hearingRange;
     public int fieldOfView;
@@ -15,7 +17,10 @@ public class Monster_Controller : MonoBehaviour {
     private float lastAttackTime;
 
     void Start() {
-        entity = new Monster(health, damage, movementSpeed, rotationSpeed, attackRange, sightRange, hearingRange, fieldOfView);
+        entity = new Monster(health, damage);
+        entity.initMovementAttributes(movementSpeed, rotationSpeed);
+        entity.initAttackAttributes(attackRange, attackCooldown);
+        entity.initSensoryAttributes(sightRange, hearingRange, fieldOfView);
         entity.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
     }
 

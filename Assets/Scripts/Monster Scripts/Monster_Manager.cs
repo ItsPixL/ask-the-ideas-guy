@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace MonsterManager {
         private float movementSpeed;
         private int rotationSpeed;
         private float attackRange;
+        public float attackCooldown;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
@@ -24,14 +24,28 @@ namespace MonsterManager {
         private Vector2 playerPos2D;
         private Animator monsterAnimator;
 
-        public Monster(float health, float damage, float movementSpeed, int rotationSpeed, float attackRange, int sightRange, int hearingRange, int fieldOfView) {
+        // Initialises only the very basic monster attributes as a constructor class.
+        public Monster(float health, float damage) {
             this.health = health;
             this.damage = damage;
+        }
+
+        // Initialises the monster's movement related attributes.
+        public void initMovementAttributes(float movementSpeed, int rotationSpeed) {
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
+        }
+
+        // Initialises the monster's attack related attributes.
+        public void initAttackAttributes(float attackRange, float attackCooldown) {
             this.attackRange = attackRange;
+            this.attackCooldown = attackCooldown;
+        }
+
+        // Initialises the monster's sensory related attributes.
+        public void initSensoryAttributes(int sightRange, int hearingRange, int fieldOfView) {
             this.sightRange = sightRange;
-            this.hearingRange = hearingRange; 
+            this.hearingRange = hearingRange;
             this.fieldOfView = fieldOfView;
         }
 
@@ -171,5 +185,9 @@ namespace MonsterManager {
         public void dealDamage(float damage) {
             player.GetComponent<Player_Controller>().playerHealth -= damage;
         }
+    }
+
+    public class Brute: Monster {
+        public Brute(float health, float damage): base(health, damage) {}
     }
 }
