@@ -10,12 +10,12 @@ namespace MonsterManager {
         private float movementSpeed;
         private int rotationSpeed;
         private float attackRange;
-        public float attackCooldown;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private bool seenPlayer = false;
         public bool isAttacking = false;
+        public float lastAttackTime;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
@@ -37,9 +37,8 @@ namespace MonsterManager {
         }
 
         // Initialises the monster's attack related attributes.
-        public void initAttackAttributes(float attackRange, float attackCooldown) {
+        public void initAttackAttributes(float attackRange) {
             this.attackRange = attackRange;
-            this.attackCooldown = attackCooldown;
         }
 
         // Initialises the monster's sensory related attributes.

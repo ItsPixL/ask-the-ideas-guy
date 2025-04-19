@@ -9,19 +9,22 @@ public class Monster_Controller : MonoBehaviour {
     public float movementSpeed;
     public int rotationSpeed;
     public float attackRange;
-    public float attackCooldown;
     public int sightRange;
     public int hearingRange;
     public int fieldOfView;
     private Monster entity;
     private float lastAttackTime;
+    public enum monsterType {
+        Brute
+    }
+    public monsterType currMonsterType;
 
     void Start() {
         entity = new Monster(health, damage);
         entity.initMovementAttributes(movementSpeed, rotationSpeed);
-        entity.initAttackAttributes(attackRange, attackCooldown);
+        entity.initAttackAttributes(attackRange);
         entity.initSensoryAttributes(sightRange, hearingRange, fieldOfView);
-        entity.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
+        entity.initGameObjects(gameObject, GameObject.FindWithTag("Player")); 
     }
 
     void Update() {
@@ -33,6 +36,20 @@ public class Monster_Controller : MonoBehaviour {
         else if (Time.time-lastAttackTime > 1.5) {
             entity.isAttacking = false;
         }
+    }
+
+    // Initialises the specific script for that specific monster (this script is the script that all monsters have attached).
+    public void initSpecificScript(string inputtedMonsterType) {
+        monsterType currMonsterType = monsterType.Brute;
+        if (System.Enum.TryParse(inputtedMonsterType, out monsterType outputtedMonsterType)) {
+            currMonsterType = outputtedMonsterType;
+        }
+        switch (currMonsterType) {
+            case monsterType.Brute:
+                gameObject.AddComponent<Brute_Controller>();
+                break;
+        }
+        this.currMonsterType = currMonsterType;
     }
 
     // The function below is for testing purposes only. It will be removed when all of the code is finalised.
