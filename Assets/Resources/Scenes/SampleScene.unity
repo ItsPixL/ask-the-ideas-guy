@@ -5016,8 +5016,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 243719704745749137, guid: 339aaf92daaa2d94eb7b636a76179896, type: 3}
+      propertyPath: sightRange
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 243719704745749137, guid: 339aaf92daaa2d94eb7b636a76179896, type: 3}
       propertyPath: attackRange
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 243719704745749137, guid: 339aaf92daaa2d94eb7b636a76179896, type: 3}
+      propertyPath: rotationSpeed
+      value: 121
       objectReference: {fileID: 0}
     - target: {fileID: 2227472621142938242, guid: 339aaf92daaa2d94eb7b636a76179896, type: 3}
       propertyPath: m_Name

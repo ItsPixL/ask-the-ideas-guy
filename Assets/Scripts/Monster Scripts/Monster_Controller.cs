@@ -1,6 +1,5 @@
 using UnityEngine;
 using MonsterManager;
-using UnityEngine.Rendering;
 
 public class Monster_Controller : MonoBehaviour {
     // Plan is to get rid of ALL of these variables from the inspector, only there currently for testing purposes.
@@ -13,43 +12,51 @@ public class Monster_Controller : MonoBehaviour {
     public int hearingRange;
     public int fieldOfView;
     private Monster entity;
-    private float lastAttackTime;
-    public enum monsterType {
-        Brute
-    }
-    public monsterType currMonsterType;
+    public monsterType currMonsterType = monsterType.Brute;
+    private MonsterComponent newComponent;
 
     void Start() {
-        entity = new Monster(health, damage);
-        entity.initMovementAttributes(movementSpeed, rotationSpeed);
-        entity.initAttackAttributes(attackRange);
-        entity.initSensoryAttributes(sightRange, hearingRange, fieldOfView);
-        entity.initGameObjects(gameObject, GameObject.FindWithTag("Player")); 
+
     }
 
     void Update() {
-        entity.checkForPlayer();
-        if (!entity.isAttacking) {
-            entity.checkForAttack();
-            lastAttackTime = Time.time;
-        }
-        else if (Time.time-lastAttackTime > 1.5) {
-            entity.isAttacking = false;
-        }
+
     }
 
     // Initialises the specific script for that specific monster (this script is the script that all monsters have attached).
-    public void initSpecificScript(string inputtedMonsterType) {
-        monsterType currMonsterType = monsterType.Brute;
-        if (System.Enum.TryParse(inputtedMonsterType, out monsterType outputtedMonsterType)) {
-            currMonsterType = outputtedMonsterType;
-        }
+    public void initSpecificScript(monsterType inputtedMonsterType) {
+        currMonsterType = inputtedMonsterType;
         switch (currMonsterType) {
             case monsterType.Brute:
                 gameObject.AddComponent<Brute_Controller>();
+                newComponent = gameObject.GetComponent<Brute_Controller>();
                 break;
         }
-        this.currMonsterType = currMonsterType;
+    }
+
+    // Initialises the new (specific) monster, including health and damage.
+    public void initMonster(float health, float damage) {
+        newComponent.initMonster(health, damage);
+    }
+
+    // Initialises the movement related attributes of the specific monster.
+    public void initMonsterMovement(float movementSpeed, int rotationSpeed) {
+        newComponent.initMonsterMovement(movementSpeed, rotationSpeed);
+    }
+
+    // Initialises the attack related attributes of the specific monster.
+    public void initMonsterAttack(float attackRange, float attackCooldown) {
+        newComponent.initMonsterAttack(attackRange, attackCooldown);
+    }
+
+    // Initialises the sensory related attributes of the specific monster.
+    public void initMonsterSenses(int sightRange, int hearingRange, int fieldOfView) {
+        newComponent.initMonsterSenses(sightRange, hearingRange, fieldOfView);
+    }
+
+    // Used to activate/deactivate the monster.
+    public void setMonsterStatus(bool monsterStatus) {
+        newComponent.setMonsterStatus(monsterStatus);
     }
 
     // The function below is for testing purposes only. It will be removed when all of the code is finalised.

@@ -2,6 +2,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MonsterManager {
+    // Defines the types of monsters available.
+    public enum monsterType {
+        Brute
+    }
 
     // Defines all the basic properties and methods of a monster.
     public class Monster { 
@@ -10,11 +14,12 @@ namespace MonsterManager {
         private float movementSpeed;
         private int rotationSpeed;
         private float attackRange;
+        private float attackCooldown;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private bool seenPlayer = false;
-        public bool isAttacking = false;
+        public bool canAttack = true;
         public float lastAttackTime;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
@@ -37,8 +42,9 @@ namespace MonsterManager {
         }
 
         // Initialises the monster's attack related attributes.
-        public void initAttackAttributes(float attackRange) {
+        public void initAttackAttributes(float attackRange, float attackCooldown) {
             this.attackRange = attackRange;
+            this.attackCooldown = attackCooldown;
         }
 
         // Initialises the monster's sensory related attributes.
@@ -174,9 +180,13 @@ namespace MonsterManager {
 
         // Checks if the monster can attack the player.
         public virtual void checkForAttack() {
-            if (seenPlayer && reachableDistance(playerPos2D, monsterPos2D, attackRange)) {
-                isAttacking = true;
+            if (seenPlayer && reachableDistance(playerPos2D, monsterPos2D, attackRange) && canAttack) {
                 dealDamage(damage);
+                lastAttackTime = Time.time;
+                canAttack = false;
+            }
+            if (Time.time-lastAttackTime >= attackCooldown) {
+                canAttack = true;
             }
         }
 
