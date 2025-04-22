@@ -1,21 +1,28 @@
-using System.Linq.Expressions;
+using MonsterSpawnerManager;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MonsterManager {
+    // Defines the types of monsters available.
+    public enum monsterType {
+        Brute
+    }
 
     // Defines all the basic properties and methods of a monster.
     public class Monster { 
         public float health;
         public float damage;
+        public MonsterSpawner birthSpawner;
         private float movementSpeed;
         private int rotationSpeed;
         private float attackRange;
+        private float attackCooldown;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private int hearingRange;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private bool seenPlayer = false;
-        public bool isAttacking = false;
+        public bool canAttack = true;
+        public float lastAttackTime;
         public GameObject monster; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private GameObject player;
         private Vector2 lastSeenPos = new Vector2(float.NaN, float.NaN);
@@ -24,18 +31,33 @@ namespace MonsterManager {
         private Vector2 playerPos2D;
         private Animator monsterAnimator;
 
-        public Monster(float health, float damage, float movementSpeed, int rotationSpeed, float attackRange, int sightRange, int hearingRange, int fieldOfView) {
+        // Initialises only the very basic monster attributes as a constructor class.
+        public Monster(float health, float damage, MonsterSpawner birthSpawner) {
             this.health = health;
             this.damage = damage;
+            this.birthSpawner = birthSpawner;
+        }
+
+        // Initialises the monster's movement related attributes.
+        public void initMovementAttributes(float movementSpeed, int rotationSpeed) {
             this.movementSpeed = movementSpeed;
             this.rotationSpeed = rotationSpeed;
+        }
+
+        // Initialises the monster's attack related attributes.
+        public void initAttackAttributes(float attackRange, float attackCooldown) {
             this.attackRange = attackRange;
+            this.attackCooldown = attackCooldown;
+        }
+
+        // Initialises the monster's sensory related attributes.
+        public void initSensoryAttributes(int sightRange, int hearingRange, int fieldOfView) {
             this.sightRange = sightRange;
-            this.hearingRange = hearingRange; 
+            this.hearingRange = hearingRange;
             this.fieldOfView = fieldOfView;
         }
 
-        // Passes all GameObjects to this class.
+        // Passes all related GameObjects to this class.
         public void initGameObjects(GameObject monster, GameObject player) {
             this.monster = monster;
             this.player = player;
@@ -161,9 +183,13 @@ namespace MonsterManager {
 
         // Checks if the monster can attack the player.
         public virtual void checkForAttack() {
-            if (seenPlayer && reachableDistance(playerPos2D, monsterPos2D, attackRange)) {
-                isAttacking = true;
+            if (seenPlayer && reachableDistance(playerPos2D, monsterPos2D, attackRange) && canAttack) {
                 dealDamage(damage);
+                lastAttackTime = Time.time;
+                canAttack = false;
+            }
+            if (Time.time-lastAttackTime >= attackCooldown) {
+                canAttack = true;
             }
         }
 
@@ -171,5 +197,9 @@ namespace MonsterManager {
         public void dealDamage(float damage) {
             player.GetComponent<Player_Controller>().playerHealth -= damage;
         }
+    }
+
+    public class Brute: Monster {
+        public Brute(float health, float damage, MonsterSpawner birthSpawner): base(health, damage, birthSpawner) {}
     }
 }
