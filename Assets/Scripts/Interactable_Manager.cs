@@ -3,6 +3,23 @@ using System.Collections.Generic;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
+    public class NPCInteractable {
+        public string npcName; // The name of the NPC
+        public string npcDialogue; // The dialogue of the NPC
+
+        private void Start() {
+            // Initialization code can go here if needed
+        }
+
+        private void Update() {
+            // Update code can go here if needed
+        }
+
+        public void Interact() {
+            // Code to handle interaction with the NPC, such as displaying dialogue
+            Debug.Log($"Interacting with {npcName}: {npcDialogue}");
+        }
+    }
     public abstract class Item { // abstract = the class can't be used to create objects, but can be used to create other classes
         public string name;
         public Sprite object2D;
