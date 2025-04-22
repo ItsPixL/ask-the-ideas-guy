@@ -1,5 +1,6 @@
 using UnityEngine;
 using MonsterManager;
+using MonsterSpawnerManager;
 
 public class Monster_Controller : MonoBehaviour {
     // Plan is to get rid of ALL of these variables from the inspector, only there currently for testing purposes.
@@ -35,8 +36,8 @@ public class Monster_Controller : MonoBehaviour {
     }
 
     // Initialises the new (specific) monster, including health and damage.
-    public void initMonster(float health, float damage) {
-        newComponent.initMonster(health, damage);
+    public void initMonster(float health, float damage, MonsterSpawner birthSpawner) {
+        newComponent.initMonster(health, damage, birthSpawner);
     }
 
     // Initialises the movement related attributes of the specific monster.

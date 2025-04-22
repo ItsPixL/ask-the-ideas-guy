@@ -2,19 +2,20 @@ using UnityEngine;
 using MonsterManager;
 using MonsterSpawnerManager;
 using System.Collections.Generic;
-using Unity.Cinemachine;
 
 public class Testing_Monster_Spawner: MonoBehaviour {
     public List<string> nameRegistry;
     public List<GameObject> prefabRegistry;
     private MonsterSpawner testSpawner1;
+    private MonsterSpawner testSpawner2;
+    private MonsterSpawnerConnector testConnector1;
 
     void Start() {
-        createTestMonster();
+        createTestMonsters();
     }
 
     void Update() {
-        testSpawner1.spawnMonster();
+        testConnector1.spawnMonsters();
     }
 
     private GameObject convertToPrefab(string monsterVarient) {
@@ -25,7 +26,7 @@ public class Testing_Monster_Spawner: MonoBehaviour {
         return prefabRegistry[targetIdx];
     } 
 
-    private void createTestMonster() {
+    private void createTestMonsters() {
         List<List<float>> allowedSpawnPos = new List<List<float>>{
             new List<float>{-8f, 5f},
             new List<float>{1f, 1f},
@@ -35,7 +36,10 @@ public class Testing_Monster_Spawner: MonoBehaviour {
         List<float> movementStats = new List<float>{5, 180};
         List<float> attackStats = new List<float>{1.5f, 1.5f};
         List<int> sensoryStats = new List<int>{10, 5, 160};
-        testSpawner1 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 1);
+        testSpawner1 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 1, 3, 15);
+        testSpawner2 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 2, 4, 20);
         testSpawner1.initCommonStats(basicStats, movementStats, attackStats, sensoryStats);
+        testSpawner2.initCommonStats(basicStats, movementStats, attackStats, sensoryStats);
+        testConnector1 = new MonsterSpawnerConnector(new List<MonsterSpawner>{testSpawner1, testSpawner2}, 5);
     }
 }

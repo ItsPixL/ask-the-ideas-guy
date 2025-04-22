@@ -1,3 +1,4 @@
+using MonsterSpawnerManager;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace MonsterManager {
     public class Monster { 
         public float health;
         public float damage;
+        public MonsterSpawner birthSpawner;
         private float movementSpeed;
         private int rotationSpeed;
         private float attackRange;
@@ -30,9 +32,10 @@ namespace MonsterManager {
         private Animator monsterAnimator;
 
         // Initialises only the very basic monster attributes as a constructor class.
-        public Monster(float health, float damage) {
+        public Monster(float health, float damage, MonsterSpawner birthSpawner) {
             this.health = health;
             this.damage = damage;
+            this.birthSpawner = birthSpawner;
         }
 
         // Initialises the monster's movement related attributes.
@@ -197,6 +200,6 @@ namespace MonsterManager {
     }
 
     public class Brute: Monster {
-        public Brute(float health, float damage): base(health, damage) {}
+        public Brute(float health, float damage, MonsterSpawner birthSpawner): base(health, damage, birthSpawner) {}
     }
 }

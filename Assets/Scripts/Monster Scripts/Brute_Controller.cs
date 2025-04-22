@@ -1,5 +1,6 @@
 using UnityEngine;
 using MonsterManager;
+using MonsterSpawnerManager;
 
 public class Brute_Controller: MonoBehaviour, MonsterComponent {
     public Brute brute;
@@ -15,8 +16,8 @@ public class Brute_Controller: MonoBehaviour, MonsterComponent {
         }
     }
 
-    public void initMonster(float health, float damage) {
-        brute = new Brute(health, damage);
+    public void initMonster(float health, float damage, MonsterSpawner birthSpawner) {
+        brute = new Brute(health, damage, birthSpawner);
         brute.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
     }
 
