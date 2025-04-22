@@ -2,6 +2,8 @@ using UnityEngine;
 using MonsterManager;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Unity.Cinemachine;
 
 namespace MonsterSpawnerManager {
     public class MonsterSpawner {
@@ -9,15 +11,11 @@ namespace MonsterSpawnerManager {
         private GameObject monsterPrefab;
         private List<List<float>> allowedSpawnPos;
         public int spawnLimit;
-        public List<List<float>> basicStatsRange;
-        private List<int> basicStatRoundings; 
-        public List<List<float>> movementStatsRange;
-        private List<int> movementStatRoundings; 
-        public List<List<float>> attackStatsRange;
-        private List<int> attackStatRoundings; 
-        public List<List<int>> sensoryStatsRange;
-        public List<List<float>> customStatsRange;
-        private List<int> customStatRoundings;
+        public List<float> basicStats;
+        public List<float> movementStats;
+        public List<float> attackStats;
+        public List<int> sensoryStats;
+        public List<float> customStats;
         public int currMonsterCount = 0;
         
         // Initialises the monster spawner, defining the basic characteristics that control spawner behaviour.
@@ -29,78 +27,53 @@ namespace MonsterSpawnerManager {
             this.spawnLimit = spawnLimit;
         }
 
-        // Initialises the range of values that the basic stats can be within for the monster.
-        public void initBasicStats(List<List<float>> basicStatsRange, List<int> basicStatRoundings) {
-            this.basicStatsRange = basicStatsRange;
-            this.basicStatRoundings = basicStatRoundings;
+        // Initialises the common/generic stats for the monster.
+        public void initCommonStats(List<float> basicStats, List<float> movementStats, List<float> attackStats, 
+        List<int> sensoryStats) {
+            this.basicStats = basicStats;
+            this.movementStats = movementStats;
+            this.attackStats = attackStats;
+            this.sensoryStats = sensoryStats;
         }
 
-        // Initialises the range of values that the movement related stats can be within for the monster.
-        public void initMovementStats(List<List<float>> movementStatsRange, List<int> movementStatRoundings) {
-            this.movementStatsRange = movementStatsRange;
-            this.movementStatRoundings = movementStatRoundings;
+        // Initialises the custom stats for the monster (varies by monster).
+        public void initcustomStats(List<float> customStats) {
+            this.customStats = customStats;
         }
 
-        // Initialises the range of values that the attack related stats can be within for the monster.
-        public void initAttackStats(List<List<float>> attackStatsRange, List<int> attackStatRoundings) {
-            this.attackStatsRange = attackStatsRange;
-            this.attackStatRoundings = attackStatRoundings;
-        }
-
-        // Initialises the range of values that the sensory related stats can be within for the monster.
-        public void initSensoryStats(List<List<int>> sensoryStatsRange) {
-            this.sensoryStatsRange = sensoryStatsRange;
-        }
-
-        // Initialises the range of values that the custom stats can be within for the monster (varies by monster).
-        public void initcustomStatsRange(List<List<float>> customStatsRange, List<int> customStatRoundings) {
-            this.customStatsRange = customStatsRange;
-            this.customStatRoundings = customStatRoundings;
-        }
-
-        // For each List<int> within a larger list, choose a random integer between the two numbers in that List<int>.
-        public List<int> chooseRandomInts(List<List<int>> initialInts) {
-            List<int> output = new List<int>();
-            foreach (List<int> intRange in initialInts) {
-                int chosenInt = Random.Range(intRange.Min(), intRange.Max()+1);
-                output.Add(chosenInt);
-            }
-            return output;
-        }
-
-        // For each List<float> within a larger list, choose a random float between the two numbers in that List<float>.
-        // Rounding is done to each float value to some d.p. This is for memory and performance optimisation purposes.
-        public List<float> chooseRandomFloats(List<List<float>> initialFloats, List<int> decimalPlaces) {
+        // Chooses a random spawn position for the monster, within a given range.
+        public Vector3 chooseSpawnPos() {
             List<float> output = new List<float>();
-            int idx = 0;
-            foreach (List<float> floatRange in initialFloats) {
-                float chosenFloat = (float)System.Math.Round(Random.Range(floatRange.Min(), floatRange.Max()), decimalPlaces[idx]);
-                output.Add(chosenFloat);
-                idx += 1;
+            foreach (List<float> axisRange in allowedSpawnPos) {
+                float chosenVal = (float)System.Math.Round(Random.Range(axisRange.Min(), axisRange.Max()), 2);
+                output.Add(chosenVal);
             }
-            return output;
+            return new Vector3(output[0], output[1], output[2]);
         }
-
-        // Defines the exact value that the monster will have for each common stat.
-        public void setCommonMonsterStats(GameObject newMonster) {
-            Monster_Controller newMonsterController = newMonster.GetComponent<Monster_Controller>();
-            List<float> basicStats = chooseRandomFloats(basicStatsRange, basicStatRoundings);
-            List<float> movementStats = chooseRandomFloats(movementStatsRange, movementStatRoundings);
-            List<float> attackStats = chooseRandomFloats(attackStatsRange, attackStatRoundings);
-            List<int> sensoryStats = chooseRandomInts(sensoryStatsRange);
-            newMonsterController.initSpecificScript(typeSpawned);
+ 
+        // Sets the common stats within the monster controller to the given values.
+        public void setCommonMonsterStats(Monster_Controller newMonsterController) {
             newMonsterController.initMonster(basicStats[0], basicStats[1]);
             newMonsterController.initMonsterMovement(movementStats[0], (int)movementStats[1]);
             newMonsterController.initMonsterAttack(attackStats[0], attackStats[1]);
             newMonsterController.initMonsterSenses(sensoryStats[0], sensoryStats[1], sensoryStats[2]);
         }
 
+        // Defines the exact value that the monster will have for each custom stat (varies by monster).
+        public void setCustomMonsterStats(Monster_Controller newMonsterController) {}
+
         // Spawns the monster, and sets the monster stats before enabling it.
         public void spawnMonster() {
-            List<float> spawnPosFloat = chooseRandomFloats(allowedSpawnPos, new List<int>{2, 2, 2});
-            Vector3 spawnPos = new Vector3(spawnPosFloat[0], spawnPosFloat[1], spawnPosFloat[2]);
-            GameObject newMonster = Object.Instantiate(monsterPrefab, spawnPos, Quaternion.Euler(0, Random.Range(0, 360), 0));
-            setCommonMonsterStats(newMonster);
+            if (currMonsterCount < spawnLimit) {
+                Vector3 spawnPos = chooseSpawnPos();
+                GameObject newMonster = Object.Instantiate(monsterPrefab, spawnPos, Quaternion.Euler(0, Random.Range(0, 360), 0));
+                Monster_Controller newMonsterController = newMonster.GetComponent<Monster_Controller>();
+                newMonsterController.initSpecificScript(typeSpawned);
+                setCommonMonsterStats(newMonsterController);
+                setCustomMonsterStats(newMonsterController);
+                newMonsterController.setMonsterStatus(true);
+                currMonsterCount += 1;
+            }
         }
 
     }
