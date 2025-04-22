@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using InteractableManager;
-// using NPCInteractable;
+using NPCInteractableManager;
 
 public class Pick_Mechanic : MonoBehaviour
 {
@@ -13,9 +13,10 @@ public class Pick_Mechanic : MonoBehaviour
     public Item itemRef;
     private static LayerMask playerLayerMask;
     private float detectionRadius;
-    // for npc interactions
+
+    // NPC interaction settings
     public LayerMask npcLayerMask;
-    public float interactRange = 2f; // The range within which the player can interact with NPCs
+    public float interactRange = 2f;
 
     void Start() {
         player = GameObject.Find("Player");
@@ -23,62 +24,64 @@ public class Pick_Mechanic : MonoBehaviour
         closestItemScript = player.GetComponent<Update_Closest_Item>();
         playerLayerMask = 1 << LayerMask.NameToLayer("Player");
         detectionRadius = playerController.pickUpRange;
+
         if (pickupText == null) {
-            pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>(); // Finds pickupText automatically
+            pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
         }
         showTextUI(false);
     }
 
-    // Update is called once per frame
     void Update() {
         playerNearby = canPickObject();
-        if (playerNearby) { 
-            showTextUI(true); 
-            if (Input.GetKeyDown("f")) { 
-                showTextUI(false);
-                if (gameObject == closestItemScript.closestObject) {
-                    if (itemRef is Weapon weapon) {
-                        playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
-                        itemRef.pickItem();
-                        closestItemScript.objectsOfConcern.Remove(gameObject);
-                        Destroy(gameObject);
-                    }
-                    else if (itemRef is Powerup powerup) {
-                        playerController.addItemToInventory(powerup, playerController.playerPowerupInventory);
-                        itemRef.pickItem();
-                        closestItemScript.objectsOfConcern.Remove(gameObject);
-                        Destroy(gameObject);
-                    }
+
+        // Show pickup UI if player is nearby
+        if (playerNearby) {
+            showTextUI(true);
+        } else {
+            showTextUI(false);
+        }
+
+        if (Input.GetKeyDown("f")) {
+            // trying NPC interaction
+            bool interactedWithNPC = TryInteractWithNPC(); // having a flag to check if player interacted with NPC, and re-initialising it every time
+
+            // Only continue to item interaction if player DIDN'T interact with NPC
+            if (!interactedWithNPC && itemRef != null && gameObject == closestItemScript.closestObject) {
+                if (itemRef is Weapon weapon) {
+                    playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
+                } else if (itemRef is Powerup powerup) {
+                    playerController.addItemToInventory(powerup, playerController.playerPowerupInventory);
                 }
-            }
-        }
-        else {
-            if (closestItemScript.objectsOfConcern.Contains(gameObject)) {
+
+                itemRef.pickItem();
                 closestItemScript.objectsOfConcern.Remove(gameObject);
+                Destroy(gameObject);
             }
-            showTextUI(false); 
         }
-        if (Input.GetKeyDown("g")) { // Interact with NPCs
-        Debug.Log("G key pressed for NPC interaction.");
-            TryInteractWithNPC();
+
+        // Remove item from concern if player is far away
+        if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
+            closestItemScript.objectsOfConcern.Remove(gameObject);
         }
     }
 
-    void TryInteractWithNPC() {
-        Collider[] hits = Physics.OverlapSphere(transform.position, interactRange, npcLayerMask);
-        foreach (var hit in hits) {
-            NPCInteractable npc = hit.GetComponent<NPCInteractable>();
+    bool TryInteractWithNPC() {
+        Collider[] npchits = Physics.OverlapSphere(player.transform.position, interactRange, npcLayerMask); // creates the list everytime so the list isn't persistent
+        if (npchits.Length == 0) {
+            return false; // No NPCs nearby
+        }
+        foreach (var npchit in npchits) {
+            NPCInteractable npc = npchit.GetComponent<NPCInteractable>();
             if (npc != null) {
                 npc.Interact();
-                break; // Only interact with the first NPC
+                return true; // Interaction happened
             }
         }
+        return false; // No NPC nearby
     }
 
-    // Checks if a player is nearby and if the object can be picked.
     public bool canPickObject() {
         Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
-
         foreach (Collider hit in hits) {
             if (hit.CompareTag("Player")) {
                 if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
@@ -87,7 +90,7 @@ public class Pick_Mechanic : MonoBehaviour
                 return true;
             }
         }
-        return false; 
+        return false;
     }
 
     public void showTextUI(bool state) {
@@ -96,7 +99,6 @@ public class Pick_Mechanic : MonoBehaviour
         }
     }
 
-    // Draws a sphere around the item to show the detection radius. Only works if you have selected the item from the hierarchy.
     void OnDrawGizmosSelected() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(gameObject.transform.position, detectionRadius);
