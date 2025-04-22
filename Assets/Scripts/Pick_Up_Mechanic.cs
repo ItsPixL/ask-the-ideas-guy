@@ -5,7 +5,7 @@ using NPCInteractableManager;
 
 public class Pick_Mechanic : MonoBehaviour
 {
-    public static TMP_Text pickupText;
+    public TMP_Text pickupText;
     public GameObject player;
     private bool playerNearby = false; 
     private static Player_Controller playerController; 
@@ -27,6 +27,7 @@ public class Pick_Mechanic : MonoBehaviour
 
         if (pickupText == null) {
             pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
+            Debug.Log("Pickup text found: " + pickupText);
         }
         showTextUI(false);
     }
@@ -35,11 +36,11 @@ public class Pick_Mechanic : MonoBehaviour
         playerNearby = canPickObject();
 
         // Show pickup UI if player is nearby
-        if (playerNearby) {
-            showTextUI(true);
-        } else {
-            showTextUI(false);
-        }
+        // if (playerNearby) {
+        //     showTextUI(true);
+        // } else {
+        //     showTextUI(false);
+        // }
 
         if (Input.GetKeyDown("f")) {
             // trying NPC interaction
@@ -62,6 +63,11 @@ public class Pick_Mechanic : MonoBehaviour
         // Remove item from concern if player is far away
         if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
             closestItemScript.objectsOfConcern.Remove(gameObject);
+            showTextUI(false);
+        } else if (playerNearby && gameObject == closestItemScript.closestObject) { // showing the text ui this way to make it so that the text isn't dependent on one item but rather the closest item
+            showTextUI(true);
+        } else {
+            showTextUI(false);
         }
     }
 

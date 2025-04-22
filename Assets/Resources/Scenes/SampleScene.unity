@@ -1239,7 +1239,7 @@ GameObject:
   - component: {fileID: 327774251}
   - component: {fileID: 327774250}
   - component: {fileID: 327774249}
-  - component: {fileID: 327774248}
+  - component: {fileID: 327774254}
   - component: {fileID: 327774253}
   m_Layer: 8
   m_Name: Sigma_NPC
@@ -1248,23 +1248,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &327774248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 327774247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819dfcb5fa87d344087cb85f6da3908f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 2016730630}
-  npcLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  interactRange: 2
 --- !u!136 &327774249
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1370,6 +1353,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Sigma
   npcDialogue: Yo wassup
+--- !u!114 &327774254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327774247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819dfcb5fa87d344087cb85f6da3908f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupText: {fileID: 0}
+  player: {fileID: 2016730630}
+  npcLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  interactRange: 2
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2896,7 +2897,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &680077875
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Scripting.APIUpdating;
+using TMPro;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
@@ -18,6 +19,7 @@ namespace InteractableManager {
             Pick_Mechanic objectPickup = newObject.AddComponent<Pick_Mechanic>();
             objectPickup.itemRef = this;
             withPlayer = false;
+            // pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
         }
     }
 
