@@ -25,22 +25,15 @@ public class Pick_Mechanic : MonoBehaviour
         playerLayerMask = 1 << LayerMask.NameToLayer("Player");
         detectionRadius = playerController.pickUpRange;
 
-        if (pickupText == null) {
-            pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
-            Debug.Log("Pickup text found: " + pickupText);
-        }
+        // if (pickupText == null) {
+        //     pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
+        //     Debug.Log("Pickup text found: " + pickupText);
+        // }
         showTextUI(false);
     }
 
     void Update() {
         playerNearby = canPickObject();
-
-        // Show pickup UI if player is nearby
-        // if (playerNearby) {
-        //     showTextUI(true);
-        // } else {
-        //     showTextUI(false);
-        // }
 
         if (Input.GetKeyDown("f")) {
             // trying NPC interaction
@@ -61,13 +54,29 @@ public class Pick_Mechanic : MonoBehaviour
         }
 
         // Remove item from concern if player is far away
+        // if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
+        //     closestItemScript.objectsOfConcern.Remove(gameObject);
+        //     showTextUI(false);
+        // } else if (playerNearby && gameObject == closestItemScript.closestObject) { // showing the text ui this way to make it so that the text isn't dependent on one item but rather the closest item
+        //     showTextUI(true);
+        // } else {
+        //     showTextUI(false);
+        // }
         if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
+            // Player walked away from this item
             closestItemScript.objectsOfConcern.Remove(gameObject);
             showTextUI(false);
-        } else if (playerNearby && gameObject == closestItemScript.closestObject) { // showing the text ui this way to make it so that the text isn't dependent on one item but rather the closest item
-            showTextUI(true);
-        } else {
-            showTextUI(false);
+        }
+        else if (playerNearby) {
+            // Player is near this item
+            if (gameObject == closestItemScript.closestObject) {
+                // This is the closest item
+                showTextUI(true);
+                Debug.Log("I am the closest item: " + gameObject.name);
+            } else {
+                // Player is near but this isn't the closest item
+                showTextUI(false);
+            }
         }
     }
 
@@ -102,6 +111,8 @@ public class Pick_Mechanic : MonoBehaviour
     public void showTextUI(bool state) {
         if (pickupText is not null) {
             pickupText.gameObject.SetActive(state);
+        } else {
+            Debug.LogWarning("pickupText is not set on " + gameObject.name);
         }
     }
 

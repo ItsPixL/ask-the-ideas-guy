@@ -14,12 +14,12 @@ namespace InteractableManager {
         public void pickItem() {
             withPlayer = true;
         }
-        public void dropItem(Vector3 dropPos, Quaternion rotation) {
+        public void dropItem(Vector3 dropPos, Quaternion rotation, TMP_Text pickupText) {
             GameObject newObject = Object.Instantiate(object3D, dropPos, rotation);
             Pick_Mechanic objectPickup = newObject.AddComponent<Pick_Mechanic>();
             objectPickup.itemRef = this;
+            objectPickup.pickupText = pickupText;
             withPlayer = false;
-            // pickupText = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
         }
     }
 

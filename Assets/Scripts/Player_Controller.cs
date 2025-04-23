@@ -7,6 +7,7 @@ using PowerupManager;
 using AbilityManager;
 using System.Linq.Expressions;
 // using System.Threading;
+using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
@@ -93,20 +94,29 @@ public class Player_Controller : MonoBehaviour
 
     // A test function that spawns some items.
     private void test() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
-        testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
-        testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup = new Fire(0);
-        testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup1 = new Fire(0);
-        testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup2 = new Fire(0);
-        testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup3 = new Fire(0);
-        testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup4 = new Poision(0);
-        testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
+        // TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
+        // Debug.Log("Pickup text found: " + pickupTextRef);
+        // Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
+        // Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
+        // GameObject testWeaponObj = testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testWeaponObj.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // GameObject testWeaponObj1 = testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testWeaponObj1.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // Powerup testPowerup = new Fire(0);
+        // Powerup testPowerup1 = new Fire(0);
+        // Powerup testPowerup2 = new Fire(0);
+        // Powerup testPowerup3 = new Fire(0);
+        // Powerup testPowerup4 = new Poision(0);
+        // GameObject testPowerupObj = testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testPowerupObj.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // GameObject testPowerupObj1 = testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testPowerupObj1.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // GameObject testPowerupObj2 = testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testPowerupObj2.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // GameObject testPowerupObj3 = testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testPowerupObj3.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
+        // GameObject testPowerupObj4 = testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
+        // testPowerupObj4.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
     }
 
     // Moves the character.
