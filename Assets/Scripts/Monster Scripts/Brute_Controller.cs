@@ -1,6 +1,7 @@
 using UnityEngine;
 using MonsterManager;
 using MonsterSpawnerManager;
+using System.Collections.Generic;
 
 public class Brute_Controller: MonoBehaviour, MonsterComponent {
     public Brute brute;
@@ -21,8 +22,8 @@ public class Brute_Controller: MonoBehaviour, MonsterComponent {
         brute.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
     }
 
-    public void initMonsterMovement(float movementSpeed, int rotationSpeed) {
-        brute.initMovementAttributes(movementSpeed, rotationSpeed);
+    public void initMonsterMovement(float movementSpeed, int rotationSpeed, List<Vector3> dutyPath) {
+        brute.initMovementAttributes(movementSpeed, rotationSpeed, dutyPath);
     }
 
     public void initMonsterAttack(float attackRange, float attackCooldown) {

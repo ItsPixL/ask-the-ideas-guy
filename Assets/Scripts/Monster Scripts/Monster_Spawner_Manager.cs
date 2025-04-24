@@ -15,11 +15,12 @@ namespace MonsterSpawnerManager {
         public int spawnCooldown;
         public List<float> basicStats;
         public List<float> movementStats;
+        public List<Vector3> dutyPath;
         public List<float> attackStats;
         public List<int> sensoryStats;
         public List<float> customStats;
         public int currMonsterCount = 0;
-        public float lastSpawnedTime = float.NegativeInfinity;
+        public float lastSpawnedTime = float.MinValue;
         public int unattendedDeletions = 0;
         
         // Initialises the monster spawner, defining the basic characteristics that control spawner behaviour.
@@ -34,10 +35,11 @@ namespace MonsterSpawnerManager {
         }
 
         // Initialises the common/generic stats for the monster.
-        public void initCommonStats(List<float> basicStats, List<float> movementStats, List<float> attackStats, 
+        public void initCommonStats(List<float> basicStats, List<float> movementStats, List<Vector3> dutyPath, List<float> attackStats, 
         List<int> sensoryStats) {
             this.basicStats = basicStats;
             this.movementStats = movementStats;
+            this.dutyPath = dutyPath;
             this.attackStats = attackStats;
             this.sensoryStats = sensoryStats;
         }
@@ -60,7 +62,7 @@ namespace MonsterSpawnerManager {
         // Sets the common stats within the monster controller to the given values.
         public void setCommonMonsterStats(Monster_Controller newMonsterController) {
             newMonsterController.initMonster(basicStats[0], basicStats[1], this);
-            newMonsterController.initMonsterMovement(movementStats[0], (int)movementStats[1]);
+            newMonsterController.initMonsterMovement(movementStats[0], (int)movementStats[1], dutyPath);
             newMonsterController.initMonsterAttack(attackStats[0], attackStats[1]);
             newMonsterController.initMonsterSenses(sensoryStats[0], sensoryStats[1], sensoryStats[2]);
         }

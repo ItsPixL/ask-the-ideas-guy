@@ -1,6 +1,7 @@
 using UnityEngine;
 using MonsterManager;
 using MonsterSpawnerManager;
+using System.Collections.Generic;
 
 public class Monster_Controller : MonoBehaviour {
     // Plan is to get rid of ALL of these variables from the inspector, only there currently for testing purposes.
@@ -12,7 +13,6 @@ public class Monster_Controller : MonoBehaviour {
     public int sightRange;
     public int hearingRange;
     public int fieldOfView;
-    private Monster entity;
     public monsterType currMonsterType = monsterType.Brute;
     private MonsterComponent newComponent;
 
@@ -41,8 +41,8 @@ public class Monster_Controller : MonoBehaviour {
     }
 
     // Initialises the movement related attributes of the specific monster.
-    public void initMonsterMovement(float movementSpeed, int rotationSpeed) {
-        newComponent.initMonsterMovement(movementSpeed, rotationSpeed);
+    public void initMonsterMovement(float movementSpeed, int rotationSpeed, List<Vector3> dutyPath) {
+        newComponent.initMonsterMovement(movementSpeed, rotationSpeed, dutyPath);
     }
 
     // Initialises the attack related attributes of the specific monster.
@@ -58,20 +58,5 @@ public class Monster_Controller : MonoBehaviour {
     // Used to activate/deactivate the monster.
     public void setMonsterStatus(bool monsterStatus) {
         newComponent.setMonsterStatus(monsterStatus);
-    }
-
-    // The function below is for testing purposes only. It will be removed when all of the code is finalised.
-    void OnDrawGizmos() {
-        if (entity == null) return;
-
-        int targetDistance = entity.sightRange;
-
-        Vector2 monsterForward2D = new Vector2(entity.monster.transform.forward.x, entity.monster.transform.forward.z).normalized;
-        Vector2 leftBoundary = Quaternion.Euler(0, 0, -entity.fieldOfView / 2) * monsterForward2D;
-        Vector2 rightBoundary = Quaternion.Euler(0, 0, entity.fieldOfView / 2) * monsterForward2D;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(entity.monster.transform.position, new Vector3(leftBoundary.x, 0, leftBoundary.y) * targetDistance);
-        Gizmos.DrawRay(entity.monster.transform.position, new Vector3(rightBoundary.x, 0, rightBoundary.y) * targetDistance);
     }
 }
