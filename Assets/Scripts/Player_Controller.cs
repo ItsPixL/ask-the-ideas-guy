@@ -24,7 +24,6 @@ public class Player_Controller : MonoBehaviour
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
-    private bool tested = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -59,10 +58,6 @@ public class Player_Controller : MonoBehaviour
             lastMovementDirection = (playerPos2D-lastPos2D).normalized;
         }
         lastPos2D = playerPos2D;
-        if (tested) {
-            test();
-            tested = false;
-        } 
         if (allowPlayerInput) {
             int weaponInventoryInput = playerWeaponInventory.checkKeyInput();
             int powerupInventoryInput = playerPowerupInventory.checkKeyInput();
@@ -90,33 +85,6 @@ public class Player_Controller : MonoBehaviour
         }
         // playerHealth -= 0.25f;
         // Debug.Log("Player Health: " + playerHealth);
-    }
-
-    // A test function that spawns some items.
-    private void test() {
-        // TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
-        // Debug.Log("Pickup text found: " + pickupTextRef);
-        // Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        // Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
-        // GameObject testWeaponObj = testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testWeaponObj.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // GameObject testWeaponObj1 = testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testWeaponObj1.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // Powerup testPowerup = new Fire(0);
-        // Powerup testPowerup1 = new Fire(0);
-        // Powerup testPowerup2 = new Fire(0);
-        // Powerup testPowerup3 = new Fire(0);
-        // Powerup testPowerup4 = new Poision(0);
-        // GameObject testPowerupObj = testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testPowerupObj.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // GameObject testPowerupObj1 = testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testPowerupObj1.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // GameObject testPowerupObj2 = testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testPowerupObj2.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // GameObject testPowerupObj3 = testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testPowerupObj3.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
-        // GameObject testPowerupObj4 = testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
-        // testPowerupObj4.GetComponent<Pick_Mechanic>().pickupText = pickupTextRef;
     }
 
     // Moves the character.
@@ -148,12 +116,11 @@ public class Player_Controller : MonoBehaviour
     public void checkForDrop(KeyCode keybind, Inventory inventory) {
         if (Input.GetKeyDown(keybind)) {
             Item currItem = inventory.items[inventory.currIdx];
-            TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
             if (inventory.selectedSlot && currItem is not null) {
                 removeItemFromInventory(inventory.currIdx, inventory);
                 float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
                 currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-                Quaternion.Euler(0, playerRotationY, 0), pickupTextRef);
+                Quaternion.Euler(0, playerRotationY, 0));
             }
         }
     }
@@ -173,10 +140,9 @@ public class Player_Controller : MonoBehaviour
             else if (item is Powerup) {
                 removeItemFromInventory(inventory.currIdx, playerPowerupInventory); 
             }
-            TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
             float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
             prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-            Quaternion.Euler(0, playerRotationY, 0), pickupTextRef);
+            Quaternion.Euler(0, playerRotationY, 0));
         }
         inventory.addItem(item);
         if (item is Weapon) {

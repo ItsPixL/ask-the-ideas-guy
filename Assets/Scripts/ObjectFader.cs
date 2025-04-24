@@ -28,16 +28,16 @@ public class ObjectFader : MonoBehaviour {
 
     void FadeNow() { // this is fading the object out so that we can still see the player
         foreach(Material mat in Mats) {
-        Color currentColour = mat.color;
-        Color smoothColour = new Color(currentColour.r, currentColour.g, currentColour.b, Mathf.Lerp(currentColour.a, fadeAmount, fadeSpeed * Time.deltaTime));
-        mat.color = smoothColour;
+            Color currentColour = mat.color;
+            Color smoothColour = new Color(currentColour.r, currentColour.g, currentColour.b, Mathf.Lerp(currentColour.a, fadeAmount, fadeSpeed * Time.deltaTime));
+            mat.color = smoothColour;
         }
     }
     void ResetFade() { // this is fading the object back to its original amount when the player has left
         foreach(Material mat in Mats) {
-        Color currentColour = mat.color;
-        Color smoothColour = new Color(currentColour.r, currentColour.g, currentColour.b, Mathf.Lerp(currentColour.a, originalOpacity, fadeSpeed * Time.deltaTime));
-        mat.color = smoothColour;
+            Color currentColour = mat.color;
+            Color smoothColour = new Color(currentColour.r, currentColour.g, currentColour.b, Mathf.Lerp(currentColour.a, originalOpacity, fadeSpeed * Time.deltaTime));
+            mat.color = smoothColour;
         }
     }
 }

@@ -2,9 +2,7 @@ using UnityEngine;
 using TMPro;
 using InteractableManager;
 
-public class Pick_Mechanic : MonoBehaviour
-{
-    public TMP_Text pickupText;
+public class Pick_Mechanic : MonoBehaviour {
     public GameObject player;
     private bool playerNearby = false; 
     private static Player_Controller playerController; 
@@ -55,15 +53,6 @@ public class Pick_Mechanic : MonoBehaviour
             }
         }
         return false;
-    }
-
-    public void showTextUI(bool state) {
-        if (pickupText is not null) {
-            pickupText.gameObject.SetActive(state);
-        }
-        // else {
-        //     Debug.LogWarning("pickupText is not set on " + gameObject.name);
-        // }
     }
 
     void OnDrawGizmosSelected() {
