@@ -33,7 +33,7 @@ public class Pick_Mechanic : MonoBehaviour
     }
 
     void Update() {
-        playerNearby = canPickObject();
+        playerNearby = canPickObject(closestItemScript.closestObject); // check if player is nearby
 
         if (Input.GetKeyDown("f")) {
             // trying NPC interaction
@@ -53,30 +53,30 @@ public class Pick_Mechanic : MonoBehaviour
             }
         }
 
-        // Remove item from concern if player is far away
-        // if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
-        //     closestItemScript.objectsOfConcern.Remove(gameObject);
-        //     showTextUI(false);
-        // } else if (playerNearby && gameObject == closestItemScript.closestObject) { // showing the text ui this way to make it so that the text isn't dependent on one item but rather the closest item
-        //     showTextUI(true);
-        // } else {
-        //     showTextUI(false);
-        // }
-        if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
-            // Player walked away from this item
-            closestItemScript.objectsOfConcern.Remove(gameObject);
+        if (playerNearby) {
+            // Show the pickup text if the player is nearby
+            showTextUI(true);
+        } else {
+            // Hide the pickup text if the player is not nearby
             showTextUI(false);
         }
-        else if (playerNearby) {
-            // Player is near this item
-            if (gameObject == closestItemScript.closestObject) {
-                // This is the closest item
-                showTextUI(true);
-                Debug.Log("I am the closest item: " + gameObject.name);
-            } else {
-                // Player is near but this isn't the closest item
-                showTextUI(false);
-            }
+
+        // // Handle showing/hiding pickup text
+        // if (closestItemScript.closestObject == null) {
+        //     // No item is close to the player
+        //     showTextUI(false);
+        // }
+        // else if (gameObject == closestItemScript.closestObject) {
+        //     // This is the closest item
+        //     showTextUI(true);
+        // } else {
+        //     // Another item is closer
+        //     showTextUI(false);
+        // }
+
+        // Clean up objects of concern if out of range
+        if (!playerNearby && closestItemScript.objectsOfConcern.Contains(gameObject)) {
+            closestItemScript.objectsOfConcern.Remove(gameObject);
         }
     }
 
@@ -95,16 +95,37 @@ public class Pick_Mechanic : MonoBehaviour
         return false; // No NPC nearby
     }
 
-    public bool canPickObject() {
-        Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
+    public bool canPickObject(GameObject currentClosestObject) {
+        // Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
+        // foreach (Collider hit in hits) {
+        //     if (hit.CompareTag("Player")) {
+        //         if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
+        //             closestItemScript.objectsOfConcern.Add(gameObject);
+        //         }
+        //         Debug.Log("Items: " + hits.Length);
+        //         return true;
+        //     }
+        // }
+        // return false;
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayerMask);
         foreach (Collider hit in hits) {
             if (hit.CompareTag("Player")) {
                 if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
                     closestItemScript.objectsOfConcern.Add(gameObject);
                 }
+
+                // Activate pickup text ONLY if this is the closest item
+                showTextUI(gameObject == currentClosestObject);
                 return true;
             }
         }
+
+        // Player not nearby
+        if (closestItemScript.objectsOfConcern.Contains(gameObject)) {
+            closestItemScript.objectsOfConcern.Remove(gameObject);
+        }
+
+        showTextUI(false);
         return false;
     }
 
