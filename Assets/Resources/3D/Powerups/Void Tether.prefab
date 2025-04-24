@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7633720854682162262}
   m_Layer: 0
   m_Name: Void Tether
-  m_TagString: Untagged
+  m_TagString: Powerup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

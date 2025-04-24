@@ -1,11 +1,13 @@
 using UnityEngine;
-using NPCInteractableManager; // Import the namespace for NPCInteractable
+using NPCInteractableManager;
+using InteractableManager;
+
 
 public class PlayerInteract : MonoBehaviour {
-
+    private float interactRange = 2f; // Define the interaction range
+    private float range = 5f;
     private void Update() {
         if (Input.GetKeyDown(KeyCode.F)) {
-            float interactRange = 2f; // Define the interaction range
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange);
             foreach (Collider collider in hitColliders) {
                 if (collider.TryGetComponent(out NPCInteractable npc)) {
@@ -14,8 +16,7 @@ public class PlayerInteract : MonoBehaviour {
             }
         }
     }
-    public NPCInteractable GetInteractableObject() {
-        float interactRange = 2f; // Define the interaction range
+    public NPCInteractable GetInteractableNPCObject() {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange);
         foreach (Collider collider in hitColliders) {
             if (collider.TryGetComponent(out NPCInteractable npc)) {
@@ -23,5 +24,23 @@ public class PlayerInteract : MonoBehaviour {
             }
         }
         return null; // No NPC nearby
+    }
+    public bool GetInteractablePOWERUPObject() {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, range);
+        foreach (Collider collider in hitColliders) {
+            if (collider.CompareTag("Powerup")) {
+                return true; // Return the first interactable Powerup found
+            }
+        }
+        return false; // No Powerup nearby
+    }
+    public bool GetInteractableWEAPONObject() {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, range);
+        foreach (Collider collider in hitColliders) {
+            if (collider.CompareTag("Weapon")) {
+                return true; // Return the first interactable Weapon found
+            }
+        }
+        return false; // No Weapon nearby
     }
 }

@@ -1,20 +1,36 @@
 using UnityEngine;
 
 public class PlayerInteractUI : MonoBehaviour {
-    [SerializeField] private GameObject containerGameObject; // The container that has all of the UI elements
+    [SerializeField] private GameObject NPCcontainerGameObject; // The container that has the NPC UI elements
+    [SerializeField] private GameObject ITEMcontainerGameObject; // The container that has the ITEM UI elements
     [SerializeField] private PlayerInteract playerInteract; // Reference to the pick-up mechanic script
     private void Update() {
-        if (playerInteract.GetInteractableObject() != null) {
-            Show(); // Show the UI if the player is near an interactable object
+        if (playerInteract.GetInteractableNPCObject() != null) {
+            ShowNPC(); // Show the UI if the player is near an interactable object
         } else {
-            Hide(); // Hide the UI if the player is not near an interactable object
+            HideNPC(); // Hide the UI if the player is not near an interactable object
+        }
+
+        if (playerInteract.GetInteractablePOWERUPObject() != false) {
+            ShowITEM(); // Show the UI if the player is near an interactable object
+        } else if (playerInteract.GetInteractableWEAPONObject() != false) {
+            ShowITEM(); // Show the UI if the player is near an interactable object
+        } else {
+            HideITEM(); // Hide the UI if the player is not near an interactable object
         }
     }
-    void Show() {
-        containerGameObject.SetActive(true); // Show the UI container
+    void ShowNPC() {
+        NPCcontainerGameObject.SetActive(true); // Show the NPC UI container
     }
 
-    void Hide() {
-        containerGameObject.SetActive(false); // Hide the UI container
+    void HideNPC() {
+        NPCcontainerGameObject.SetActive(false); // Hide the NPC UI container
+    }
+    void ShowITEM() {
+        ITEMcontainerGameObject.SetActive(true); // Show the ITEM UI container
+    }
+
+    void HideITEM() {
+        ITEMcontainerGameObject.SetActive(false); // Hide the ITEM UI container
     }
 }

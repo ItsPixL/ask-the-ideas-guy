@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using InteractableManager;
-using NPCInteractableManager;
 
 public class Pick_Mechanic : MonoBehaviour
 {
@@ -14,10 +13,6 @@ public class Pick_Mechanic : MonoBehaviour
     private static LayerMask playerLayerMask;
     private float detectionRadius;
 
-    // NPC interaction settings
-    // public LayerMask npcLayerMask;
-    // public float interactRange = 2f;
-
     void Start() {
         player = GameObject.Find("Player");
         playerController = player.GetComponent<Player_Controller>();
@@ -27,11 +22,9 @@ public class Pick_Mechanic : MonoBehaviour
     }
 
     void Update() {
-        playerNearby = canPickObject(closestItemScript.closestObject); // check if player is nearby
+        playerNearby = canPickObject(); // check if player is nearby
 
-        if (Input.GetKeyDown("f")) {
-
-            // Only continue to item interaction if player DIDN'T interact with NPC
+        if (Input.GetKeyDown("f")) { // check if player presses the pick up key
             if (itemRef != null && gameObject == closestItemScript.closestObject) {
                 if (itemRef is Weapon weapon) {
                     playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
@@ -51,7 +44,7 @@ public class Pick_Mechanic : MonoBehaviour
         }
     }
 
-    public bool canPickObject(GameObject currentClosestObject) {
+    public bool canPickObject() {
         Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
         foreach (Collider hit in hits) {
             if (hit.CompareTag("Player")) {
