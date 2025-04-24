@@ -148,11 +148,12 @@ public class Player_Controller : MonoBehaviour
     public void checkForDrop(KeyCode keybind, Inventory inventory) {
         if (Input.GetKeyDown(keybind)) {
             Item currItem = inventory.items[inventory.currIdx];
+            TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
             if (inventory.selectedSlot && currItem is not null) {
                 removeItemFromInventory(inventory.currIdx, inventory);
                 float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
                 currItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-                Quaternion.Euler(0, playerRotationY, 0));
+                Quaternion.Euler(0, playerRotationY, 0), pickupTextRef);
             }
         }
     }
@@ -172,9 +173,10 @@ public class Player_Controller : MonoBehaviour
             else if (item is Powerup) {
                 removeItemFromInventory(inventory.currIdx, playerPowerupInventory); 
             }
+            TMP_Text pickupTextRef = GameObject.Find("Canvas/pickupText")?.GetComponent<TMP_Text>();
             float playerRotationY = Vector3.SignedAngle(new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y), new Vector3(0, 0, 1), new Vector3(0, 0, 1));
             prevItem.dropItem(gameObject.transform.position-new Vector3(lastMovementDirection.x, 0, lastMovementDirection.y),
-            Quaternion.Euler(0, playerRotationY, 0));
+            Quaternion.Euler(0, playerRotationY, 0), pickupTextRef);
         }
         inventory.addItem(item);
         if (item is Weapon) {
