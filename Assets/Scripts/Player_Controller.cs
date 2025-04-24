@@ -14,7 +14,7 @@ public class Player_Controller : MonoBehaviour
     public float playerForce = 20f;
     public float maxHealth = 100f;
     public float playerHealth;
-    public float pickUpRange = 5f;
+    public float pickUpRange = 3f;
     private bool allowPlayerInput = true;
     private bool isPlayerDead = false;
     private Vector2 lastPos2D;
