@@ -7,16 +7,16 @@ public class PlayerInteractUI : MonoBehaviour {
     private void Update() {
         if (playerInteract.GetInteractableNPCObject() != null) {
             ShowNPC(); // Show the UI if the player is near an interactable object
-        } else {
-            HideNPC(); // Hide the UI if the player is not near an interactable object
-        }
-
-        if (playerInteract.GetInteractablePOWERUPObject() != false) {
+            HideITEM(); // Hide the UI if the player is not near an interactable object
+        } else if (playerInteract.GetInteractablePOWERUPObject() != false) {
             ShowITEM(); // Show the UI if the player is near an interactable object
+            HideNPC(); // Hide the UI if the player is not near an interactable object
         } else if (playerInteract.GetInteractableWEAPONObject() != false) {
             ShowITEM(); // Show the UI if the player is near an interactable object
+            HideNPC(); // Hide the UI if the player is not near an interactable object
         } else {
             HideITEM(); // Hide the UI if the player is not near an interactable object
+            HideNPC(); // Hide the UI if the player is not near an interactable object
         }
     }
     void ShowNPC() {
