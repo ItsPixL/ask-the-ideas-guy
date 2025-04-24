@@ -4171,7 +4171,7 @@ GameObject:
   - component: {fileID: 1171221805}
   - component: {fileID: 1171221804}
   m_Layer: 8
-  m_Name: Sigma_NPC (1)
+  m_Name: Alpha_NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4189,8 +4189,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cea6b34e64c2a04a850aa0e78851136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcName: Sigma
-  npcDialogue: Yo wassup
+  npcName: Alpha
+  npcDialogue: Hah that other guy is lame!
 --- !u!114 &1171221805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4294,7 +4294,7 @@ Transform:
   m_GameObject: {fileID: 1171221803}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.9, y: 1.71, z: 6}
+  m_LocalPosition: {x: 8.9, y: 1.71, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
