@@ -6,13 +6,14 @@ using WeaponManager;
 using PowerupManager;
 using AbilityManager;
 // using System.Threading;
+using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
     public float playerForce = 20f;
     public float maxHealth = 100f;
     public float playerHealth;
-    public float pickUpRange = 5f;
+    public float pickUpRange = 3f;
     private bool allowPlayerInput = true;
     private bool isPlayerDead = false;
     private Vector2 lastPos2D;
@@ -22,7 +23,7 @@ public class Player_Controller : MonoBehaviour
     private Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
-    private bool tested = false;
+    private bool tested = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -57,10 +58,6 @@ public class Player_Controller : MonoBehaviour
             lastMovementDirection = (playerPos2D-lastPos2D).normalized;
         }
         lastPos2D = playerPos2D;
-        if (tested) {
-            test();
-            tested = false;
-        } 
         if (allowPlayerInput) {
             int weaponInventoryInput = playerWeaponInventory.checkKeyInput();
             int powerupInventoryInput = playerPowerupInventory.checkKeyInput();
@@ -88,24 +85,6 @@ public class Player_Controller : MonoBehaviour
         }
         // playerHealth -= 0.25f;
         // Debug.Log("Player Health: " + playerHealth);
-    }
-
-    // A test function that spawns some items.
-    private void test() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
-        testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
-        testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup = new Fire(0);
-        testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup1 = new Fire(0);
-        testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup2 = new Fire(0);
-        testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup3 = new Fire(0);
-        testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup4 = new Poision(0);
-        testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
     }
 
     // Moves the character.

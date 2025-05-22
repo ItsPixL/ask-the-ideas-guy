@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Scripting.APIUpdating;
+using TMPro;
 
 namespace InteractableManager {
     // Defines the basics of every item in the game.
