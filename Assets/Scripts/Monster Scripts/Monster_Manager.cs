@@ -280,8 +280,23 @@ namespace MonsterManager {
             }
         }
 
+        public void takeDamage(float damageAmount)
+        {
+            health -= damageAmount;
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void Die()
+        {
+            Debug.Log("Enemy has died");
+        }
+
         // When the damage is actually dealt - This function can be activated through animation or other code.
-        public void dealDamage(float damage) {
+        public void dealDamage(float damage)
+        {
             player.GetComponent<Player_Controller>().playerHealth -= damage;
         }
     }

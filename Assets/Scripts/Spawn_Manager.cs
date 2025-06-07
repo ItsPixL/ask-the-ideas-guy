@@ -47,7 +47,7 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
+        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10), new JabSword(5, 2)});
         Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
         testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
         testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
