@@ -73,17 +73,24 @@ namespace MonsterSpawnerManager {
         // Spawns the monster, and sets the monster stats before enabling it.
         public int spawnMonster(bool isNatural, int collectiveLimit, int unnaturalAmount=0) {
             int amountToSpawn = 0;
-            if (currMonsterCount < spawnLimit) {
-                if (!isNatural || Time.time-lastSpawnedTime >= spawnCooldown) {
-                    if (isNatural) {
-                        amountToSpawn = new List<int>{spawnLimit-currMonsterCount, collectiveLimit, batchSize}.Min();
+            int layer = LayerMask.NameToLayer("Enemy");
+            if (currMonsterCount < spawnLimit)
+            {
+                if (!isNatural || Time.time - lastSpawnedTime >= spawnCooldown)
+                {
+                    if (isNatural)
+                    {
+                        amountToSpawn = new List<int> { spawnLimit - currMonsterCount, collectiveLimit, batchSize }.Min();
                     }
-                    else {
-                        amountToSpawn = new List<int>{spawnLimit-currMonsterCount, collectiveLimit, unnaturalAmount}.Min();
+                    else
+                    {
+                        amountToSpawn = new List<int> { spawnLimit - currMonsterCount, collectiveLimit, unnaturalAmount }.Min();
                     }
-                    for (int i=0; i < amountToSpawn; i++) {
+                    for (int i = 0; i < amountToSpawn; i++)
+                    {
                         Vector3 spawnPos = chooseSpawnPos();
                         GameObject newMonster = Object.Instantiate(monsterPrefab, spawnPos, Quaternion.Euler(0, Random.Range(0, 360), 0));
+                        newMonster.layer = layer; // setting the layer to "Enemy"
                         Monster_Controller newMonsterController = newMonster.GetComponent<Monster_Controller>();
                         newMonsterController.initSpecificScript(typeSpawned);
                         setCommonMonsterStats(newMonsterController);

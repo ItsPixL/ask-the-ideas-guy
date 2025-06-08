@@ -43,7 +43,10 @@ namespace AbilityManager {
             Collider[] hitEnemies = Physics.OverlapBox(origin, halfExtents, Quaternion.LookRotation(direction), LayerMask.GetMask("Enemy")); // assuming all enemies have the "enemy" mask, need to double check
 
             foreach (Collider enemy in hitEnemies) {
-                enemy.GetComponent<health>()?.TakeDamage(damage);
+                Monster_Controller monsterController = enemy.GetComponent<Monster_Controller>();
+                if (monsterController != null) {
+                    // monsterController.brute.takeDamage(damage);
+                }
             }
 
             return true;
