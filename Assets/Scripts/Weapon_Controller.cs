@@ -1,13 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-public class Weapon_Controller : MonoBehaviour {
+// the weapon should just have the animations and the list of powerups, but all of the damage and cooldown logic should be handled by the abilities
+
+public class Weapon_Controller : MonoBehaviour
+{
     public GameObject Sword;
     public bool CanAttack = true;
     public float AttackCooldown = 1.0f;
-    void Update() {
-        if (Input.GetMouseButtonDown(0)) {
-            if (CanAttack) {
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (CanAttack)
+            {
                 SwordAttack();
             }
         }
