@@ -8,6 +8,7 @@ using TMPro;
 using InteractableManager;
 using System.Collections.Generic;
 using System;
+using CooldownManager;
 
 public class Spawn_Manager : MonoBehaviour {
     public static Spawn_Manager instance { get; private set; } // creating an instance for ease of use across files
@@ -47,7 +48,9 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(1, 10), new JabSword(1, 2, 2, 0.5f)});
+        Cooldown_Manager cooldownManager = GetComponent<Cooldown_Manager>();
+
+        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(1, 10), new JabSword(cooldownManager, 1, 2, 2, 0.5f)});
         Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
         testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
         testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));

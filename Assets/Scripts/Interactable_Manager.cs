@@ -44,7 +44,7 @@ namespace InteractableManager {
     }
 
     // Defines the basics of every ability in the game.
-    public class Ability : MonoBehaviour
+    public class Ability
     {
         public string abilityName;
         public int cooldown;

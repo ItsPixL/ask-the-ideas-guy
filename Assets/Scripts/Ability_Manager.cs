@@ -30,16 +30,12 @@ namespace AbilityManager {
         private float range;
         private float damage;
         private float speed;
-        public JabSword(int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 1)
+        public JabSword(Cooldown_Manager cooldownManager, int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 1)
         {
             this.range = range;
             this.damage = damage;
             this.speed = speed;
-        }
-        void Awake() { // setting up the cooldown
-            cooldownManager = GetComponent<Cooldown_Manager>();
-            if (cooldownManager == null)
-                cooldownManager = gameObject.AddComponent<Cooldown_Manager>();
+            this.cooldownManager = cooldownManager;
         }
         public override bool useAbility(GameObject player)
         {
@@ -66,6 +62,7 @@ namespace AbilityManager {
             return true;
         }
         public override void TryUse(GameObject target) { // for cooldown purposes
+            Debug.Log("Using JabSword ability");
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
             if (cooldownManager.CanUseAbility(key))
             { // checking if the ability is off cooldown
