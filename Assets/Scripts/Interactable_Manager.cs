@@ -44,21 +44,26 @@ namespace InteractableManager {
     }
 
     // Defines the basics of every ability in the game.
-    public class Ability {
-        public string name;
+    public class Ability : MonoBehaviour
+    {
+        public string abilityName;
         public int cooldown;
         public bool onCooldown = false;
         public Sprite icon;
+        public int index;
 
-        public Ability(string name, int cooldown, Sprite icon) {
-            this.name = name;
+        public Ability(string abilityName, int cooldown, Sprite icon, int index)
+        {
+            this.abilityName = abilityName;
             this.cooldown = cooldown;
             this.icon = icon;
+            this.index = index;
         }
 
         public virtual bool useAbility(GameObject player) {
             return false;
         }
+        public virtual void TryUse(GameObject target) {}
     }
 
     public class Inventory {
