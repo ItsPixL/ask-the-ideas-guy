@@ -4,23 +4,33 @@ using System.Collections;
 using WeaponManager;
 using PowerupManager;
 using AbilityManager;
-using TMPro;
 using InteractableManager;
 using System.Collections.Generic;
-using System;
 using CooldownManager;
+using UIManager;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Cooldown_Manager))] // creates a new cooldown manager if one is not already present, for safety purposes.
 public class Spawn_Manager : MonoBehaviour {
     public static Spawn_Manager instance { get; private set; } // creating an instance for ease of use across files
-    void Awake() { // creating a singleton pattern to ensure only one instance of the spawn manager is running
-        if (instance == null) {
+    private Cooldown_Manager cooldownManager; // declaration
+    public List<Button> loadoutButtons;
+    private UI_Loadout uiLoadout; // declaration
+    void Awake()
+    { // creating a singleton pattern to ensure only one instance of the spawn manager is running
+        if (instance == null)
+        {
             instance = this;
             DontDestroyOnLoad(gameObject); // this will prevent the spawn manager from being destroyed when a new scene is loaded
-        } else if (instance != this) {
+        }
+        else if (instance != this)
+        {
             Debug.LogWarning("Duplicate Spawn_Manager detected and destroyed."); // logged as a warning so it stands out
             Destroy(gameObject);
         }
         SceneManager.sceneLoaded += OnSceneLoaded_Auto;
+        cooldownManager = GetComponent<Cooldown_Manager>(); // assignation
+        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));  
     }
     
     void OnDestroy() {
@@ -48,9 +58,13 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        Cooldown_Manager cooldownManager = GetComponent<Cooldown_Manager>();
-
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(1, 10), new JabSword(cooldownManager, 1, 2, 2, 0.5f)});
+        if (cooldownManager == null) {
+            Debug.LogError("Cooldown_Manager not found in the scene. Please ensure it is present.");
+        }
+        if (uiLoadout == null) {
+            Debug.LogError("UI_Loadout not found in the scene. Please ensure it is present.");
+        }
+        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(1, 10), new JabSword(cooldownManager, uiLoadout, 1, 2, 2, 0.5f)});
         Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
         testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
         testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));

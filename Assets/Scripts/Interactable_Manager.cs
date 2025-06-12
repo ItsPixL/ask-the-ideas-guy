@@ -180,8 +180,9 @@ namespace InteractableManager {
         }
 
         // Uses an ability if the player has the energy required.
-        public bool useAbility(int abilityIdx, GameObject player) {
-            if (abilities[abilityIdx] is not null && !abilities[abilityIdx].onCooldown && abilities[abilityIdx].useAbility(player)){
+        public bool useLoadoutAbility(int abilityIdx, GameObject player) {
+            if (abilities[abilityIdx] is not null && !abilities[abilityIdx].onCooldown){
+                abilities[abilityIdx].TryUse(player);
                 abilities[abilityIdx].onCooldown = true;
                 return true;
             }

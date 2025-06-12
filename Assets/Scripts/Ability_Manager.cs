@@ -25,20 +25,22 @@ namespace AbilityManager {
     public class JabSword : Ability
     {
         private Cooldown_Manager cooldownManager;
-        private UI_Loadout UI_Loadout;
+        private UI_Loadout uiLoadout;
         private static Sprite jabSwordSprite = Resources.Load<Sprite>("2D/Ability Sprites/Dash");
         private float range;
         private float damage;
         private float speed;
-        public JabSword(Cooldown_Manager cooldownManager, int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 1)
+        public JabSword(Cooldown_Manager cooldownManager, UI_Loadout uiLoadout, int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 2)
         {
             this.range = range;
             this.damage = damage;
             this.speed = speed;
             this.cooldownManager = cooldownManager;
+            this.uiLoadout = uiLoadout;
         }
         public override bool useAbility(GameObject player)
         {
+            Debug.Log("Using JabSword ability");
             Vector2 playerDirection = player.GetComponent<Player_Controller>().lastMovementDirection; // getting the last direction so that the game knows where to direct the jab
             Vector3 direction = new Vector3(playerDirection.x, 0, playerDirection.y).normalized;
 
@@ -62,13 +64,13 @@ namespace AbilityManager {
             return true;
         }
         public override void TryUse(GameObject target) { // for cooldown purposes
-            Debug.Log("Using JabSword ability");
+            Debug.Log("Using JabSword ability, " + index );
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
             if (cooldownManager.CanUseAbility(key))
             { // checking if the ability is off cooldown
                 useAbility(target); // Use Ability
-                Debug.Log("Jabsword used on " + target.name);
-                UI_Loadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore
+                Debug.Log("Jabsword used");
+                uiLoadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore
                 cooldownManager.UseCooldown(key, cooldown); // Trigger cooldown
             }
             else

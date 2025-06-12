@@ -66,7 +66,7 @@ namespace UIManager {
     }
 
     // Handles the UI of the loadout (stores usable abilities).
-    public class UI_Loadout {
+    public class UI_Loadout{
         private List<Button> buttons;
         private Color enabledOutlineColour;
         private Color disabledOutlineColour;

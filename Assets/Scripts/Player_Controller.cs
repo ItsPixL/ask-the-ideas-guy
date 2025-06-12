@@ -224,7 +224,7 @@ public class Player_Controller : MonoBehaviour
     // Updates loadout information and UI to respond to player interaction. 
     public void updateLoadoutStatus(int targetIdx)
     {
-        if (playerLoadout.useAbility(targetIdx, gameObject))
+        if (playerLoadout.useLoadoutAbility(targetIdx, gameObject))
         {
             UI_Controller.updateLoadoutStatusUI(targetIdx, false);
         }
