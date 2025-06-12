@@ -30,7 +30,8 @@ public class Spawn_Manager : MonoBehaviour {
         }
         SceneManager.sceneLoaded += OnSceneLoaded_Auto;
         cooldownManager = GetComponent<Cooldown_Manager>(); // assignation
-        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));  
+        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
+        Debug.Log("Loadout buttons found in the scene = " + loadoutButtons.Count);
     }
     
     void OnDestroy() {

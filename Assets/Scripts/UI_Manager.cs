@@ -157,6 +157,7 @@ namespace UIManager {
         void Start() {
             playerWeaponInventoryUI = new UI_Inventory(weaponInventoryButtons, Color.black, Color.yellow);
             playerPowerupInventoryUI = new UI_Inventory(powerupInventoryButtons, Color.black, Color.yellow);
+            Debug.Log(loadoutButtons);
             playerLoadoutUI = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
             updateInventoryIcon(powerupInventoryButtons, 0, null, 0);
         }
