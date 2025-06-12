@@ -30,8 +30,6 @@ public class Spawn_Manager : MonoBehaviour {
         }
         SceneManager.sceneLoaded += OnSceneLoaded_Auto;
         cooldownManager = GetComponent<Cooldown_Manager>(); // assignation
-        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
-        Debug.Log("Loadout buttons found in the scene = " + loadoutButtons.Count);
     }
     
     void OnDestroy() {
@@ -59,7 +57,11 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        if (cooldownManager == null) {
+        loadoutButtons = GameObject.Find("UI Manager").GetComponent<UI_Manager>().loadoutButtons; // finding the loadout panel in the scene
+        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
+        Debug.Log("Loadout buttons found in the scene = " + loadoutButtons.Count);
+        if (cooldownManager == null)
+        {
             Debug.LogError("Cooldown_Manager not found in the scene. Please ensure it is present.");
         }
         if (uiLoadout == null) {
