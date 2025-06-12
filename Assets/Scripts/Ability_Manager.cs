@@ -5,20 +5,50 @@ using MonsterManager;
 using UIManager;
 
 namespace AbilityManager {
-    public class Dash: Ability {
+    public class AbilityManager : MonoBehaviour {
+        public Cooldown_Manager cooldownManager;
+        public UI_Loadout uiLoadout;
+        int setup = 0;
+
+        void Start() {
+            cooldownManager.OnCooldownFinished += OnAbilityCooldownFinished;
+        }
+
+        private void SetUp() {
+            UI_Manager uiManager = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
+            uiLoadout = uiManager.playerLoadoutUI; // Using the existing UI_Loadout
+            Debug.Log("UI_Loadout found in the scene = " + uiLoadout);
+        }
+
+        void OnAbilityCooldownFinished(string abilityName) {
+            if (setup == 0) {
+                SetUp();
+                setup = 1; // Ensure setup is only done once
+            }
+            
+            if (abilityName == "JabSword") {
+                uiLoadout.enableAbility(2); // or whatever index JabSword uses
+            }
+            // Add more mappings for other abilities if needed
+        }
+    }
+    public class Dash : Ability {
         private static Sprite dashSprite = Resources.Load<Sprite>("2D/Ability Sprites/Dash");
         private float dashForce;
-        public Dash(int cooldown, float dashForce) : base("Dash", cooldown, dashSprite, index: 0) {
+        public Dash(int cooldown, float dashForce) : base("Dash", cooldown, dashSprite, index: 0)
+        {
             this.dashForce = dashForce;
         }
-        
-        public override bool useAbility(GameObject player) {
+
+        public override bool useAbility(GameObject player)
+        {
             Rigidbody playerRb = player.GetComponent<Rigidbody>();
             Vector2 playerDirection = player.GetComponent<Player_Controller>().lastMovementDirection;
-            if (playerDirection == new Vector2(0f, 0f)) {
+            if (playerDirection == new Vector2(0f, 0f))
+            {
                 playerDirection = new Vector2(0f, 1f);
             }
-            playerRb.AddForce(new Vector3(playerDirection.x, 0, playerDirection.y)*dashForce, ForceMode.Impulse);
+            playerRb.AddForce(new Vector3(playerDirection.x, 0, playerDirection.y) * dashForce, ForceMode.Impulse);
             return true;
         }
     }
@@ -63,14 +93,14 @@ namespace AbilityManager {
 
             return true;
         }
-        public override void TryUse(GameObject target) { // for cooldown purposes
-            Debug.Log("Using JabSword ability, " + index );
+        public override void TryUse(GameObject target)
+        { // for cooldown purposes
+            Debug.Log("Using JabSword ability, " + index);
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
             if (cooldownManager.CanUseAbility(key))
             { // checking if the ability is off cooldown
                 useAbility(target); // Use Ability
                 Debug.Log("Jabsword used");
-                uiLoadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore
                 cooldownManager.UseCooldown(key, cooldown); // Trigger cooldown
             }
             else
@@ -78,6 +108,7 @@ namespace AbilityManager {
                 float remaining = cooldownManager.GetRemainingCooldown(key);
                 Debug.Log($"Jabsword on cooldown: {remaining:F1}s remaining");
             }
+            // uiLoadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore
         }
     }    
 }

@@ -46,7 +46,7 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     IEnumerator SpawnAfterDelay(string sceneName) {
-        yield return new WaitForSeconds(0.1f); // Delay to ensure UI is ready
+        yield return new WaitForSeconds(0.2f); // Delay to ensure UI is ready
 
         if (sceneName == "SampleScene") {
             SampleSceneSpawner();
@@ -57,9 +57,12 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        loadoutButtons = GameObject.Find("UI Manager").GetComponent<UI_Manager>().loadoutButtons; // finding the loadout panel in the scene
-        uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
-        Debug.Log("Loadout buttons found in the scene = " + loadoutButtons.Count);
+        // loadoutButtons = GameObject.Find("UI Manager").GetComponent<UI_Manager>().loadoutButtons; // finding the loadout panel in the scene
+        // uiLoadout = new UI_Loadout(loadoutButtons, new Color(0, 0, 0, 150), new Color(255, 0, 0, 255));
+        // Debug.Log("Loadout buttons found in the scene = " + loadoutButtons.Count);
+        UI_Manager uiManager = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
+        uiLoadout = uiManager.playerLoadoutUI; // Using the existing UI_Loadout
+        Debug.Log("UI_Loadout found in the scene = " + uiLoadout);
         if (cooldownManager == null)
         {
             Debug.LogError("Cooldown_Manager not found in the scene. Please ensure it is present.");
