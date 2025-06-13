@@ -3,15 +3,17 @@ using UnityEngine;
 using InteractableManager;
 using MonsterManager;
 using UIManager;
+using Unity.VisualScripting;
 
 namespace AbilityManager {
     public class AbilityManager : MonoBehaviour {
-        public Cooldown_Manager cooldownManager;
         public UI_Loadout uiLoadout;
         int setup = 0;
 
         void Start() {
-            cooldownManager.OnCooldownFinished += OnAbilityCooldownFinished;
+            if (Cooldown_Manager.instance == null) Debug.LogError("cooldownManager is null in AbilityManager!");
+            Cooldown_Manager.instance.OnCooldownFinished += OnAbilityCooldownFinished;
+            Debug.Log("Cooldown Manager initialized and event listener added.");
         }
 
         private void SetUp() {
@@ -21,7 +23,9 @@ namespace AbilityManager {
         }
 
         void OnAbilityCooldownFinished(string abilityName) {
-            if (setup == 0) {
+            Debug.Log($"Ability {abilityName} is off cooldown.");
+            if (setup == 0)
+            {
                 SetUp();
                 setup = 1; // Ensure setup is only done once
             }
@@ -54,19 +58,15 @@ namespace AbilityManager {
     }
     public class JabSword : Ability
     {
-        private Cooldown_Manager cooldownManager;
-        private UI_Loadout uiLoadout;
         private static Sprite jabSwordSprite = Resources.Load<Sprite>("2D/Ability Sprites/Dash");
         private float range;
         private float damage;
         private float speed;
-        public JabSword(Cooldown_Manager cooldownManager, UI_Loadout uiLoadout, int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 2)
+        public JabSword(int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 2)
         {
             this.range = range;
             this.damage = damage;
             this.speed = speed;
-            this.cooldownManager = cooldownManager;
-            this.uiLoadout = uiLoadout;
         }
         public override bool useAbility(GameObject player)
         {
@@ -97,15 +97,15 @@ namespace AbilityManager {
         { // for cooldown purposes
             Debug.Log("Using JabSword ability, " + index);
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
-            if (cooldownManager.CanUseAbility(key))
+            if (Cooldown_Manager.instance.CanUseAbility(key))
             { // checking if the ability is off cooldown
                 useAbility(target); // Use Ability
                 Debug.Log("Jabsword used");
-                cooldownManager.UseCooldown(key, cooldown); // Trigger cooldown
+                Cooldown_Manager.instance.UseCooldown(key, cooldown); // Trigger cooldown
             }
             else
             { // if the ability is on cooldown
-                float remaining = cooldownManager.GetRemainingCooldown(key);
+                float remaining = Cooldown_Manager.instance.GetRemainingCooldown(key);
                 Debug.Log($"Jabsword on cooldown: {remaining:F1}s remaining");
             }
             // uiLoadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore

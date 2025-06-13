@@ -11,6 +11,16 @@ namespace CooldownManager {
         private HashSet<string> abilitiesOnCooldown = new HashSet<string>();
         public event Action<string> OnCooldownFinished;
 
+        public static Cooldown_Manager instance { get; private set; } // making it a singleton
+        void Awake() {
+            if (instance == null) {
+                instance = this;
+                DontDestroyOnLoad(gameObject);
+            } else if (instance != this) {
+                Destroy(gameObject);
+            }
+        }
+
         public bool CanUseAbility(string abilityName)
         { // Checks whether the ability is off cooldown and ready to use.
             if (!nextReadyTime.ContainsKey(abilityName))
@@ -44,8 +54,10 @@ namespace CooldownManager {
             var finished = new List<string>();
             foreach (var ability in abilitiesOnCooldown)
             {
+                Debug.Log("We are checking cooldowns");
                 if (GetRemainingCooldown(ability) <= 0f)
                 {
+                    Debug.Log("Cooldown has been added for " + ability);
                     finished.Add(ability);
                 }
             }
@@ -53,6 +65,7 @@ namespace CooldownManager {
             foreach (var ability in finished)
             {
                 abilitiesOnCooldown.Remove(ability);
+                Debug.Log(abilitiesOnCooldown);
                 OnCooldownFinished?.Invoke(ability);
             }
         }
