@@ -253,7 +253,8 @@ namespace UIManager {
         }
 
         // swap button logic
-        public void swapPowerupIcons(int firstIndex, int secondIndex) {
+        public void swapPowerupIcons(int firstIndex, int secondIndex)
+        {
             Sprite firstIndexImage = powerupInventoryButtons[firstIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
             Sprite secondIndexImage = powerupInventoryButtons[secondIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
             deletePowerupIcon(firstIndex);

@@ -20,7 +20,7 @@ public class Player_Controller : MonoBehaviour
     private Rigidbody playerRb;
     public Inventory playerWeaponInventory;
     public PowerupInventory playerPowerupInventory;
-    private Loadout playerLoadout;
+    public Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
     private bool tested = false;

@@ -189,11 +189,18 @@ namespace InteractableManager {
             return false;
         }
 
+        public void resetCooldownLogic(int abilityindex) {
+            abilities[abilityindex].onCooldown = false;
+        }
+
         // Checks whether the player has pressed one of the number shortcuts (which can cause an ability to be used).
-        public int checkKeyInput() {
+        public int checkKeyInput()
+        {
             int keyPressed = -1;
-            for (int i = 0; i < maxSlots; i++) {
-                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+            for (int i = 0; i < maxSlots; i++)
+            {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i])))
+                {
                     keyPressed = i;
                 }
             }

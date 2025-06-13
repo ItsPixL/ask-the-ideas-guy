@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 namespace AbilityManager {
     public class AbilityManager : MonoBehaviour {
         public UI_Loadout uiLoadout;
+        public Loadout loadout;
         int setup = 0;
 
         void Start() {
@@ -16,24 +17,31 @@ namespace AbilityManager {
             Debug.Log("Cooldown Manager initialized and event listener added.");
         }
 
-        private void SetUp() {
+        private void SetUp()
+        {
             UI_Manager uiManager = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
             uiLoadout = uiManager.playerLoadoutUI; // Using the existing UI_Loadout
             Debug.Log("UI_Loadout found in the scene = " + uiLoadout);
+
+            Player_Controller player = GameObject.Find("Player").GetComponent<Player_Controller>();
+            loadout = player.playerLoadout;
+            Debug.Log("Loadout found in the scene = " + loadout);
         }
 
-        void OnAbilityCooldownFinished(string abilityName) {
+        void OnAbilityCooldownFinished(string abilityName)
+        {
             Debug.Log($"Ability {abilityName} is off cooldown.");
-            if (setup == 0)
-            {
+            if (setup == 0) {
                 SetUp();
                 setup = 1; // Ensure setup is only done once
             }
-            
+
             if (abilityName == "JabSword") {
                 uiLoadout.enableAbility(2); // or whatever index JabSword uses
             }
             // Add more mappings for other abilities if needed
+            
+            loadout.resetCooldownLogic(2); // Reset the cooldown logic
         }
     }
     public class Dash : Ability {
