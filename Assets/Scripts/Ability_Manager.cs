@@ -3,7 +3,6 @@ using UnityEngine;
 using InteractableManager;
 using MonsterManager;
 using UIManager;
-using Unity.VisualScripting;
 
 namespace AbilityManager {
     public class AbilityManager : MonoBehaviour {
@@ -12,9 +11,7 @@ namespace AbilityManager {
         int setup = 0;
 
         void Start() {
-            if (Cooldown_Manager.instance == null) Debug.LogError("cooldownManager is null in AbilityManager!");
             Cooldown_Manager.instance.OnCooldownFinished += OnAbilityCooldownFinished;
-            Debug.Log("Cooldown Manager initialized and event listener added.");
         }
 
         private void SetUp()
@@ -30,24 +27,30 @@ namespace AbilityManager {
 
         void OnAbilityCooldownFinished(string abilityName)
         {
-            Debug.Log($"Ability {abilityName} is off cooldown.");
-            if (setup == 0) {
+            if (setup == 0)
+            {
                 SetUp();
                 setup = 1; // Ensure setup is only done once
             }
 
-            if (abilityName == "JabSword") {
-                uiLoadout.enableAbility(2); // or whatever index JabSword uses
+            if (abilityName == "Dash")
+            {
+                uiLoadout.enableAbility(0);
+                loadout.resetCooldownLogic(0); // Reset the cooldown logic for Dash
+            }
+            else if (abilityName == "JabSword")
+            {
+                uiLoadout.enableAbility(1);
+                loadout.resetCooldownLogic(1); // Reset the cooldown logic for JabSword
             }
             // Add more mappings for other abilities if needed
-            
-            loadout.resetCooldownLogic(2); // Reset the cooldown logic
         }
     }
-    public class Dash : Ability {
+    public class Dash : Ability
+    {
         private static Sprite dashSprite = Resources.Load<Sprite>("2D/Ability Sprites/Dash");
         private float dashForce;
-        public Dash(int cooldown, float dashForce) : base("Dash", cooldown, dashSprite, index: 0)
+        public Dash(float cooldown, float dashForce) : base("Dash", cooldown, dashSprite, index: 0)
         {
             this.dashForce = dashForce;
         }
@@ -63,6 +66,20 @@ namespace AbilityManager {
             playerRb.AddForce(new Vector3(playerDirection.x, 0, playerDirection.y) * dashForce, ForceMode.Impulse);
             return true;
         }
+        public override void TryUse(GameObject target) { // for cooldown purposes
+            string key = nameof(Dash); // the name of the ability as the key for the dictionary in the cooldown_manager
+            if (Cooldown_Manager.instance.CanUseAbility(key))
+            { // checking if the ability is off cooldown
+                useAbility(target); // Use Ability
+                Debug.Log("Dash used");
+                Cooldown_Manager.instance.UseCooldown(key, cooldown); // Trigger cooldown
+            }
+            else
+            { // if the ability is on cooldown
+                float remaining = Cooldown_Manager.instance.GetRemainingCooldown(key);
+                Debug.Log($"Dash on cooldown: {remaining:F1}s remaining");
+            }
+        }
     }
     public class JabSword : Ability
     {
@@ -70,14 +87,13 @@ namespace AbilityManager {
         private float range;
         private float damage;
         private float speed;
-        public JabSword(int cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 2)
+        public JabSword(float cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 1)
         {
             this.range = range;
             this.damage = damage;
             this.speed = speed;
         }
-        public override bool useAbility(GameObject player)
-        {
+        public override bool useAbility(GameObject player) {
             Debug.Log("Using JabSword ability");
             Vector2 playerDirection = player.GetComponent<Player_Controller>().lastMovementDirection; // getting the last direction so that the game knows where to direct the jab
             Vector3 direction = new Vector3(playerDirection.x, 0, playerDirection.y).normalized;
@@ -101,9 +117,7 @@ namespace AbilityManager {
 
             return true;
         }
-        public override void TryUse(GameObject target)
-        { // for cooldown purposes
-            Debug.Log("Using JabSword ability, " + index);
+        public override void TryUse(GameObject target) { // for cooldown purposes
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
             if (Cooldown_Manager.instance.CanUseAbility(key))
             { // checking if the ability is off cooldown
@@ -116,7 +130,6 @@ namespace AbilityManager {
                 float remaining = Cooldown_Manager.instance.GetRemainingCooldown(key);
                 Debug.Log($"Jabsword on cooldown: {remaining:F1}s remaining");
             }
-            // uiLoadout.enableAbility(index); // Update the UI to show the ability is not in cooldown anymore
         }
-    }    
+    }
 }

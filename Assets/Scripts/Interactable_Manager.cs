@@ -47,12 +47,12 @@ namespace InteractableManager {
     public class Ability
     {
         public string abilityName;
-        public int cooldown;
+        public float cooldown;
         public bool onCooldown = false;
         public Sprite icon;
         public int index;
 
-        public Ability(string abilityName, int cooldown, Sprite icon, int index)
+        public Ability(string abilityName, float cooldown, Sprite icon, int index)
         {
             this.abilityName = abilityName;
             this.cooldown = cooldown;
