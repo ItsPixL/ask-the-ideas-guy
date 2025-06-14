@@ -4,22 +4,28 @@ using System.Collections;
 using WeaponManager;
 using PowerupManager;
 using AbilityManager;
-using TMPro;
 using InteractableManager;
 using System.Collections.Generic;
-using System;
+using CooldownManager;
+using UIManager;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Cooldown_Manager))] // creates a new cooldown manager if one is not already present, for safety purposes.
 public class Spawn_Manager : MonoBehaviour {
     public static Spawn_Manager instance { get; private set; } // creating an instance for ease of use across files
     void Awake() { // creating a singleton pattern to ensure only one instance of the spawn manager is running
-        if (instance == null) {
+        if (instance == null)
+        {
             instance = this;
             DontDestroyOnLoad(gameObject); // this will prevent the spawn manager from being destroyed when a new scene is loaded
-        } else if (instance != this) {
+        }
+        else if (instance != this)
+        {
             Debug.LogWarning("Duplicate Spawn_Manager detected and destroyed."); // logged as a warning so it stands out
             Destroy(gameObject);
         }
         SceneManager.sceneLoaded += OnSceneLoaded_Auto;
+        // cooldownManager = GetComponent<Cooldown_Manager>(); // assignation
     }
     
     void OnDestroy() {
@@ -36,7 +42,7 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     IEnumerator SpawnAfterDelay(string sceneName) {
-        yield return new WaitForSeconds(0.1f); // Delay to ensure UI is ready
+        yield return new WaitForSeconds(0.2f); // Delay to ensure UI is ready
 
         if (sceneName == "SampleScene") {
             SampleSceneSpawner();
@@ -47,8 +53,8 @@ public class Spawn_Manager : MonoBehaviour {
     }
 
     void SampleSceneSpawner() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
+        Weapon testWeapon = new Sword(new List<Ability>(){new JabSword(1, 2, 1, 0.5f)});
+        Weapon testWeapon2 = new Sword(new List<Ability>(){});
         testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
         testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
         Powerup testPowerup = new Volcanic_Shard(0);

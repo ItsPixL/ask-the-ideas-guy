@@ -44,21 +44,26 @@ namespace InteractableManager {
     }
 
     // Defines the basics of every ability in the game.
-    public class Ability {
-        public string name;
-        public int cooldown;
+    public class Ability
+    {
+        public string abilityName;
+        public float cooldown;
         public bool onCooldown = false;
         public Sprite icon;
+        public int index;
 
-        public Ability(string name, int cooldown, Sprite icon) {
-            this.name = name;
+        public Ability(string abilityName, float cooldown, Sprite icon, int index)
+        {
+            this.abilityName = abilityName;
             this.cooldown = cooldown;
             this.icon = icon;
+            this.index = index;
         }
 
         public virtual bool useAbility(GameObject player) {
             return false;
         }
+        public virtual void TryUse(GameObject target) {}
     }
 
     public class Inventory {
@@ -175,19 +180,27 @@ namespace InteractableManager {
         }
 
         // Uses an ability if the player has the energy required.
-        public bool useAbility(int abilityIdx, GameObject player) {
-            if (abilities[abilityIdx] is not null && !abilities[abilityIdx].onCooldown && abilities[abilityIdx].useAbility(player)){
+        public bool useLoadoutAbility(int abilityIdx, GameObject player) {
+            if (abilities[abilityIdx] is not null && !abilities[abilityIdx].onCooldown){
+                abilities[abilityIdx].TryUse(player);
                 abilities[abilityIdx].onCooldown = true;
                 return true;
             }
             return false;
         }
 
+        public void resetCooldownLogic(int abilityindex) {
+            abilities[abilityindex].onCooldown = false;
+        }
+
         // Checks whether the player has pressed one of the number shortcuts (which can cause an ability to be used).
-        public int checkKeyInput() {
+        public int checkKeyInput()
+        {
             int keyPressed = -1;
-            for (int i = 0; i < maxSlots; i++) {
-                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i]))) {
+            for (int i = 0; i < maxSlots; i++)
+            {
+                if (Input.GetKeyDown((KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" + numberShortcuts[i])))
+                {
                     keyPressed = i;
                 }
             }

@@ -20,7 +20,7 @@ public class Player_Controller : MonoBehaviour
     private Rigidbody playerRb;
     public Inventory playerWeaponInventory;
     public PowerupInventory playerPowerupInventory;
-    private Loadout playerLoadout;
+    public Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
     private bool tested = false;
@@ -38,7 +38,7 @@ public class Player_Controller : MonoBehaviour
         playerLoadout.resetLoadout();
         UI_Controller.setUpMetricBars(maxHealth);
         UI_Controller.SetPlayerPowerupInventory(playerPowerupInventory);
-        Ability permaDashAbility = new Dash(5, 10);
+        Ability permaDashAbility = new Dash(0.5f, 10);
         playerLoadout.addAbility(permaDashAbility, false);
         UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);
     }
@@ -224,7 +224,7 @@ public class Player_Controller : MonoBehaviour
     // Updates loadout information and UI to respond to player interaction. 
     public void updateLoadoutStatus(int targetIdx)
     {
-        if (playerLoadout.useAbility(targetIdx, gameObject))
+        if (playerLoadout.useLoadoutAbility(targetIdx, gameObject))
         {
             UI_Controller.updateLoadoutStatusUI(targetIdx, false);
         }
