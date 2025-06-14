@@ -83,5 +83,6 @@ public class Monster_Controller : MonoBehaviour
     private void Die()
     {
         Debug.Log("Enemy has died");
+        Destroy(gameObject);
     }
 }
