@@ -38,10 +38,10 @@ public class Testing_Monster_Spawner: MonoBehaviour {
             new Vector3(5, 1, -9),
             new Vector3(5, 1, -5)
         };
-        List<float> basicStats = new List<float>{10, 5};
-        List<float> movementStats = new List<float>{5, 180};
-        List<float> attackStats = new List<float>{1.5f, 1.5f};
-        List<int> sensoryStats = new List<int>{10, 5, 160};
+        List<float> basicStats = new List<float>{10, 5}; // Health, Damage
+        List<float> movementStats = new List<float>{5, 180}; // Movement Speed, Rotation Speed
+        List<float> attackStats = new List<float>{1.5f, 1.5f}; // Attack Range, Attack Cooldown
+        List<int> sensoryStats = new List<int>{10, 5, 160}; // Sight Range, Hearing Range, Field of View
         testSpawner1 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 1, 1, 15);
         testSpawner2 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 2, 4, 20);
         testSpawner1.initCommonStats(basicStats, movementStats, dutyPath, attackStats, sensoryStats);

@@ -87,13 +87,24 @@ namespace AbilityManager {
         private float range;
         private float damage;
         private float speed;
+        // gizmo variables (for visualisation in the editor)
+        private Vector3 gizmoOrigin;
+        private Vector3 gizmoHalfExtents;
+        private Quaternion gizmoRotation;
+        private bool showGizmo;
+        // exposing the gizmo variables so that they can be accessed by the JabGizmoDrawer (drawing it on the screen)
+        public Vector3 GizmoOrigin => gizmoOrigin;
+        public Vector3 GizmoHalfExtents => gizmoHalfExtents;
+        public Quaternion GizmoRotation => gizmoRotation;
+        public bool ShowGizmo => showGizmo;
         public JabSword(float cooldown, float range, float damage, float speed) : base("JabSword", cooldown, jabSwordSprite, index: 1)
         {
             this.range = range;
             this.damage = damage;
             this.speed = speed;
         }
-        public override bool useAbility(GameObject player) {
+        public override bool useAbility(GameObject player)
+        {
             Debug.Log("Using JabSword ability");
             Vector2 playerDirection = player.GetComponent<Player_Controller>().lastMovementDirection; // getting the last direction so that the game knows where to direct the jab
             Vector3 direction = new Vector3(playerDirection.x, 0, playerDirection.y).normalized;
@@ -102,22 +113,29 @@ namespace AbilityManager {
             Vector3 origin = player.transform.position + direction * (range / 2f);
             Vector3 halfExtents = new Vector3(0.5f, 1f, range / 2f);  // narrow box
 
+            // Store for gizmo
+            gizmoOrigin = origin;
+            gizmoHalfExtents = halfExtents;
+            gizmoRotation = Quaternion.LookRotation(direction);
+            showGizmo = true;
+
             // Detect enemies in jab range
-            Collider[] hitEnemies = Physics.OverlapBox(origin, halfExtents, Quaternion.LookRotation(direction), LayerMask.GetMask("Enemy")); // assuming all enemies have the "enemy" mask, need to double check
+            Collider[] hitEnemies = Physics.OverlapBox(origin, halfExtents, gizmoRotation, LayerMask.GetMask("Enemy")); // assuming all enemies have the "enemy" mask, need to double check
 
             foreach (Collider enemy in hitEnemies)
             {
-                Monster monster = enemy.GetComponent<Monster>();
+                Monster_Controller monster = enemy.GetComponent<Monster_Controller>();
                 if (monster != null)
                 {
-                    monster.takeDamage(damage);
                     Debug.Log($"JabSword hit {monster} for {damage} damage.");
+                    monster.takeDamage(damage);
                 }
             }
 
             return true;
         }
-        public override void TryUse(GameObject target) { // for cooldown purposes
+        public override void TryUse(GameObject target)
+        { // for cooldown purposes
             string key = nameof(JabSword); // the name of the ability as the key for the dictionary in the cooldown_manager
             if (Cooldown_Manager.instance.CanUseAbility(key))
             { // checking if the ability is off cooldown
@@ -129,6 +147,24 @@ namespace AbilityManager {
             { // if the ability is on cooldown
                 float remaining = Cooldown_Manager.instance.GetRemainingCooldown(key);
                 Debug.Log($"Jabsword on cooldown: {remaining:F1}s remaining");
+            }
+        }
+        private void OnDrawGizmos() {
+            if (showGizmo) {
+                Gizmos.color = new Color(1f, 0f, 0f, 0.5f); // semi-transparent red
+                Gizmos.matrix = Matrix4x4.TRS(gizmoOrigin, gizmoRotation, Vector3.one);
+                Gizmos.DrawCube(Vector3.zero, gizmoHalfExtents * 2); // Centered on zero because we already moved the matrix
+            }
+        }
+    }
+    public class JabGizmoDrawer : MonoBehaviour {
+        public JabSword jabSword;
+
+        private void OnDrawGizmos() {
+            if (jabSword != null && jabSword.ShowGizmo) {
+                Gizmos.color = new Color(1f, 0f, 0f, 0.5f); // Semi-transparent red
+                Gizmos.matrix = Matrix4x4.TRS(jabSword.GizmoOrigin, jabSword.GizmoRotation, Vector3.one);
+                Gizmos.DrawCube(Vector3.zero, jabSword.GizmoHalfExtents * 2);
             }
         }
     }
