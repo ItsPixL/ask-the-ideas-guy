@@ -74,6 +74,7 @@ public class Monster_Controller : MonoBehaviour
     {
         Debug.Log($"health is now {health}");
         health -= damageAmount;
+        Debug.Log($"health is now {health}");
         if (health <= 0)
         {
             Die();
