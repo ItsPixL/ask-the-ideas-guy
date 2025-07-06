@@ -6,22 +6,24 @@ using WeaponManager;
 using PowerupManager;
 using AbilityManager;
 // using System.Threading;
+using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
     public float playerForce = 20f;
     public float maxHealth = 100f;
     public float playerHealth;
-    public float pickUpRange = 5f;
+    public float pickUpRange = 3f;
     private bool allowPlayerInput = true;
+    private bool isPlayerDead = false;
     private Vector2 lastPos2D;
     private Rigidbody playerRb;
     public Inventory playerWeaponInventory;
     public PowerupInventory playerPowerupInventory;
-    private Loadout playerLoadout;
+    public Loadout playerLoadout;
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
-    private bool tested = true;
+    private bool tested = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -34,10 +36,9 @@ public class Player_Controller : MonoBehaviour
         playerPowerupInventory.resetInventory();
         playerLoadout = new Loadout(UI_Controller.loadoutButtons.Count, new List<int> { 1, 2, 3, 4 });
         playerLoadout.resetLoadout();
-        allowPlayerInput = true;
         UI_Controller.setUpMetricBars(maxHealth);
         UI_Controller.SetPlayerPowerupInventory(playerPowerupInventory);
-        Ability permaDashAbility = new Dash(5, 10);
+        Ability permaDashAbility = new Dash(0.5f, 10);
         playerLoadout.addAbility(permaDashAbility, false);
         UI_Controller.updateAbilityIcon(0, permaDashAbility.icon, 255);
     }
@@ -57,10 +58,6 @@ public class Player_Controller : MonoBehaviour
             lastMovementDirection = (playerPos2D-lastPos2D).normalized;
         }
         lastPos2D = playerPos2D;
-        if (tested) {
-            test();
-            tested = false;
-        } 
         if (allowPlayerInput) {
             int weaponInventoryInput = playerWeaponInventory.checkKeyInput();
             int powerupInventoryInput = playerPowerupInventory.checkKeyInput();
@@ -80,8 +77,9 @@ public class Player_Controller : MonoBehaviour
             checkForDrop(KeyCode.R, playerPowerupInventory);
         }
         UI_Controller.updateMetricBars(playerHealth);
-        if (playerHealth <= 0) {
+        if (playerHealth <= 0 && !isPlayerDead) {
             allowPlayerInput = false;
+            isPlayerDead = true;
             Debug.Log("Player has died.");
             PlayerDied();
         }
@@ -89,31 +87,13 @@ public class Player_Controller : MonoBehaviour
         // Debug.Log("Player Health: " + playerHealth);
     }
 
-    // A test function that spawns some items.
-    private void test() {
-        Weapon testWeapon = new Sword(new List<Ability>(){new Dash(5, 10)});
-        Weapon testWeapon2 = new Sword(new List<Ability>(){new Dash(5, 10)});
-        testWeapon.dropItem(new Vector3(0, 1, -6), Quaternion.Euler(0, 0, 0));
-        testWeapon2.dropItem(new Vector3(4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup = new Fire(0);
-        testPowerup.dropItem(new Vector3(-4, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup1 = new Fire(0);
-        testPowerup1.dropItem(new Vector3(-5, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup2 = new Fire(0);
-        testPowerup2.dropItem(new Vector3(-6, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup3 = new Fire(0);
-        testPowerup3.dropItem(new Vector3(-7, 1, -6), Quaternion.Euler(0, 0, 0));
-        Powerup testPowerup4 = new Poision(0);
-        testPowerup4.dropItem(new Vector3(-8, 1, -6), Quaternion.Euler(0, 0, 0));
-    }
-
     // Moves the character.
-    void MovePlayer(float forceX, float forceY, float forceZ) {
+    public void MovePlayer(float forceX, float forceY, float forceZ) {
         playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
     }
 
     // Allows character movement by player input.
-    void InitPlayerMovement() {
+    public void InitPlayerMovement() {
         if (Input.GetKey("w"))
         {
             MovePlayer(0f, 0f, playerForce);
@@ -146,7 +126,7 @@ public class Player_Controller : MonoBehaviour
     }
 
     private void PlayerDied() {
-        UI_Manager.instance.GameOver();
+        UI_Controller.GameOver();
         gameObject.SetActive(false);
     }
 
@@ -244,7 +224,7 @@ public class Player_Controller : MonoBehaviour
     // Updates loadout information and UI to respond to player interaction. 
     public void updateLoadoutStatus(int targetIdx)
     {
-        if (playerLoadout.useAbility(targetIdx, gameObject))
+        if (playerLoadout.useLoadoutAbility(targetIdx, gameObject))
         {
             UI_Controller.updateLoadoutStatusUI(targetIdx, false);
         }

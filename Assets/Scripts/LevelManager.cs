@@ -8,6 +8,14 @@ public class LevelManager : MonoBehaviour {
         SceneManager.LoadScene("SampleScene");
         GameManager.instance.UpdateGameState(GameState.InGame); // Change the game state to 'InGame' (triggers the event)
     }
+    public void NextScene() { // going to the next level.
+        Debug.Log("Next Scene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+    public void PreviousScene() { // going to the previous level.
+        Debug.Log("Previous Scene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
     public void QuitGame() { // closing the game
         Debug.Log("END Game");
         Application.Quit();

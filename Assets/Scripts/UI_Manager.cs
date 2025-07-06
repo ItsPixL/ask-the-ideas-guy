@@ -66,7 +66,7 @@ namespace UIManager {
     }
 
     // Handles the UI of the loadout (stores usable abilities).
-    public class UI_Loadout {
+    public class UI_Loadout{
         private List<Button> buttons;
         private Color enabledOutlineColour;
         private Color disabledOutlineColour;
@@ -76,21 +76,34 @@ namespace UIManager {
             this.enabledOutlineColour = enabledOutlineColour;
             this.disabledOutlineColour = disabledOutlineColour;
         }
-
+        
         // Disables the button, which dims the background colour and changes the outline colour to red.
-        public void useCurrAbility(int abilityIdx) {
+        public void useCurrAbility(int abilityIdx)
+        {
             Button currButton = buttons[abilityIdx];
             Outline currOutline = currButton.GetComponent<Outline>();
             currButton.interactable = false;
             currOutline.effectColor = disabledOutlineColour;
+            Image buttonImage = currButton.GetComponent<Image>(); // Shade the button to indicate it's disabled
+            if (buttonImage != null)
+            {
+                buttonImage.color = new Color(0.5f, 0.5f, 0.5f, 1f); // Gray shade
+            }
         }
 
         // Re-enables the button, which reverses the UI changes made upon disabling it and allows it to be used again.
-        public void enableAbility(int abilityIdx) {
+        public void enableAbility(int abilityIdx)
+        {
             Button currButton = buttons[abilityIdx];
+            Debug.Log("Enabling ability: " + currButton.name);
             Outline currOutline = currButton.GetComponent<Outline>();
             currButton.interactable = true;
             currOutline.effectColor = enabledOutlineColour;
+            Image buttonImage = currButton.GetComponent<Image>(); // Restore the button's background color to its normal color
+            if (buttonImage != null) {
+                buttonImage.color = Color.white;
+                Debug.Log("HI");
+            }
         }
     }
 
@@ -138,7 +151,7 @@ namespace UIManager {
         private UI_Inventory playerWeaponInventoryUI;
         private UI_Inventory playerPowerupInventoryUI;
         private PowerupInventory playerPowerupInventory;
-        private UI_Loadout playerLoadoutUI;
+        public UI_Loadout playerLoadoutUI;
         public Gradient healthBarGradient;
         private MetricBar healthBarUI;
         // private GameObject deathPanel;
@@ -228,16 +241,20 @@ namespace UIManager {
 
         // A connector function - this function is called from Player_Controller.cs and calls a function within UI_Loadout.
         public void updateLoadoutStatusUI(int targetIdx, bool enableAbility) {
-            if (!enableAbility) {
+            if (!enableAbility)
+            {
                 playerLoadoutUI.useCurrAbility(targetIdx);
+                Debug.Log("!!!UI_Loadout found in the scene = " + playerLoadoutUI);
             }
-            else {
+            else
+            {
                 playerLoadoutUI.enableAbility(targetIdx);
             }
         }
 
         // swap button logic
-        public void swapPowerupIcons(int firstIndex, int secondIndex) {
+        public void swapPowerupIcons(int firstIndex, int secondIndex)
+        {
             Sprite firstIndexImage = powerupInventoryButtons[firstIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
             Sprite secondIndexImage = powerupInventoryButtons[secondIndex].transform.Find("Powerup Icon").gameObject.GetComponent<Image>().sprite;
             deletePowerupIcon(firstIndex);
@@ -258,6 +275,7 @@ namespace UIManager {
         }
     
         public void swapButtonPressed() {
+            Debug.Log("What's up?");
             StartCoroutine(WaitForPowerupSelection());
         }
 

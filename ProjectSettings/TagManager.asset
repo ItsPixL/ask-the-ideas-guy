@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - Powerup
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -14,8 +16,8 @@ TagManager:
   - UI
   - Item
   - Player
-  - 
-  - 
+  - NPC
+  - Enemy
   - 
   - 
   - 
