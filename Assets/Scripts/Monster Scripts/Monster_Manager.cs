@@ -15,13 +15,13 @@ namespace MonsterManager {
         public float health;
         public float damage;
         public MonsterSpawner birthSpawner;
-        private float movementSpeed;
-        private int rotationSpeed;
+        public float movementSpeed;
+        public int rotationSpeed;
         private List<Vector3> dutyPath;
-        private float attackRange;
-        private float attackCooldown;
+        public float attackRange;
+        public float attackCooldown;
         public int sightRange; // Change this variable to private once OnDrawGizmos() is no longer needed.
-        private int hearingRange;
+        public int hearingRange;
         public int fieldOfView; // Change this variable to private once OnDrawGizmos() is no longer needed.
         private bool seenPlayer = false;
         public bool canAttack = true;
