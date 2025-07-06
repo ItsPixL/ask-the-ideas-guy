@@ -1,6 +1,5 @@
 using UnityEngine;
 using MonsterManager;
-using MonsterSpawnerManager;
 using System.Collections.Generic;
 
 public class Brute_Controller: MonoBehaviour, MonsterComponent {

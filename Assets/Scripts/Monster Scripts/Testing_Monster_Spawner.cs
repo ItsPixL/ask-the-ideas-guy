@@ -46,6 +46,6 @@ public class Testing_Monster_Spawner: MonoBehaviour {
         testSpawner2 = new MonsterSpawner(monsterType.Brute, convertToPrefab("Brute"), allowedSpawnPos, 2, 4, 20);
         testSpawner1.initCommonStats(basicStats, movementStats, dutyPath, attackStats, sensoryStats);
         testSpawner2.initCommonStats(basicStats, movementStats, dutyPath, attackStats, sensoryStats);
-        testConnector1 = new MonsterSpawnerConnector(new List<MonsterSpawner>{testSpawner1}, 5);
+        testConnector1 = new MonsterSpawnerConnector(new List<MonsterSpawner>{testSpawner1, testSpawner2}, 4);
     }
 }

@@ -82,12 +82,6 @@ public class Monster_Controller : MonoBehaviour
         isMonsterActive = monsterStatus;
     }
 
-    /* Very important note Adi...I never assign the variables in the component (seen above) like "health" and "damage".
-    That's because I pass all the information down to the monster itself.
-    So the reason that the code wasn't working was that you needed to target "monster.health" and "monster.damage"
-    Since the information is used there.
-    Also I did reform my code to be slightly simpler. Hopefully this small fix means no hustle for you.
-    You will notice that I assign and update the varaibles above, but that is just for testing so that you can see the changes live. */
     public void takeDamage(float damageAmount)
     {
         Debug.Log($"health is now {monster.health}");
