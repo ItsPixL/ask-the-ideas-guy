@@ -61,7 +61,6 @@ namespace MonsterSpawnerManager {
  
         // Sets the common stats within the monster controller to the given values.
         public void setCommonMonsterStats(Monster_Controller newMonsterController) {
-            newMonsterController.initMonster(basicStats[0], basicStats[1], this);
             newMonsterController.initMonsterMovement(movementStats[0], (int)movementStats[1], dutyPath);
             newMonsterController.initMonsterAttack(attackStats[0], attackStats[1]);
             newMonsterController.initMonsterSenses(sensoryStats[0], sensoryStats[1], sensoryStats[2]);
@@ -92,7 +91,7 @@ namespace MonsterSpawnerManager {
                         GameObject newMonster = Object.Instantiate(monsterPrefab, spawnPos, Quaternion.Euler(0, Random.Range(0, 360), 0));
                         newMonster.layer = layer; // setting the layer to "Enemy"
                         Monster_Controller newMonsterController = newMonster.GetComponent<Monster_Controller>();
-                        newMonsterController.initSpecificScript(typeSpawned);
+                        newMonsterController.initBasicMonster(typeSpawned, basicStats[0], basicStats[1], this);
                         setCommonMonsterStats(newMonsterController);
                         setCustomMonsterStats(newMonsterController);
                         newMonsterController.setMonsterStatus(true);

@@ -15,7 +15,9 @@ public class Monster_Controller : MonoBehaviour
     public int hearingRange;
     public int fieldOfView;
     public monsterType currMonsterType = monsterType.Brute;
-    private MonsterComponent newComponent;
+    public Monster monster;
+    public MonsterComponent newComponent;
+    private bool isMonsterActive = false;
 
     void Start()
     {
@@ -24,58 +26,68 @@ public class Monster_Controller : MonoBehaviour
 
     void Update()
     {
-
+        if (isMonsterActive)
+        {
+            monster.checkForPlayer();
+            monster.checkForAttack();
+            // ONLY FOR TESTING PURPOSES! THESE VARIABLES WON'T EXIST IN THE ACTUAL GAME //
+            health = monster.health;
+            damage = monster.damage;
+            movementSpeed = monster.movementSpeed;
+            rotationSpeed = monster.rotationSpeed;
+            attackRange = monster.attackRange;
+            sightRange = monster.sightRange;
+            hearingRange = monster.hearingRange;
+            fieldOfView = monster.fieldOfView;
+        }
     }
 
     // Initialises the specific script for that specific monster (this script is the script that all monsters have attached).
-    public void initSpecificScript(monsterType inputtedMonsterType)
+    // Also initialises health, damange and birthspawner.
+    public void initBasicMonster(monsterType inputtedMonsterType, float health, float damage, MonsterSpawner birthSpawner)
     {
         currMonsterType = inputtedMonsterType;
         switch (currMonsterType)
         {
             case monsterType.Brute:
+                monster = new Brute(health, damage, birthSpawner);
+                monster.initGameObjects(gameObject, GameObject.FindWithTag("Player"));
                 gameObject.AddComponent<Brute_Controller>();
                 newComponent = gameObject.GetComponent<Brute_Controller>();
                 break;
         }
     }
 
-    // Initialises the new (specific) monster, including health and damage.
-    public void initMonster(float health, float damage, MonsterSpawner birthSpawner)
-    {
-        newComponent.initMonster(health, damage, birthSpawner);
-    }
-
     // Initialises the movement related attributes of the specific monster.
     public void initMonsterMovement(float movementSpeed, int rotationSpeed, List<Vector3> dutyPath)
     {
-        newComponent.initMonsterMovement(movementSpeed, rotationSpeed, dutyPath);
+        monster.initMovementAttributes(movementSpeed, rotationSpeed, dutyPath);
     }
 
     // Initialises the attack related attributes of the specific monster.
     public void initMonsterAttack(float attackRange, float attackCooldown)
     {
-        newComponent.initMonsterAttack(attackRange, attackCooldown);
+        monster.initAttackAttributes(attackRange, attackCooldown);
     }
 
     // Initialises the sensory related attributes of the specific monster.
     public void initMonsterSenses(int sightRange, int hearingRange, int fieldOfView)
     {
-        newComponent.initMonsterSenses(sightRange, hearingRange, fieldOfView);
+        monster.initSensoryAttributes(sightRange, hearingRange, fieldOfView);
     }
 
     // Used to activate/deactivate the monster.
     public void setMonsterStatus(bool monsterStatus)
     {
-        newComponent.setMonsterStatus(monsterStatus);
+        isMonsterActive = monsterStatus;
     }
-    
+
     public void takeDamage(float damageAmount)
     {
-        Debug.Log($"health is now {health}");
-        health -= damageAmount;
-        Debug.Log($"health is now {health}");
-        if (health <= 0)
+        Debug.Log($"health is now {monster.health}");
+        monster.health -= damageAmount;
+        Debug.Log($"health is now {monster.health}");
+        if (monster.health <= 0)
         {
             Die();
         }
