@@ -10,7 +10,8 @@ using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
-    public float playerForce = 20f;
+    public float playerForce = 5f;
+    public float acceleration = 50f; // Higher = snappier, lower = smoother
     public float maxHealth = 100f;
     public float playerHealth;
     public float pickUpRange = 3f;
@@ -45,9 +46,11 @@ public class Player_Controller : MonoBehaviour
 
     // Update function used for all physics updates.
     void FixedUpdate() {
-        if (allowPlayerInput)
-        {
-            InitPlayerMovement();
+        if (allowPlayerInput) {
+            Vector3 moveDir = InitPlayerMovement();
+            if (moveDir != Vector3.zero) {
+                Look(moveDir);
+            }
         }
     }
 
@@ -88,28 +91,43 @@ public class Player_Controller : MonoBehaviour
     }
 
     // Moves the character.
-    public void MovePlayer(float forceX, float forceY, float forceZ) {
-        playerRb.AddForce(forceX * Time.deltaTime, forceY * Time.deltaTime, forceZ * Time.deltaTime, ForceMode.VelocityChange);
+    public void MovePlayer(Vector3 velocity) {
+        if (velocity == Vector3.zero) {
+            playerRb.linearVelocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero; // Stop any rotation
+        }
+        else {
+        playerRb.linearVelocity = Vector3.MoveTowards(playerRb.linearVelocity, velocity, acceleration * Time.fixedDeltaTime);
+        }
     }
 
     // Allows character movement by player input.
-    public void InitPlayerMovement() { // stop the vid at 7:20
-        if (Input.GetKey("w"))
-        {
-            MovePlayer(0f, playerForce, playerForce);
+    public Vector3 InitPlayerMovement() { // stop the vid at 7:20
+        Vector3 moveDir = Vector3.zero;
+        if (Input.GetKey("w")) {
+            moveDir += Vector3.forward;
         }
-        if (Input.GetKey("s"))
-        {
-            MovePlayer(0f, playerForce, -playerForce);
+        if (Input.GetKey("s")) {
+            moveDir += Vector3.back;
         }
         if (Input.GetKey("a"))
         {
-            MovePlayer(-playerForce, playerForce, 0f);
+            moveDir += Vector3.left;
         }
         if (Input.GetKey("d"))
         {
-            MovePlayer(playerForce, playerForce, 0f);
+            moveDir += Vector3.right;
         }
+
+        moveDir = moveDir.normalized;
+        Vector3 velocity = moveDir * playerForce; // playerForce is now your speed
+        MovePlayer(velocity);
+        return moveDir;
+    }
+
+    void Look(Vector3 direction){
+        var rot = Quaternion.LookRotation(direction, Vector3.up);
+        transform.rotation = rot;
     }
 
     // Checks if the keybind ('E'/'R') has been pressed, and drops the item that is being held.

@@ -841,10 +841,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updatePowerupInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1314,10 +1314,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateWeaponInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2236,10 +2236,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateLoadoutStatus
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3137,10 +3137,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updatePowerupInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3286,10 +3286,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateWeaponInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3411,7 +3411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerForce: 20
+  playerForce: 10
+  acceleration: 25
   maxHealth: 100
   playerHealth: 0
   pickUpRange: 3
@@ -4201,10 +4202,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updatePowerupInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4703,10 +4704,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updatePowerupInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5343,10 +5344,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateLoadoutStatus
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5492,10 +5493,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateWeaponInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5756,10 +5757,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateLoadoutStatus
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5890,10 +5891,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateLoadoutStatus
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7397,10 +7398,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updateWeaponInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7613,7 +7614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7867,7 +7868,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1893056227
 Transform:
   m_ObjectHideFlags: 0
@@ -7995,7 +7996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1928255244
 Transform:
   m_ObjectHideFlags: 0
@@ -8488,10 +8489,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 94566519}
-        m_TargetAssemblyTypeName: UIManager.UI_Manager, Assembly-CSharp
-        m_MethodName: swapButtonPressed
-        m_Mode: 1
+      - m_Target: {fileID: 684849738}
+        m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
+        m_MethodName: updatePowerupInventoryStatusSecure
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
