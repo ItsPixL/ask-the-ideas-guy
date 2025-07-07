@@ -93,7 +93,7 @@ public class Player_Controller : MonoBehaviour
     }
 
     // Allows character movement by player input.
-    public void InitPlayerMovement() {
+    public void InitPlayerMovement() { // stop the vid at 7:20
         if (Input.GetKey("w"))
         {
             MovePlayer(0f, playerForce, playerForce);

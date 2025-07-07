@@ -180,7 +180,7 @@ namespace MonsterManager {
             bool possiblySeen = detectedPlayer("seen");
             bool prevSeen = seenPlayer;
             if (possiblySeen) {
-                seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponent<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), player);
+                seenPlayer = isClearPath(monster.transform.position, player.transform.position, player.GetComponentInChildren<Collider>()?.bounds.extents ?? new Vector3(0, 0, 0), player);
                 if (seenPlayer) {
                     if (!prevSeen) {
                         lastWent.Add(monsterPos2D);
