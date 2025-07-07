@@ -12,7 +12,7 @@ public class Pick_Mechanic : MonoBehaviour {
     private float detectionRadius;
 
     void Start() {
-        player = GameObject.Find("Player");
+        player = GameObject.FindWithTag("Player");
         playerController = player.GetComponent<Player_Controller>();
         closestItemScript = player.GetComponent<Update_Closest_Item>();
         playerLayerMask = 1 << LayerMask.NameToLayer("Player");
