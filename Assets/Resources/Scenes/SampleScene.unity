@@ -841,7 +841,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updatePowerupInventoryStatusSecure
         m_Mode: 3
@@ -992,7 +992,7 @@ GameObject:
   m_Component:
   - component: {fileID: 158746921}
   - component: {fileID: 158746922}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HeadCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1314,7 +1314,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateWeaponInventoryStatusSecure
         m_Mode: 3
@@ -2236,7 +2236,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateLoadoutStatus
         m_Mode: 3
@@ -2440,7 +2440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 495647888}
   - component: {fileID: 495647889}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BodyCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3137,7 +3137,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updatePowerupInventoryStatusSecure
         m_Mode: 3
@@ -3286,7 +3286,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateWeaponInventoryStatusSecure
         m_Mode: 3
@@ -3601,7 +3601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPCcontainerGameObject: {fileID: 31223418}
   ITEMcontainerGameObject: {fileID: 1302916889}
-  playerInteract: {fileID: 2016730640}
+  playerInteract: {fileID: 684849737}
 --- !u!1 &801803371
 GameObject:
   m_ObjectHideFlags: 0
@@ -4020,7 +4020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 916322652}
   - component: {fileID: 916322653}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arm2Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4072,7 +4072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1027412271}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4201,7 +4201,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updatePowerupInventoryStatusSecure
         m_Mode: 3
@@ -4561,7 +4561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1092366698}
   - component: {fileID: 1092366699}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arm1Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4703,7 +4703,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updatePowerupInventoryStatusSecure
         m_Mode: 3
@@ -4763,7 +4763,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1149534822}
   - component: {fileID: 1149534823}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg1Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5343,7 +5343,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateLoadoutStatus
         m_Mode: 3
@@ -5492,7 +5492,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateWeaponInventoryStatusSecure
         m_Mode: 3
@@ -5756,7 +5756,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateLoadoutStatus
         m_Mode: 3
@@ -5890,7 +5890,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateLoadoutStatus
         m_Mode: 3
@@ -7397,7 +7397,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updateWeaponInventoryStatusSecure
         m_Mode: 3
@@ -7591,6 +7591,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9070493210130169274, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -7643,13 +7647,189 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8183481454299698827, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8006009767450596044, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -7657966619581158213, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -7360747449169001873, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6370085079684087283, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6056541330796499132, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5561550452697079657, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5195048882033904264, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4728426434207774260, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -4278032810995721380, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3799395697873186154, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3542885339558904099, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3086436065929644917, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1781356600409242780, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1703473491307067327, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1200856079203341021, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -552831747908440785, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -290750445479886849, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -203856693384778745, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171100556185337, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 204568718373914255, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339101018200438765, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715566404302941441, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2898355158428612036, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135921509060577837, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3614653200513675785, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3948933247560734027, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3974016661214395164, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114030615378554161, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237274458221626025, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4441848305933595309, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4549111882529890269, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874269957272057185, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363479242261063072, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7776229726456038893, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817898888258712963, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953972740105248388, guid: a0d25ad041ffe584bac548895d2c7770, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7681,7 +7861,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1893056227}
   - component: {fileID: 1893056228}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Foot1Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7809,7 +7989,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1928255244}
   - component: {fileID: 1928255245}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: 'Foot2Collider '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8308,7 +8488,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2016730638}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Player_Controller, Assembly-CSharp
         m_MethodName: updatePowerupInventoryStatusSecure
         m_Mode: 3
@@ -8371,10 +8551,7 @@ GameObject:
   - component: {fileID: 2016730634}
   - component: {fileID: 2016730632}
   - component: {fileID: 2016730637}
-  - component: {fileID: 2016730638}
-  - component: {fileID: 2016730639}
-  - component: {fileID: 2016730640}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: OldPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -8497,49 +8674,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2016730638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016730630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a360f0dcba788b2469d0b334eae1fc37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerForce: 15
-  maxHealth: 100
-  playerHealth: 100
-  pickUpRange: 5
-  lastMovementDirection: {x: 0, y: 0}
---- !u!114 &2016730639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016730630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f9e6ea89df0b4e45bb49a944641cb0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectsOfConcern: []
-  closestObject: {fileID: 0}
---- !u!114 &2016730640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016730630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da0460716b53bbd4c86523bd6f288a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2017767103
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8973,7 +9107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2139143093}
   - component: {fileID: 2139143094}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg2Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -96,19 +96,19 @@ public class Player_Controller : MonoBehaviour
     public void InitPlayerMovement() {
         if (Input.GetKey("w"))
         {
-            MovePlayer(0f, 0f, playerForce);
+            MovePlayer(0f, playerForce, playerForce);
         }
         if (Input.GetKey("s"))
         {
-            MovePlayer(0f, 0f, -playerForce);
+            MovePlayer(0f, playerForce, -playerForce);
         }
         if (Input.GetKey("a"))
         {
-            MovePlayer(-playerForce, 0f, 0f);
+            MovePlayer(-playerForce, playerForce, 0f);
         }
         if (Input.GetKey("d"))
         {
-            MovePlayer(playerForce, 0f, 0f);
+            MovePlayer(playerForce, playerForce, 0f);
         }
     }
 

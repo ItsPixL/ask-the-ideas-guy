@@ -5,10 +5,10 @@ using InteractableManager;
 public class Pick_Mechanic : MonoBehaviour {
     public GameObject player;
     private bool playerNearby = false; 
-    private static Player_Controller playerController; 
-    private static Update_Closest_Item closestItemScript;
+    private Player_Controller playerController; 
+    private Update_Closest_Item closestItemScript;
     public Item itemRef;
-    private static LayerMask playerLayerMask;
+    private LayerMask playerLayerMask;
     private float detectionRadius;
 
     void Start() {
@@ -24,6 +24,7 @@ public class Pick_Mechanic : MonoBehaviour {
 
         if (Input.GetKeyDown("f")) { // check if player presses the pick up key
             if (itemRef != null && gameObject == closestItemScript.closestObject) {
+                Debug.Log("Player pressed the pick up key");
                 if (itemRef is Weapon weapon) {
                     playerController.addItemToInventory(weapon, playerController.playerWeaponInventory);
                 } else if (itemRef is Powerup powerup) {
@@ -45,12 +46,12 @@ public class Pick_Mechanic : MonoBehaviour {
     public bool canPickObject() {
         Collider[] hits = Physics.OverlapSphere(gameObject.transform.position, detectionRadius, playerLayerMask);
         foreach (Collider hit in hits) {
-            if (hit.CompareTag("Player")) {
-                if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
-                    closestItemScript.objectsOfConcern.Add(gameObject);
-                }
-                return true;
+            Debug.Log("Player is nearby");
+            if (!closestItemScript.objectsOfConcern.Contains(gameObject)) {
+                Debug.Log("Adding object to closest item script");
+                closestItemScript.objectsOfConcern.Add(gameObject);
             }
+            return true;
         }
         return false;
     }
