@@ -25,10 +25,12 @@ public class Player_Controller : MonoBehaviour
     private UI_Manager UI_Controller;
     [HideInInspector] public Vector2 lastMovementDirection;
     private bool tested = false;
+    private Animator playerAnimator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         playerRb = GameObject.Find("Player").GetComponent<Rigidbody>();
+        playerAnimator = GameObject.Find("Player").GetComponent<Animator>();
         playerHealth = maxHealth;
         UI_Controller = GameObject.Find("UI Manager").GetComponent<UI_Manager>();
         playerWeaponInventory = new Inventory(UI_Controller.weaponInventoryButtons.Count, new List<int> { 7, 8, 9, 0 });
@@ -92,12 +94,21 @@ public class Player_Controller : MonoBehaviour
 
     // Moves the character.
     public void MovePlayer(Vector3 velocity) {
-        if (velocity == Vector3.zero) {
+        velocity.y = 0f; // always keeping the Y value zero to prevent vertical movement
+        if (velocity == Vector3.zero)
+        {
             playerRb.linearVelocity = Vector3.zero;
             playerRb.angularVelocity = Vector3.zero; // Stop any rotation
+            playerAnimator.SetBool("Run", false);
+            playerAnimator.SetBool("Idle", true);
         }
-        else {
-        playerRb.linearVelocity = Vector3.MoveTowards(playerRb.linearVelocity, velocity, acceleration * Time.fixedDeltaTime);
+        else
+        {
+            Vector3 newVelocity = Vector3.MoveTowards(playerRb.linearVelocity, velocity, acceleration * Time.fixedDeltaTime);
+            newVelocity.y = 0f;
+            playerRb.linearVelocity = newVelocity;
+            playerAnimator.SetBool("Run", true);
+            playerAnimator.SetBool("Idle", false);
         }
     }
 
