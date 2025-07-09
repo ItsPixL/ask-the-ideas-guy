@@ -10,8 +10,8 @@ using TMPro;
 
 public class Player_Controller : MonoBehaviour
 {
-    public float playerForce = 5f;
-    public float acceleration = 50f; // Higher = snappier, lower = smoother
+    public float playerForce = 1f;
+    public float acceleration = 100f; // Higher = snappier, lower = smoother
     public float maxHealth = 100f;
     public float playerHealth;
     public float pickUpRange = 3f;
