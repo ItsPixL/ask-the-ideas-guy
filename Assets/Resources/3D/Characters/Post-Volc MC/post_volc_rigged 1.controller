@@ -29,7 +29,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Taunt
+  m_Name: Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -42,7 +42,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c95b9e344dd95dd42be0011efd019622, type: 2}
+  m_Motion: {fileID: 7400000, guid: ed20dc6fa9e8cc14d85e053bd58eaaf5, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

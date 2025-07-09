@@ -14,10 +14,13 @@ public class Update_Closest_Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("HI");
         if (objectsOfConcern.Count > 0) {
+            Debug.Log("Updating closest object");
             float currMin = float.PositiveInfinity;
             GameObject currClosestObject = null;
             foreach (GameObject currObject in objectsOfConcern) {
+                Debug.Log("Checking object: " + currObject.name);
                 float currDistance = Vector3.Distance(gameObject.transform.position, currObject.transform.position);
                 if (currMin > currDistance) {
                     currMin = currDistance;
@@ -25,6 +28,7 @@ public class Update_Closest_Item : MonoBehaviour
                 }
             }
             closestObject = currClosestObject;
+            
         }
     }
 }
